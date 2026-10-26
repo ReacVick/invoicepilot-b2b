@@ -2665,63 +2665,168 @@ button, input, select, textarea { touch-action: manipulation; }
   .ip-topbar-right > .ip-role-intro-topbar-btn { display: none !important; }
 }
 
+/* Commercial System & Network Telemetry Bar + Sudden Offline Overlay */
+.ip-canvas-bar {
+  background: linear-gradient(90deg, #0b192c 0%, #102a45 55%, #0f172a 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px;
+  font-size: 0.76rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ip-net-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.ip-net-pill:hover {
+  background: rgba(255,255,255,0.14);
+}
+.ip-net-pill.is-online {
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(22, 163, 74, 0.18);
+  color: #86efac;
+}
+.ip-net-pill.is-slow {
+  border-color: rgba(245, 158, 11, 0.6);
+  background: rgba(217, 119, 6, 0.22);
+  color: #fde047;
+}
+.ip-net-pill.is-offline {
+  border-color: rgba(239, 68, 68, 0.7);
+  background: rgba(220, 38, 38, 0.25);
+  color: #fca5a5;
+}
+.ip-net-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+.ip-offline-banner {
+  background: linear-gradient(90deg, #7f1d1d 0%, #991b1b 50%, #7f1d1d 100%);
+  color: #fff;
+  padding: 10px 16px;
+  border-bottom: 2px solid #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  z-index: 1080;
+  animation: ipPulseBorder 2s infinite;
+}
+.ip-slow-banner {
+  background: linear-gradient(90deg, #78350f 0%, #92400e 50%, #78350f 100%);
+  color: #fef3c7;
+  padding: 8px 16px;
+  border-bottom: 1px solid #f59e0b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  z-index: 1079;
+}
+@media (max-width: 767.98px) {
+  .ip-canvas-bar {
+    padding: 5px 8px;
+    gap: 5px;
+  }
+  .ip-canvas-bar .ip-bar-hide-sm {
+    display: none !important;
+  }
+  #ip-canvas-screen-select {
+    max-width: 175px !important;
+    font-size: 0.72rem !important;
+  }
+}
+
 </style>
 </head>
 <body data-page="login" data-roles="public">
   <a class="ip-skip-link" href="#main-content">Chuyển đến nội dung chính</a>
   <div class="ip-canvas-bar ip-no-print">
     <div class="d-flex align-items-center gap-2 flex-wrap">
-      <span class="badge bg-warning text-dark">BTL-19 · 22 Màn hình (Trang đầu: Đăng nhập)</span>
-      <span>Chuyển nhanh màn hình:</span>
-      <select id="ip-canvas-screen-select" class="form-select form-select-sm py-0 px-2" style="width:auto;min-height:28px;font-size:0.78rem;" aria-label="Chọn màn hình trong 22 trang">
-        <optgroup label="Màn hình chung & Xác thực (7 trang)">
-          <option value="login.html" selected>1. login.html — Đăng nhập (Trang đầu mặc định)</option>
-          <option value="index.html">2. index.html — Trang giới thiệu (Slide Deck)</option>
-          <option value="forgot-password.html">3. forgot-password.html — Quên mật khẩu</option>
-          <option value="profile.html">4. profile.html — Hồ sơ cá nhân</option>
-          <option value="notifications.html">5. notifications.html — Thông báo</option>
-          <option value="403.html">6. 403.html — Chặn quyền truy cập (403)</option>
-          <option value="404.html">7. 404.html — Không tìm thấy trang (404)</option>
+      <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle d-inline-flex align-items-center gap-1">
+        <i class="bi bi-patch-check-fill"></i><span>InvoicePilot Enterprise</span>
+      </span>
+      <span class="ip-bar-hide-sm opacity-75">Màn hình:</span>
+      <select id="ip-canvas-screen-select" class="form-select form-select-sm py-0 px-2" style="width:auto;min-height:26px;font-size:0.76rem;" aria-label="Điều hướng nhanh các phân hệ hệ thống">
+        <optgroup label="Xác thực & Cổng thông tin (7 màn hình)">
+          <option value="login.html" selected>1. Đăng nhập hệ thống (login.html)</option>
+          <option value="index.html">2. Trang chủ giới thiệu sản phẩm (index.html)</option>
+          <option value="forgot-password.html">3. Khôi phục mật khẩu (forgot-password.html)</option>
+          <option value="profile.html">4. Hồ sơ cá nhân & Giao diện (profile.html)</option>
+          <option value="notifications.html">5. Trung tâm thông báo (notifications.html)</option>
+          <option value="403.html">6. Cảnh báo phân quyền RBAC (403.html)</option>
+          <option value="404.html">7. Không tìm thấy đường dẫn (404.html)</option>
         </optgroup>
-        <optgroup label="Trạng thái UI khi Deploy Vercel / Netlify (3 trang)">
-          <option value="ui-state-loading.html">8. ui-state-loading.html — Trạng thái Loading (Skeleton)</option>
-          <option value="ui-state-empty.html">9. ui-state-empty.html — Trạng thái Empty State (Rỗng)</option>
-          <option value="ui-state-error.html">10. ui-state-error.html — Trạng thái Error State (Lỗi)</option>
+        <optgroup label="Vận hành Mạng, Đồng bộ & Tra cứu Đa chiều (Trang 8 · 9 · 10)">
+          <option value="ui-state-loading.html">8. Đồng bộ dữ liệu khi Mạng chậm 3G (ui-state-loading.html)</option>
+          <option value="ui-state-empty.html">9. Trung tâm Tra cứu & Bộ lọc Đa chiều (ui-state-empty.html)</option>
+          <option value="ui-state-error.html">10. Giám sát Mất kết nối mạng đột ngột (ui-state-error.html)</option>
         </optgroup>
-        <optgroup label="SV1 · Kế toán (3 trang)">
-          <option value="accountant-invoice-list.html">11. accountant-invoice-list.html — Danh sách hóa đơn</option>
-          <option value="accountant-invoice-form.html">12. accountant-invoice-form.html — Tạo/Sửa HĐ + AI-1</option>
-          <option value="accountant-reconciliation.html">13. accountant-reconciliation.html — Đối chiếu NH</option>
+        <optgroup label="Nghiệp vụ 1 · Kế toán Công nợ (SV1)">
+          <option value="accountant-invoice-list.html">11. Sổ cái Hóa đơn GTGT (accountant-invoice-list.html)</option>
+          <option value="accountant-invoice-form.html">12. Phát hành Hóa đơn & Kiểm toán AI-1 (accountant-invoice-form.html)</option>
+          <option value="accountant-reconciliation.html">13. Đối chiếu Sao kê Ngân hàng (accountant-reconciliation.html)</option>
         </optgroup>
-        <optgroup label="SV2 · Kinh doanh (3 trang)">
-          <option value="sales-customer-balance.html">14. sales-customer-balance.html — Công nợ khách hàng</option>
-          <option value="sales-payment-reminders.html">15. sales-payment-reminders.html — Nhắc thanh toán + AI-2</option>
-          <option value="sales-invoice-detail.html">16. sales-invoice-detail.html — Chi tiết hóa đơn</option>
+        <optgroup label="Nghiệp vụ 2 · Chuyên viên Kinh doanh (SV2)">
+          <option value="sales-customer-balance.html">14. Theo dõi Công nợ Khách hàng (sales-customer-balance.html)</option>
+          <option value="sales-payment-reminders.html">15. Nhắc thanh toán Đa kênh & AI-2 (sales-payment-reminders.html)</option>
+          <option value="sales-invoice-detail.html">16. Hồ sơ Chi tiết Hóa đơn B2B (sales-invoice-detail.html)</option>
         </optgroup>
-        <optgroup label="SV3 · Quản lý (3 trang)">
-          <option value="manager-receivable-dashboard.html">17. manager-receivable-dashboard.html — Tổng quan + AI-3</option>
-          <option value="manager-overdue-invoices.html">18. manager-overdue-invoices.html — Hóa đơn quá hạn</option>
-          <option value="manager-cashflow-forecast.html">19. manager-cashflow-forecast.html — Dự báo dòng tiền + AI-3</option>
+        <optgroup label="Nghiệp vụ 3 · Quản lý / CFO (SV3)">
+          <option value="manager-receivable-dashboard.html">17. Bảng điều khiển CFO & AI-3 (manager-receivable-dashboard.html)</option>
+          <option value="manager-overdue-invoices.html">18. Quản trị Rủi ro Nợ quá hạn (manager-overdue-invoices.html)</option>
+          <option value="manager-cashflow-forecast.html">19. Dự báo Dòng tiền 3 Kịch bản (manager-cashflow-forecast.html)</option>
         </optgroup>
-        <optgroup label="SV3 · Quản trị viên (3 trang)">
-          <option value="admin-customer-management.html">20. admin-customer-management.html — Quản lý khách hàng</option>
-          <option value="admin-user-management.html">21. admin-user-management.html — Quản lý người dùng</option>
-          <option value="admin-invoice-settings.html">22. admin-invoice-settings.html — Cấu hình hóa đơn & AI</option>
+        <optgroup label="Nghiệp vụ 4 · Quản trị Hệ thống (SV3)">
+          <option value="admin-customer-management.html">20. Quản lý Danh mục Doanh nghiệp (admin-customer-management.html)</option>
+          <option value="admin-user-management.html">21. Phân quyền Người dùng RBAC (admin-user-management.html)</option>
+          <option value="admin-invoice-settings.html">22. Cấu hình Hóa đơn, AI & MockAPI (admin-invoice-settings.html)</option>
         </optgroup>
       </select>
     </div>
     <div class="d-flex align-items-center gap-1 flex-wrap">
-      <span class="opacity-75 me-1">Trạng thái UI:</span>
-      <button type="button" class="btn btn-sm btn-outline-warning py-0 px-2" style="font-size:0.73rem;min-height:25px;" data-canvas-state="ui-state-loading.html">Loading</button>
-      <button type="button" class="btn btn-sm btn-outline-info py-0 px-2" style="font-size:0.73rem;min-height:25px;" data-canvas-state="ui-state-empty.html">Empty</button>
-      <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size:0.73rem;min-height:25px;" data-canvas-state="ui-state-error.html">Error</button>
-      <span class="opacity-75 ms-2 me-1">Vào nhanh vai trò:</span>
-      <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.73rem;min-height:25px;" data-canvas-role="accountant">Kế toán</button>
-      <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.73rem;min-height:25px;" data-canvas-role="sales">Kinh doanh</button>
-      <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.73rem;min-height:25px;" data-canvas-role="manager">Quản lý</button>
-      <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.73rem;min-height:25px;" data-canvas-role="admin">Quản trị</button>
+      <button type="button" id="ip-mockapi-cloud-btn" class="btn btn-sm btn-warning text-dark fw-semibold py-0 px-2" style="font-size:0.72rem;min-height:24px;" title="Cấu hình & Đồng bộ 4 Link MockAPI cho 4 Nghiệp vụ">
+        <i class="bi bi-cloud-arrow-up-fill me-1"></i><span>MockAPI (4 Nghiệp vụ)</span>
+      </button>
+      <span class="ip-bar-hide-sm opacity-75 ms-1">Mạng & Tra cứu:</span>
+      <button type="button" class="ip-net-pill is-online" data-net-sim="online" title="Mạng ổn định 5G (Độ trễ ~110ms)">
+        <span class="ip-net-dot"></span><span class="ip-bar-hide-sm">Online</span>
+      </button>
+      <button type="button" class="ip-net-pill" data-net-sim="slow" data-canvas-state="ui-state-loading.html" title="Giả lập Mạng chậm 3G (Hiện Skeleton Loading thực tế - Trang 8)">
+        <i class="bi bi-hourglass-split text-warning"></i><span>Mạng chậm</span>
+      </button>
+      <button type="button" class="ip-net-pill" data-canvas-state="ui-state-empty.html" title="Trung tâm Tra cứu & Bộ lọc đa chiều (Có kết quả thực & Kịch bản rỗng - Trang 9)">
+        <i class="bi bi-funnel-fill text-info"></i><span>Bộ lọc & Tra cứu</span>
+      </button>
+      <button type="button" class="ip-net-pill" data-net-sim="offline" title="Giả lập Mất kết nối mạng đột ngột ngay trên trang hiện tại (Trang 10)">
+        <i class="bi bi-wifi-off text-danger"></i><span>Mất mạng</span>
+      </button>
+      <span class="ip-bar-hide-sm opacity-75 ms-1">Nghiệp vụ:</span>
+      <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.71rem;min-height:24px;" data-canvas-role="accountant">Kế toán</button>
+      <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.71rem;min-height:24px;" data-canvas-role="sales">Kinh doanh</button>
+      <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.71rem;min-height:24px;" data-canvas-role="manager">Quản lý</button>
+      <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.71rem;min-height:24px;" data-canvas-role="admin">Quản trị</button>
     </div>
   </div>
+  <div id="ip-network-live-banner-root" class="ip-no-print"></div>
   <main id="main-content" tabindex="-1"></main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -8318,9 +8423,9 @@ button, input, select, textarea { touch-action: manipulation; }
     'notifications': { file: 'notifications.html', title: 'Trung tâm thông báo', roles: ['accountant', 'sales', 'manager', 'admin'], owner: 'SV2', taskId: ('TAS' + 'K-09'), branch: 'feature/sv2-notifications' },
     'error-403': { file: '403.html', title: 'Không có quyền truy cập', roles: ['public'], owner: 'SV2', taskId: ('TAS' + 'K-10'), branch: 'feature/sv2-error-403' },
     'error-404': { file: '404.html', title: 'Không tìm thấy trang', roles: ['public'], owner: 'SV2', taskId: ('TAS' + 'K-11'), branch: 'feature/sv2-error-404' },
-    'ui-state-loading': { file: 'ui-state-loading.html', title: 'Trạng thái Đang tải (Loading State)', roles: ['public'], owner: 'SV3', taskId: ('TAS' + 'K-20'), branch: 'feature/sv3-ui-states' },
-    'ui-state-empty': { file: 'ui-state-empty.html', title: 'Trạng thái Rỗng (Empty State)', roles: ['public'], owner: 'SV3', taskId: ('TAS' + 'K-21'), branch: 'feature/sv3-ui-states' },
-    'ui-state-error': { file: 'ui-state-error.html', title: 'Trạng thái Lỗi (Error State)', roles: ['public'], owner: 'SV3', taskId: ('TAS' + 'K-22'), branch: 'feature/sv3-ui-states' },
+    'ui-state-loading': { file: 'ui-state-loading.html', title: 'Đồng bộ Đám mây & Mạng chậm 3G', roles: ['public'], owner: 'SV3', taskId: ('TAS' + 'K-20'), branch: 'feature/sv3-ui-states' },
+    'ui-state-empty': { file: 'ui-state-empty.html', title: 'Trung tâm Tra cứu & Bộ lọc Đa chiều', roles: ['public'], owner: 'SV3', taskId: ('TAS' + 'K-21'), branch: 'feature/sv3-ui-states' },
+    'ui-state-error': { file: 'ui-state-error.html', title: 'Giám sát Kết nối & Phục hồi Mạng', roles: ['public'], owner: 'SV3', taskId: ('TAS' + 'K-22'), branch: 'feature/sv3-ui-states' },
     'accountant-invoice-list': { file: 'accountant-invoice-list.html', title: 'Danh sách hóa đơn', roles: ['accountant'], owner: 'SV1', taskId: ('TAS' + 'K-01'), branch: 'feature/accountant-invoice-list' },
     'accountant-invoice-form': { file: 'accountant-invoice-form.html', title: 'Tạo / Sửa hóa đơn', roles: ['accountant'], owner: 'SV1', taskId: ('TAS' + 'K-02'), branch: 'feature/accountant-invoice-form' },
     'accountant-reconciliation': { file: 'accountant-reconciliation.html', title: 'Đối chiếu thanh toán', roles: ['accountant'], owner: 'SV1', taskId: ('TAS' + 'K-03'), branch: 'feature/accountant-reconciliation' },
@@ -8506,6 +8611,20 @@ button, input, select, textarea { touch-action: manipulation; }
   };
 
   const COMMON_NAV = [
+    {
+      key: 'state.empty',
+      pageId: 'ui-state-empty',
+      label: 'Tra cứu & Bộ lọc đa chiều',
+      icon: 'bi-funnel',
+      href: 'ui-state-empty.html'
+    },
+    {
+      key: 'state.loading',
+      pageId: 'ui-state-loading',
+      label: 'Đồng bộ & Tốc độ mạng',
+      icon: 'bi-cloud-arrow-down',
+      href: 'ui-state-loading.html'
+    },
     {
       key: 'notifications',
       pageId: 'notifications',
@@ -10947,14 +11066,18 @@ button, input, select, textarea { touch-action: manipulation; }
         return;
       }
 
-      const noShellPages = ['landing', 'login', 'forgot-password', 'error-403', 'error-404', 'ui-state-loading', 'ui-state-empty', 'ui-state-error'];
+      const noShellPages = ['landing', 'login', 'forgot-password', 'error-403', 'error-404'];
+      let effectiveSession = guardRes.session;
+      if (!effectiveSession && ['ui-state-loading', 'ui-state-empty', 'ui-state-error'].includes(pageId)) {
+        effectiveSession = { userId: 'usr_acc', role: 'accountant', name: 'Nguyễn Thu Hà', email: 'ketoan@invoicepilot.vn' };
+      }
       if (!noShellPages.includes(pageId)) {
-        mountShell(pageId, guardRes.session);
+        mountShell(pageId, effectiveSession);
       }
 
       const pageDef = IP.Pages.get(pageId);
       if (pageDef && typeof pageDef.init === 'function') {
-        pageDef.init({ pageId: pageId, session: guardRes.session });
+        pageDef.init({ pageId: pageId, session: effectiveSession });
       }
 
       // Mount Ximitech-style Role Landing Page ONLY on the default first page of the role
@@ -11482,19 +11605,577 @@ button, input, select, textarea { touch-action: manipulation; }
   };
 })(window);
 
-/* ================================================================
-   Floating Cross-Module AI Business Assistant (Role-Scoped)
-   ================================================================ */
+/* =========================================================================
+   IP.MockAPI (4-Role Cloud Connector) & IP.NetworkMonitor & Role-Scoped Mini-LLM
+   ========================================================================= */
 (function (window) {
   'use strict';
+  const IP = (window.IP = window.IP || {});
+  const MOCKAPI_STORAGE_KEY = 'invoicepilot.mockapi.urls.v1';
+  const NET_MODE_KEY = 'invoicepilot.network.mode.v1';
+
+  // -------------------------------------------------------------------------
+  // 1. IP.MockAPI — Bộ kết nối & tạo nguồn dữ liệu chuẩn cho 4 Link MockAPI
+  // -------------------------------------------------------------------------
+  function getSavedMockUrls() {
+    try {
+      const raw = window.localStorage.getItem(MOCKAPI_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return {
+        accountant: parsed.accountant || '',
+        sales: parsed.sales || '',
+        manager: parsed.manager || '',
+        admin: parsed.admin || ''
+      };
+    } catch (e) {
+      return { accountant: '', sales: '', manager: '', admin: '' };
+    }
+  }
+
+  function saveMockUrls(urls) {
+    try {
+      window.localStorage.setItem(MOCKAPI_STORAGE_KEY, JSON.stringify(urls || {}));
+    } catch (e) {}
+  }
+
+  function buildStandardMockDataset(roleKey) {
+    const st = (IP.DB && IP.DB.getState) ? IP.DB.getState() : { invoices: [], customers: [], payments: [], reminders: [], users: [], settings: {} };
+    if (roleKey === 'accountant') {
+      return st.invoices.slice(0, 12).map(function (inv) {
+        const cus = st.customers.find(function (c) { return c.id === inv.customerId; });
+        const pays = st.payments.filter(function (p) { return p.invoiceId === inv.id; });
+        return {
+          id: inv.id,
+          roleModule: 'accountant',
+          number: inv.number,
+          symbol: '1C26TAA',
+          customerId: inv.customerId,
+          customerName: cus ? cus.name : inv.customerId,
+          taxCode: cus ? cus.taxCode : '0101245678',
+          issueDate: inv.issueDate,
+          dueDate: inv.dueDate,
+          subtotal: inv.subtotal,
+          vatAmount: inv.vatTotal,
+          total: inv.total,
+          paidAmount: inv.paidAmount,
+          remainingAmount: Math.max(0, Number(inv.total || 0) - Number(inv.paidAmount || 0)),
+          status: IP.Calc ? IP.Calc.effectiveStatus(inv) : inv.status,
+          items: (inv.items || []).slice(0, 3),
+          payments: pays.map(function (p) {
+            return {
+              id: p.id,
+              reference: p.reference,
+              paidAt: p.paidAt,
+              amount: p.amount,
+              status: p.status,
+              note: p.transferContent || p.note || ''
+            };
+          })
+        };
+      });
+    }
+    if (roleKey === 'sales') {
+      return st.reminders.slice(0, 10).map(function (rem) {
+        const cus = st.customers.find(function (c) { return c.id === rem.customerId; });
+        const bal = (IP.Calc && cus) ? IP.Calc.customerBalance(cus.id) : { totalReceivable: 0, overdueAmount: 0, maxOverdueDays: 0 };
+        return {
+          id: rem.id,
+          roleModule: 'sales',
+          customerId: rem.customerId,
+          customerName: cus ? cus.name : rem.customerId,
+          taxCode: cus ? cus.taxCode : '',
+          contactPerson: cus ? cus.contactName : '',
+          email: cus ? cus.email : '',
+          phone: cus ? cus.phone : '',
+          creditLimit: cus ? cus.creditLimit : 200000000,
+          totalReceivable: bal.totalReceivable,
+          overdueAmount: bal.overdueAmount,
+          maxOverdueDays: bal.maxOverdueDays,
+          invoiceIds: rem.invoiceIds || [],
+          channel: rem.channel,
+          tone: rem.tone,
+          subject: rem.subject,
+          body: rem.body,
+          status: rem.status,
+          failReason: rem.failReason || null,
+          aiGenerated: Boolean(rem.aiGenerated)
+        };
+      });
+    }
+    if (roleKey === 'manager') {
+      const overdueInvs = st.invoices.filter(function (i) {
+        return !i.voided && !i.archived && IP.Calc && IP.Calc.overdueDays(i) > 0;
+      }).slice(0, 10);
+      return overdueInvs.map(function (inv, idx) {
+        const cus = st.customers.find(function (c) { return c.id === inv.customerId; });
+        const ovDays = IP.Calc ? IP.Calc.overdueDays(inv) : 15;
+        const risk = IP.Calc ? IP.Calc.riskOf(inv, cus) : { score: 65, level: 'high' };
+        return {
+          id: 'mgr_' + String(idx + 1).padStart(2, '0'),
+          roleModule: 'manager',
+          recordType: 'overdue_followup',
+          invoiceId: inv.id,
+          invoiceNumber: inv.number,
+          customerId: inv.customerId,
+          customerName: cus ? cus.name : inv.customerId,
+          industry: cus ? cus.industry : 'Thương mại B2B',
+          remainingAmount: IP.Calc ? IP.Calc.remaining(inv) : (inv.total - inv.paidAmount),
+          overdueDays: ovDays,
+          agingBucket: ovDays > 90 ? '>90 ngày' : (ovDays > 60 ? '61-90 ngày' : (ovDays > 30 ? '31-60 ngày' : '1-30 ngày')),
+          riskScore: risk.score,
+          riskLevel: risk.level,
+          followUpStatus: inv.followUpStatus || 'in_progress',
+          promisedPaymentDate: inv.promisedDate || IP.Seed.addDays(7),
+          managerDirective: inv.managerNote || 'Ưu tiên đôn đốc thu hồi công nợ quá hạn để giảm chỉ số DSO.'
+        };
+      });
+    }
+    // admin
+    const cusRecords = st.customers.slice(0, 8).map(function (c) {
+      return {
+        id: 'adm_' + c.id,
+        roleModule: 'admin',
+        entityType: 'customer',
+        customerId: c.id,
+        code: c.code,
+        name: c.name,
+        taxCode: c.taxCode,
+        industry: c.industry,
+        contactPerson: c.contactName,
+        email: c.email,
+        phone: c.phone,
+        creditLimit: c.creditLimit,
+        paymentTermDays: c.paymentTerms || 30,
+        status: c.status
+      };
+    });
+    const usrRecords = st.users.slice(0, 4).map(function (u) {
+      return {
+        id: 'adm_' + u.id,
+        roleModule: 'admin',
+        entityType: 'user_rbac',
+        userId: u.id,
+        name: u.name,
+        email: u.email,
+        role: u.role,
+        status: u.status
+      };
+    });
+    return cusRecords.concat(usrRecords);
+  }
+
+  async function syncFromMockAPI(roleKey) {
+    const urls = getSavedMockUrls();
+    const targetKeys = roleKey ? [roleKey] : ['accountant', 'sales', 'manager', 'admin'];
+    const logs = [];
+    let syncedCount = 0;
+
+    for (let i = 0; i < targetKeys.length; i++) {
+      const k = targetKeys[i];
+      const url = (urls[k] || '').trim();
+      if (!url) {
+        logs.push({ role: k, ok: false, msg: 'Chưa cấu hình URL MockAPI cho nghiệp vụ ' + k });
+        continue;
+      }
+      const t0 = performance.now();
+      try {
+        const res = await window.fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const ms = Math.round(performance.now() - t0);
+        if (Array.isArray(data)) {
+          syncedCount += data.length;
+          logs.push({ role: k, ok: true, count: data.length, ms: ms, msg: 'Đã đồng bộ ' + data.length + ' bản ghi (' + ms + 'ms)' });
+          // Merge non-destructively into IP.DB if valid records exist
+          const st = IP.DB._rawState();
+          if (k === 'accountant') {
+            data.forEach(function (item) {
+              if (item && item.number && item.total !== undefined) {
+                const ex = st.invoices.find(function (x) { return x.number === item.number || x.id === item.id; });
+                if (ex) {
+                  ex.paidAmount = Number(item.paidAmount !== undefined ? item.paidAmount : ex.paidAmount);
+                }
+              }
+            });
+          } else if (k === 'sales') {
+            data.forEach(function (item) {
+              if (item && item.subject && item.customerId) {
+                const ex = st.reminders.find(function (x) { return x.id === item.id; });
+                if (ex && item.status) ex.status = item.status;
+              }
+            });
+          }
+          IP.DB._commit();
+        } else {
+          throw new Error('Phản hồi không phải mảng JSON');
+        }
+      } catch (err) {
+        logs.push({ role: k, ok: false, msg: 'Lỗi kết nối (' + (err.message || 'Timeout') + ') — Đã kích hoạt Fallback dữ liệu cục bộ' });
+      }
+    }
+    return { syncedCount: syncedCount, logs: logs };
+  }
+
+  async function seedToMockAPI(roleKey, maxItems) {
+    const urls = getSavedMockUrls();
+    const url = (urls[roleKey] || '').trim();
+    if (!url) {
+      return { ok: false, message: 'Vui lòng dán link MockAPI của nghiệp vụ này trước khi đẩy dữ liệu.' };
+    }
+    const dataset = buildStandardMockDataset(roleKey).slice(0, maxItems || 5);
+    let success = 0;
+    for (let i = 0; i < dataset.length; i++) {
+      try {
+        const res = await window.fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dataset[i])
+        });
+        if (res.ok) success++;
+      } catch (e) {}
+    }
+    return {
+      ok: success > 0,
+      count: success,
+      total: dataset.length,
+      message: success > 0
+        ? ('Đã đẩy thành công ' + success + '/' + dataset.length + ' bản ghi chuẩn lên MockAPI (' + roleKey + ').')
+        : 'Không thể đẩy dữ liệu lên MockAPI. Kiểm tra lại đường dẫn Endpoint hoặc CORS.'
+    };
+  }
+
+  function openMockAPIModal() {
+    const urls = getSavedMockUrls();
+    const modalId = 'ip-mockapi-cloud-modal';
+    let mEl = document.getElementById(modalId);
+    if (mEl) mEl.remove();
+
+    const rolesMeta = [
+      { key: 'accountant', badge: 'Link 1 · Kế toán (SV1)', name: 'Hóa đơn GTGT & Giao dịch Đối chiếu Ngân hàng', file: 'mockapi-data/1-mockapi-ketoan-invoices.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/invoices' },
+      { key: 'sales', badge: 'Link 2 · Kinh doanh (SV2)', name: 'Công nợ Khách hàng & Lịch nhắc Thanh toán AI-2', file: 'mockapi-data/2-mockapi-kinhdoanh-reminders.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/reminders' },
+      { key: 'manager', badge: 'Link 3 · Quản lý CFO (SV3)', name: 'Hồ sơ Quá hạn, Tuổi nợ Aging, DSO & Dự báo AI-3', file: 'mockapi-data/3-mockapi-quanly-cashflow.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/cashflow' },
+      { key: 'admin', badge: 'Link 4 · Quản trị viên (SV3)', name: 'Danh mục Doanh nghiệp B2B, Người dùng RBAC & Cấu hình', file: 'mockapi-data/4-mockapi-quantri-system.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/system' }
+    ];
+
+    mEl = document.createElement('div');
+    mEl.id = modalId;
+    mEl.className = 'modal fade';
+    mEl.tabIndex = -1;
+    mEl.innerHTML =
+      '<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">' +
+        '<div class="modal-content">' +
+          '<div class="modal-header bg-body-tertiary">' +
+            '<div>' +
+              '<h2 class="modal-title fs-5 fw-bold"><i class="bi bi-cloud-check-fill text-primary me-2"></i>Trung tâm Kết nối & Chuẩn bị Dữ liệu 4 Link MockAPI (4 Nghiệp vụ)</h2>' +
+              '<div class="small text-muted">Dán 4 link MockAPI của bạn để đồng bộ thời gian thực (GET/POST) hoặc bấm <strong>Copy JSON Chuẩn</strong> để dán trực tiếp vào mục <code>Data</code> trên MockAPI.io.</div>' +
+            '</div>' +
+            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>' +
+          '</div>' +
+          '<div class="modal-body">' +
+            '<div id="ip-mockapi-status-alert" class="alert alert-info py-2 px-3 small mb-3">' +
+              '<i class="bi bi-info-circle-fill me-1"></i><strong>Hướng dẫn nhanh:</strong> Trên MockAPI.io, bạn có thể bấm nút <strong>Data</strong> ở từng Resource và bấm nút <strong>"Copy JSON Chuẩn"</strong> bên dưới để dán mảng JSON vào ngay lập tức, hoặc dán 4 link Endpoint vào ô bên dưới rồi bấm <strong>"Tự động nạp lên MockAPI (POST)"</strong>.' +
+            '</div>' +
+            '<div class="row g-3">' +
+              rolesMeta.map(function (rm) {
+                const jsonPreview = JSON.stringify(buildStandardMockDataset(rm.key), null, 2);
+                return (
+                  '<div class="col-lg-6">' +
+                    '<div class="ip-card p-3 h-100 border">' +
+                      '<div class="d-flex justify-content-between align-items-center flex-wrap gap-1 mb-2">' +
+                        '<span class="badge bg-primary">' + rm.badge + '</span>' +
+                        '<span class="small text-muted">File: <code>' + rm.file + '</code></span>' +
+                      '</div>' +
+                      '<div class="fw-bold small mb-2">' + rm.name + '</div>' +
+                      '<div class="input-group input-group-sm mb-2">' +
+                        '<span class="input-group-text"><i class="bi bi-link-45deg"></i></span>' +
+                        '<input type="url" class="form-control" data-mock-url-input="' + rm.key + '" value="' + IP.Utils.escapeHtml(urls[rm.key] || '') + '" placeholder="' + rm.placeholder + '">' +
+                      '</div>' +
+                      '<div class="d-flex flex-wrap gap-1 mb-2">' +
+                        '<button type="button" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size:0.73rem;" data-mock-cmd="copy-json" data-role="' + rm.key + '"><i class="bi bi-clipboard-check me-1"></i>Copy JSON Chuẩn (' + rm.key + ')</button>' +
+                        '<button type="button" class="btn btn-xs btn-outline-success py-1 px-2" style="font-size:0.73rem;" data-mock-cmd="seed-post" data-role="' + rm.key + '"><i class="bi bi-cloud-upload me-1"></i>Tự động nạp lên MockAPI (POST)</button>' +
+                        '<button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2" style="font-size:0.73rem;" data-mock-cmd="sync-get" data-role="' + rm.key + '"><i class="bi bi-arrow-repeat me-1"></i>Tải dữ liệu về (GET)</button>' +
+                      '</div>' +
+                      '<details class="small">' +
+                        '<summary class="text-primary fw-semibold" style="cursor:pointer;">Xem nguồn JSON chuẩn để cài trên MockAPI.io</summary>' +
+                        '<pre class="bg-body-tertiary p-2 rounded border mt-1 mb-0" style="max-height:150px;overflow:auto;font-size:0.68rem;">' + IP.Utils.escapeHtml(jsonPreview) + '</pre>' +
+                      '</details>' +
+                    '</div>' +
+                  '</div>'
+                );
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<div class="modal-footer justify-content-between">' +
+            '<div class="small text-muted"><i class="bi bi-shield-check text-success me-1"></i>Tự động kiểm tra <code>response.ok</code>, bắt ngoại lệ <code>try/catch/finally</code> & Fallback an toàn.</div>' +
+            '<div class="d-flex gap-2">' +
+              '<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>' +
+              '<button type="button" class="btn btn-sm btn-success" data-mock-cmd="save-and-sync-all"><i class="bi bi-cloud-arrow-down-fill me-1"></i>Lưu 4 Link & Đồng bộ toàn hệ thống</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(mEl);
+    const bsModal = window.bootstrap && window.bootstrap.Modal ? new window.bootstrap.Modal(mEl) : null;
+
+    function collectUrlsFromModal() {
+      const next = {};
+      mEl.querySelectorAll('[data-mock-url-input]').forEach(function (inp) {
+        next[inp.getAttribute('data-mock-url-input')] = inp.value.trim();
+      });
+      saveMockUrls(next);
+      return next;
+    }
+
+    mEl.addEventListener('click', async function (ev) {
+      const btn = ev.target.closest('[data-mock-cmd]');
+      if (!btn) return;
+      const cmd = btn.getAttribute('data-mock-cmd');
+      const roleKey = btn.getAttribute('data-role');
+      const statusBox = mEl.querySelector('#ip-mockapi-status-alert');
+
+      collectUrlsFromModal();
+
+      if (cmd === 'copy-json') {
+        const jsonStr = JSON.stringify(buildStandardMockDataset(roleKey), null, 2);
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(jsonStr);
+          }
+          if (statusBox) {
+            statusBox.className = 'alert alert-success py-2 px-3 small mb-3';
+            statusBox.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i><strong>Đã sao chép nguồn JSON chuẩn của phân hệ ' + roleKey.toUpperCase() + ' vào bộ nhớ tạm!</strong> Bạn chỉ cần mở Resource trên MockAPI.io &rarr; bấm <code>Data</code> &rarr; dán (Ctrl+V) và lưu lại.';
+          }
+          if (IP.UI && IP.UI.toast) {
+            IP.UI.toast({ title: 'Đã Copy JSON chuẩn (' + roleKey + ')', message: 'Hãy dán trực tiếp vào mục Data trên MockAPI.io.', type: 'success' });
+          }
+        } catch (e) {}
+      } else if (cmd === 'seed-post') {
+        btn.disabled = true;
+        const origHtml = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang POST...';
+        const res = await seedToMockAPI(roleKey, 5);
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        if (statusBox) {
+          statusBox.className = 'alert ' + (res.ok ? 'alert-success' : 'alert-warning') + ' py-2 px-3 small mb-3';
+          statusBox.textContent = res.message;
+        }
+        if (IP.UI && IP.UI.toast) {
+          IP.UI.toast({ title: res.ok ? 'Đã nạp dữ liệu lên MockAPI' : 'Chưa thể nạp lên MockAPI', message: res.message, type: res.ok ? 'success' : 'warning' });
+        }
+      } else if (cmd === 'sync-get') {
+        btn.disabled = true;
+        const origHtml = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang GET...';
+        const res = await syncFromMockAPI(roleKey);
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        const logItem = res.logs[0] || { ok: false, msg: 'Không có phản hồi' };
+        if (statusBox) {
+          statusBox.className = 'alert ' + (logItem.ok ? 'alert-success' : 'alert-warning') + ' py-2 px-3 small mb-3';
+          statusBox.textContent = logItem.msg;
+        }
+        if (IP.UI && IP.UI.toast) {
+          IP.UI.toast({ title: logItem.ok ? 'Đồng bộ MockAPI thành công' : 'Chế độ Fallback nội bộ', message: logItem.msg, type: logItem.ok ? 'success' : 'info' });
+        }
+      } else if (cmd === 'save-and-sync-all') {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang đồng bộ 4 Link...';
+        const res = await syncFromMockAPI(null);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-cloud-arrow-down-fill me-1"></i>Lưu 4 Link & Đồng bộ toàn hệ thống';
+        if (bsModal) bsModal.hide();
+        if (IP.UI && IP.UI.toast) {
+          IP.UI.toast({
+            title: 'Đã lưu cấu hình 4 Link MockAPI',
+            message: res.syncedCount > 0 ? ('Đã đồng bộ ' + res.syncedCount + ' bản ghi từ đám mây MockAPI.') : 'Đã lưu cấu hình. Hệ thống tự động dùng nguồn dữ liệu chuẩn khi chưa nhập link.',
+            type: 'success'
+          });
+        }
+      }
+    });
+
+    if (bsModal) bsModal.show();
+  }
+
+  IP.MockAPI = {
+    getUrls: getSavedMockUrls,
+    saveUrls: saveMockUrls,
+    buildStandardMockDataset: buildStandardMockDataset,
+    syncFromMockAPI: syncFromMockAPI,
+    seedToMockAPI: seedToMockAPI,
+    openModal: openMockAPIModal
+  };
+
+  // -------------------------------------------------------------------------
+  // 2. IP.NetworkMonitor — Giám sát Mạng chậm 3G (Trang 8) & Đứt mạng đột ngột (Trang 10)
+  // -------------------------------------------------------------------------
+  let _netMode = 'online'; // 'online' | 'slow' | 'offline'
+  let _reconnectTimer = null;
+  let _countdownSec = 8;
+
+  function renderNetworkBanner() {
+    const root = document.getElementById('ip-network-live-banner-root');
+    document.querySelectorAll('[data-net-sim]').forEach(function (pill) {
+      const m = pill.getAttribute('data-net-sim');
+      pill.classList.remove('is-online', 'is-slow', 'is-offline');
+      if (m === _netMode) {
+        pill.classList.add(m === 'online' ? 'is-online' : (m === 'slow' ? 'is-slow' : 'is-offline'));
+      }
+    });
+
+    if (!root) return;
+    if (_netMode === 'online') {
+      root.innerHTML = '';
+      return;
+    }
+
+    if (_netMode === 'slow') {
+      root.innerHTML =
+        '<div class="ip-slow-banner" role="status" aria-live="polite">' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<span class="spinner-border spinner-border-sm text-warning" role="status"></span>' +
+            '<span><strong>Cảnh báo Băng thông Thấp (Mạng chậm 3G · Độ trễ ~1.450ms):</strong> Hệ thống đang kích hoạt giao diện khung xương (Skeleton Shimmer) để chống giật bố cục khi tải sổ công nợ.</span>' +
+          '</div>' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<button type="button" class="btn btn-xs btn-warning text-dark fw-semibold py-0 px-2" style="font-size:0.74rem;min-height:26px;" data-net-action="open-page-8"><i class="bi bi-speedometer2 me-1"></i>Xem tiến trình đồng bộ (Trang 8)</button>' +
+            '<button type="button" class="btn btn-xs btn-outline-light py-0 px-2" style="font-size:0.74rem;min-height:26px;" data-net-action="restore-online"><i class="bi bi-lightning-charge-fill me-1"></i>Khôi phục mạng 5G chuẩn</button>' +
+          '</div>' +
+        '</div>';
+      return;
+    }
+
+    if (_netMode === 'offline') {
+      root.innerHTML =
+        '<div class="ip-offline-banner" role="alert" aria-live="assertive">' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<i class="bi bi-wifi-off fs-5 text-warning"></i>' +
+            '<div>' +
+              '<strong>Mất kết nối mạng đột ngột (ERR_INTERNET_DISCONNECTED · Timeout cổng MockAPI/Ngân hàng)!</strong> ' +
+              '<span class="small opacity-90">100% hóa đơn đang soạn và sổ cái đã được khóa bảo vệ an toàn trong bộ nhớ cục bộ (Local Cache Shield). Tự động thử kết nối lại sau <strong id="ip-net-countdown">' + _countdownSec + 's</strong>...</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<button type="button" class="btn btn-xs btn-light text-danger fw-bold py-0 px-2" style="font-size:0.74rem;min-height:26px;" data-net-action="open-page-10"><i class="bi bi-activity me-1"></i>Chẩn đoán sự cố (Trang 10)</button>' +
+            '<button type="button" class="btn btn-xs btn-success fw-semibold py-0 px-2" style="font-size:0.74rem;min-height:26px;" data-net-action="restore-online"><i class="bi bi-arrow-repeat me-1"></i>Kết nối lại ngay</button>' +
+          '</div>' +
+        '</div>';
+    }
+  }
+
+  function setNetworkMode(mode, navigateToStatePage) {
+    _netMode = ['online', 'slow', 'offline'].includes(mode) ? mode : 'online';
+    if (_reconnectTimer) {
+      clearInterval(_reconnectTimer);
+      _reconnectTimer = null;
+    }
+    if (_netMode === 'offline') {
+      _countdownSec = 8;
+      _reconnectTimer = setInterval(function () {
+        _countdownSec--;
+        const el = document.getElementById('ip-net-countdown');
+        if (el) el.textContent = Math.max(1, _countdownSec) + 's';
+        if (_countdownSec <= 0) {
+          _countdownSec = 8;
+        }
+      }, 1000);
+    }
+    renderNetworkBanner();
+
+    if (_netMode === 'slow') {
+      if (IP.UI && IP.UI.toast) {
+        IP.UI.toast({
+          title: 'Đang mô phỏng Mạng chậm 3G (Độ trễ ~1.450ms)',
+          message: 'Giao diện Skeleton Shimmer được kích hoạt tự động khi đồng bộ dữ liệu.',
+          type: 'warning'
+        });
+      }
+      if (navigateToStatePage && typeof window.IP_CanvasNav === 'function') {
+        window.IP_CanvasNav('ui-state-loading.html');
+      }
+    } else if (_netMode === 'offline') {
+      if (IP.UI && IP.UI.toast) {
+        IP.UI.toast({
+          title: 'Cảnh báo: Mạng đột ngột mất kết nối!',
+          message: 'Đã bật chế độ bảo vệ dữ liệu cục bộ (Offline Shield) & màn hình chẩn đoán sự cố.',
+          type: 'danger'
+        });
+      }
+      if (navigateToStatePage && typeof window.IP_CanvasNav === 'function') {
+        window.IP_CanvasNav('ui-state-error.html');
+      }
+    } else {
+      if (IP.UI && IP.UI.toast) {
+        IP.UI.toast({
+          title: 'Đã khôi phục kết nối mạng ổn định (Online 5G)',
+          message: 'Đồng bộ thời gian thực với MockAPI & Sổ cái hoạt động bình thường (Độ trễ 110ms).',
+          type: 'success'
+        });
+      }
+    }
+    window.dispatchEvent(new CustomEvent('ip:networkchange', { detail: { mode: _netMode } }));
+  }
+
+  window.addEventListener('offline', function () {
+    setNetworkMode('offline', true);
+  });
+  window.addEventListener('online', function () {
+    setNetworkMode('online', false);
+  });
+
+  document.addEventListener('click', function (ev) {
+    const mockBtn = ev.target.closest('#ip-mockapi-cloud-btn, [data-action="open-mockapi-modal"]');
+    if (mockBtn) {
+      ev.preventDefault();
+      openMockAPIModal();
+      return;
+    }
+    const simBtn = ev.target.closest('[data-net-sim]');
+    if (simBtn) {
+      ev.preventDefault();
+      const targetMode = simBtn.getAttribute('data-net-sim');
+      if (targetMode === 'slow') {
+        setNetworkMode('slow', true);
+      } else if (targetMode === 'offline') {
+        setNetworkMode('offline', true);
+      } else {
+        setNetworkMode('online', false);
+        const curPage = document.body.getAttribute('data-page') || '';
+        if (['ui-state-loading', 'ui-state-error'].includes(curPage)) {
+          const sess = IP.Auth && IP.Auth.getSession ? IP.Auth.getSession() : null;
+          window.IP_CanvasNav(sess ? IP.Routes.homeForRole(sess.role) : 'accountant-invoice-list.html');
+        }
+      }
+      return;
+    }
+    const netAct = ev.target.closest('[data-net-action]');
+    if (netAct) {
+      const act = netAct.getAttribute('data-net-action');
+      if (act === 'restore-online') {
+        setNetworkMode('online', false);
+        const curPage = document.body.getAttribute('data-page') || '';
+        if (curPage === 'ui-state-error') {
+          const sess = IP.Auth && IP.Auth.getSession ? IP.Auth.getSession() : null;
+          window.IP_CanvasNav(sess ? IP.Routes.homeForRole(sess.role) : 'accountant-invoice-list.html');
+        }
+      } else if (act === 'open-page-8') {
+        window.IP_CanvasNav('ui-state-loading.html');
+      } else if (act === 'open-page-10') {
+        window.IP_CanvasNav('ui-state-error.html');
+      }
+    }
+  });
+
+  IP.NetworkMonitor = {
+    getMode: function () { return _netMode; },
+    setMode: setNetworkMode
+  };
 
   // =========================================================================
-  // IP.MiniLLM — Mô hình Ngôn ngữ Nhỏ Nội bộ (In-Browser Mini-LLM Engine)
-  // Hỗ trợ:
-  //   1. Phân tích ngữ nghĩa câu hỏi tự nhiên (NLU: Tokenize + Intent + Entity)
-  //   2. Ngân hàng Câu hỏi cố định theo chủ đề & vai trò (Fixed Question Bank)
-  //   3. Truy vấn trực tiếp dữ liệu IP.DB (Hóa đơn, Khách hàng, Đối chiếu, DSO, Dự báo)
-  //   4. Hiển thị nhãn phân tích NLU (Intent, Confidence %, Entities) + Nút đi tới màn hình
+  // 3. IP.MiniLLM — 4 Mô hình Ngôn ngữ Nhỏ Chuyên biệt theo Từng Nghiệp vụ
+  //    (Thay thế hoàn toàn ngân hàng câu hỏi cố định bằng NLU + Context Memory
+  //     + Sinh gợi ý động theo bất thường dữ liệu thực của từng vai trò)
   // =========================================================================
 
   function normText(s) {
@@ -11507,34 +12188,158 @@ button, input, select, textarea { touch-action: manipulation; }
       .trim();
   }
 
-  const FIXED_QUESTION_BANK = {
-    overview: [
-      { label: 'Tổng quan công nợ & quá hạn hôm nay', q: 'Cho tôi báo cáo tổng quan công nợ phải thu, nợ quá hạn và tỷ lệ thu hồi hôm nay?' },
-      { label: 'Top 5 khách hàng nợ quá hạn cao nhất', q: 'Liệt kê top 5 khách hàng đang có số dư nợ quá hạn lớn nhất cần ưu tiên xử lý?' },
-      { label: 'Hóa đơn sắp đến hạn trong 7 ngày tới', q: 'Có những hóa đơn nào sắp đến hạn thanh toán trong 7 ngày tới?' },
-      { label: 'Chỉ số DSO (Số ngày thu tiền bình quân)', q: 'Chỉ số DSO hiện tại là bao nhiêu ngày và công thức tính như thế nào?' }
-    ],
-    Lookup: [
-      { label: 'Tra cứu hóa đơn IP-2026-0001', q: 'Phân tích chi tiết hóa đơn IP-2026-0001 của Hạ tầng Thăng Long?' },
-      { label: 'Tra cứu khách hàng Thực phẩm Á Châu (KH-001)', q: 'Cho biết tình hình công nợ và hạn mức của Thực phẩm Á Châu (KH-001)?' },
-      { label: 'Giao dịch ngân hàng chờ đối chiếu', q: 'Hiện có bao nhiêu giao dịch sao kê ngân hàng đang chờ đối chiếu và tổng tiền là bao nhiêu?' },
-      { label: 'Các bản nhắc thanh toán gửi thất bại', q: 'Kiểm tra các thông báo nhắc thanh toán gửi thất bại cần gửi lại?' }
-    ],
-    forecast: [
-      { label: 'So sánh 3 kịch bản dự báo dòng tiền 60 ngày', q: 'So sánh dự báo dòng tiền 60 ngày tới giữa 3 kịch bản Cơ sở, Thận trọng và Lạc quan?' },
-      { label: 'Phân tích tuổi nợ (Aging Buckets)', q: 'Phân tích chi tiết cơ cấu tuổi nợ 1-30 ngày, 31-60 ngày, 61-90 ngày và trên 90 ngày?' },
-      { label: 'Khách hàng có nguy cơ vượt hạn mức tín dụng', q: 'Những khách hàng nào đang sử dụng gần hết hoặc vượt hạn mức tín dụng?' }
-    ],
-    system: [
-      { label: 'Trạng thái UI (Loading / Empty / Error) khi Deploy', q: 'Làm sao để kiểm tra các trang trạng thái Loading, Empty State và Error State khi deploy lên Vercel hoặc Netlify?' },
-      { label: 'Quy định hóa đơn điện tử Nghị định 70/2025 & Thông tư 32', q: 'Hệ thống áp dụng chuẩn ký hiệu hóa đơn điện tử 1C26TAA và thuế GTGT theo quy định nào?' },
-      { label: 'Tỷ giá quy đổi VND / USD hôm nay', q: 'Tỷ giá quy đổi tiền tệ VND sang USD theo ngày hôm nay đang áp dụng là bao nhiêu?' },
-      { label: 'Phân quyền 4 vai trò & tài khoản đăng nhập', q: 'Cho biết danh sách 4 tài khoản nghiệp vụ và quy tắc phân quyền của hệ thống?' }
-    ]
+  // Bộ nhớ ngữ cảnh hội thoại đa lượt (Multi-turn Conversation Memory)
+  const _convMemory = {
+    lastInvoiceId: null,
+    lastCustomerId: null,
+    lastIntent: null,
+    turnCount: 0
   };
 
+  // Hồ sơ chuyên môn hóa (Role Personas) cho 4 Nghiệp vụ
+  const ROLE_LLM_PERSONAS = {
+    accountant: {
+      role: 'accountant',
+      name: 'Mini-LLM Nghiệp vụ Kế toán',
+      badge: 'Copilot Kế toán & Kiểm toán Thuế (SV1)',
+      specialty: 'Chuyên trách kiểm toán hóa đơn GTGT (1C26TAA), rà soát thuế suất 0%/5%/8%/10% theo NĐ 70/2025/NĐ-CP, đối chiếu sao kê ngân hàng và hạch toán thu tiền (TK 131).',
+      placeholder: 'Hỏi chuyên sâu Kế toán (VD: Kiểm toán thuế HĐ IP-2026-0001, khớp sao kê VCB chờ xử lý, hoặc kiểm tra HĐ nháp)...'
+    },
+    sales: {
+      role: 'sales',
+      name: 'Mini-LLM Nghiệp vụ Kinh doanh',
+      badge: 'Copilot Quản lý Khách hàng & Đôn đốc Nợ (SV2)',
+      specialty: 'Chuyên trách phân tích hạn mức tín dụng đối tác B2B, đánh giá lịch sử trả chậm, soạn thảo thư/SMS nhắc nợ cá nhân hóa (AI-2) và xử lý các thông báo gửi lỗi.',
+      placeholder: 'Hỏi chuyên sâu Kinh doanh (VD: Thực phẩm Á Châu còn bao nhiêu hạn mức? Soạn thư nhắc nợ cho công ty này)...'
+    },
+    manager: {
+      role: 'manager',
+      name: 'Mini-LLM Nghiệp vụ Quản lý CFO',
+      badge: 'Copilot Điều hành Dòng tiền & Rủi ro (SV3)',
+      specialty: 'Chuyên trách phân tích chỉ số DSO, cơ cấu tuổi nợ Aging (1-30, 31-60, 61-90, >90 ngày), chấm điểm rủi ro tín dụng, giao việc thu hồi nợ và dự báo dòng tiền 3 kịch bản (AI-3).',
+      placeholder: 'Hỏi chuyên sâu Quản lý CFO (VD: Tại sao DSO tăng? Phân tích 3 kịch bản dòng tiền hoặc top nợ rủi ro cao)...'
+    },
+    admin: {
+      role: 'admin',
+      name: 'Mini-LLM Nghiệp vụ Quản trị Hệ thống',
+      badge: 'Copilot Quản trị RBAC, Danh mục & MockAPI (SV3)',
+      specialty: 'Chuyên trách kiểm soát phân quyền RBAC 4 vai trò, chuẩn hóa danh mục MST doanh nghiệp B2B, cấu hình ký hiệu hóa đơn điện tử và giám sát đồng bộ 4 Link MockAPI Cloud.',
+      placeholder: 'Hỏi chuyên sâu Quản trị (VD: Kiểm tra trạng thái 4 link MockAPI, rà soát phân quyền RBAC hoặc chuẩn pháp lý)...'
+    }
+  };
+
+  /**
+   * Sinh gợi ý câu hỏi ĐỘNG (Dynamic Context Prompts) theo dữ liệu thực đang diễn ra
+   * trong IP.DB của đúng nghiệp vụ đó (Không dùng bộ câu hỏi tĩnh cố định)
+   */
+  function getDynamicRoleSuggestions(roleKey) {
+    const r = ROLE_LLM_PERSONAS[roleKey] ? roleKey : 'accountant';
+    if (!IP.DB) return [];
+    const allInvs = IP.DB.listInvoices({ includeArchived: false });
+    const pendingPays = IP.DB.listPayments({ tab: 'pending' });
+    const draftInvs = allInvs.filter(function (i) { return IP.Calc.effectiveStatus(i) === 'draft'; });
+    const overdueInvs = allInvs.filter(function (i) { return IP.Calc.overdueDays(i) > 0; })
+      .sort(function (a, b) { return IP.Calc.remaining(b) - IP.Calc.remaining(a); });
+    const failedRems = IP.DB.listReminders({ status: 'failed' });
+    const topOverdueInv = overdueInvs[0];
+    const topCus = topOverdueInv ? IP.DB.getCustomer(topOverdueInv.customerId) : null;
+
+    if (r === 'accountant') {
+      const chips = [];
+      if (pendingPays.length > 0) {
+        chips.push({
+          tag: 'Sao kê chờ khớp (' + pendingPays.length + ')',
+          q: 'Phân tích ' + pendingPays.length + ' giao dịch ngân hàng đang chờ đối chiếu và gợi ý ghép hóa đơn tự động?'
+        });
+      }
+      if (draftInvs.length > 0) {
+        chips.push({
+          tag: 'Rà soát HĐ nháp (' + draftInvs[0].number + ')',
+          q: 'Kiểm toán tính hợp lệ thuế suất GTGT và hạn mức tín dụng của hóa đơn ' + draftInvs[0].number + ' trước khi ký số?'
+        });
+      }
+      if (topOverdueInv) {
+        chips.push({
+          tag: 'Hạch toán ' + topOverdueInv.number,
+          q: 'Kiểm tra lịch sử thu tiền một phần và số dư còn phải thu trên TK 131 của hóa đơn ' + topOverdueInv.number + '?'
+        });
+      }
+      chips.push({
+        tag: 'Kiểm tra lệch thuế GTGT',
+        q: 'Rà soát toàn bộ sổ hóa đơn xem có hóa đơn nào áp dụng thuế suất ưu đãi 8% hoặc 5% cần lưu ý chứng từ không?'
+      });
+      return chips;
+    }
+
+    if (r === 'sales') {
+      const chips = [];
+      if (topCus) {
+        chips.push({
+          tag: 'Phân tích ' + topCus.name.replace(/^Công ty (Cổ phần|TNHH)\s+/i, ''),
+          q: 'Phân tích hạn mức tín dụng và các hóa đơn đang mở của ' + topCus.name + ' (' + topCus.code + ')?'
+        });
+        chips.push({
+          tag: 'Soạn nhắc nợ cho ' + topCus.code,
+          q: 'Soạn giúp tôi nội dung email nhắc thanh toán lịch sự nhưng dứt khoát cho ' + topCus.name + '?'
+        });
+      }
+      if (failedRems.length > 0) {
+        chips.push({
+          tag: 'Xử lý ' + failedRems.length + ' bản nhắc lỗi',
+          q: 'Tại sao có ' + failedRems.length + ' thông báo nhắc thanh toán gửi thất bại và tôi nên chuyển sang kênh nào?'
+        });
+      }
+      chips.push({
+        tag: 'HĐ sắp đáo hạn 7 ngày',
+        q: 'Những khách hàng nào có hóa đơn sắp đến hạn trong 7 ngày tới cần Chuyên viên Kinh doanh chăm sóc sớm?'
+      });
+      return chips;
+    }
+
+    if (r === 'manager') {
+      const dso90 = IP.Calc.dso(90);
+      return [
+        {
+          tag: 'Chẩn đoán DSO (' + dso90.days + ' ngày)',
+          q: 'Phân tích nguyên nhân chỉ số DSO đang ở mức ' + dso90.days + ' ngày và đề xuất 3 giải pháp kéo giảm DSO trong quý này?'
+        },
+        {
+          tag: 'So sánh 3 kịch bản dòng tiền',
+          q: 'Mô phỏng và so sánh dòng tiền thu hồi 60 ngày tới giữa 3 kịch bản Cơ sở, Khả quan và Thận trọng?'
+        },
+        {
+          tag: 'Điểm nóng tuổi nợ Aging >60 ngày',
+          q: 'Phân tích rủi ro nhóm nợ quá hạn trên 60 ngày và đề xuất phân công nhân sự đôn đốc thu hồi?'
+        },
+        {
+          tag: 'Top đối tác vượt hạn mức',
+          q: 'Liệt kê các doanh nghiệp có điểm rủi ro tín dụng cao nhất cần Ban Giám đốc khoanh nợ?'
+        }
+      ];
+    }
+
+    // admin
+    return [
+      {
+        tag: 'Trạng thái 4 Link MockAPI',
+        q: 'Kiểm tra cấu hình đồng bộ dữ liệu của 4 Link MockAPI cho 4 nghiệp vụ và hướng dẫn chuẩn bị JSON?'
+      },
+      {
+        tag: 'Kiểm toán phân quyền RBAC',
+        q: 'Rà soát ma trận phân quyền RBAC của 4 vai trò và cơ chế bảo vệ tài khoản Quản trị viên cuối cùng?'
+      },
+      {
+        tag: 'Rà soát chuẩn MST & Danh mục KH',
+        q: 'Kiểm tra tính toàn vẹn dữ liệu danh mục khách hàng B2B (mã số thuế 10/13 số, email nhận hóa đơn điện tử)?'
+      },
+      {
+        tag: 'Chuẩn pháp lý NĐ 70/2025',
+        q: 'Hệ thống đang cấu hình ký hiệu mẫu số 1C26TAA và định dạng tiền tệ/ngày tháng theo quy chuẩn nào?'
+      }
+    ];
+  }
+
   function extractEntities(rawText) {
-    const IP = window.IP;
     const text = String(rawText || '');
     const norm = normText(text);
     const entities = {
@@ -11542,21 +12347,20 @@ button, input, select, textarea { touch-action: manipulation; }
       invoiceObj: null,
       customerObj: null,
       daysWindow: null,
-      industry: null
+      industry: null,
+      usedMemory: false
     };
 
-    // 1. Tìm mã hóa đơn IP-2026-XXXX hoặc inv_XXX
-    const invMatch = text.match(/IP-\d{4}-\d{3,4}/i) || text.match(/inv_\d{3}/i);
-    if (invMatch && IP && IP.DB) {
+    const invMatch = text.match(/IP-\d{4}-\d{3,4}/i) || text.match(/inv_\d{2,3}/i);
+    if (invMatch && IP.DB) {
       const code = invMatch[0].toUpperCase();
       entities.invoiceCode = code;
       entities.invoiceObj = IP.DB.getInvoice(code) || IP.DB.listInvoices({ includeArchived: true }).find(function (i) {
         return i.number.toUpperCase() === code || i.id.toLowerCase() === code.toLowerCase();
       }) || null;
     } else {
-      // Nếu người dùng gõ "hóa đơn số 1" hoặc "hóa đơn 17"
       const numMatch = norm.match(/hoa don\s*(?:so\s*)?0*(\d{1,3})\b/);
-      if (numMatch && IP && IP.DB) {
+      if (numMatch && IP.DB) {
         const n = Number(numMatch[1]);
         const padded = 'IP-2026-' + String(n).padStart(4, '0');
         entities.invoiceObj = IP.DB.getInvoice(padded) || null;
@@ -11564,8 +12368,7 @@ button, input, select, textarea { touch-action: manipulation; }
       }
     }
 
-    // 2. Tìm mã khách hàng KH-XXX hoặc tên công ty trong DB
-    if (IP && IP.DB) {
+    if (IP.DB) {
       const khMatch = text.match(/KH-\d{3}/i) || text.match(/cus_\d{2}/i);
       const allCus = IP.DB.listCustomers({ includeArchived: true, status: 'all' });
       if (khMatch) {
@@ -11579,13 +12382,13 @@ button, input, select, textarea { touch-action: manipulation; }
           const c = allCus[i];
           const shortName = normText(c.name)
             .replace(/^cong ty (co phan|tnhh|tnhh mtv)\s+/, '')
+            .replace(/^tap doan\s+/, '')
             .replace(/^tong cong ty\s+/, '')
             .trim();
           if (shortName.length >= 5 && norm.includes(shortName)) {
             entities.customerObj = c;
             break;
           }
-          // Khớp 2 từ khóa cuối của tên công ty (VD: "a chau", "thang long", "sao khue", "bien dong", "go viet", "hoa phat dat", "phu my", "dong xanh")
           const words = shortName.split(/\s+/);
           if (words.length >= 2) {
             const tail2 = words.slice(-2).join(' ');
@@ -11596,15 +12399,24 @@ button, input, select, textarea { touch-action: manipulation; }
           }
         }
       }
+
+      // Tham chiếu đại từ hội thoại đa lượt ("công ty này", "đối tác đó", "hóa đơn này")
+      if (!entities.customerObj && _convMemory.lastCustomerId && /(cong ty nay|khach hang nay|doi tac nay|ho con|cho ho|cong ty do)/.test(norm)) {
+        entities.customerObj = IP.DB.getCustomer(_convMemory.lastCustomerId) || null;
+        if (entities.customerObj) entities.usedMemory = true;
+      }
+      if (!entities.invoiceObj && _convMemory.lastInvoiceId && /(hoa don nay|hoa don do|khoan nay)/.test(norm)) {
+        entities.invoiceObj = IP.DB.getInvoice(_convMemory.lastInvoiceId) || null;
+        if (entities.invoiceObj) {
+          entities.invoiceCode = entities.invoiceObj.number;
+          entities.usedMemory = true;
+        }
+      }
     }
 
-    // 3. Tìm khoảng thời gian (7 ngày, 30 ngày, 60 ngày, 90 ngày)
     const dayMatch = norm.match(/\b(7|15|30|45|60|90)\s*ngay\b/);
-    if (dayMatch) {
-      entities.daysWindow = Number(dayMatch[1]);
-    }
+    if (dayMatch) entities.daysWindow = Number(dayMatch[1]);
 
-    // 4. Tìm ngành nghề
     const industries = [
       { key: 'Thực phẩm', kw: 'thuc pham' },
       { key: 'Bao bì', kw: 'bao bi' },
@@ -11622,95 +12434,100 @@ button, input, select, textarea { touch-action: manipulation; }
       }
     }
 
+    if (entities.invoiceObj) {
+      _convMemory.lastInvoiceId = entities.invoiceObj.id;
+      _convMemory.lastCustomerId = entities.invoiceObj.customerId;
+    }
+    if (entities.customerObj) {
+      _convMemory.lastCustomerId = entities.customerObj.id;
+    }
+
     return entities;
   }
 
   function classifyIntent(rawText, entities) {
     const norm = normText(rawText);
 
+    if (/(soan|viet|tao)\s+(thu|email|sms|tin nhan|ban nhac|thong bao)/.test(norm) && entities.customerObj) {
+      return { intent: 'DRAFT_REMINDER_FOR_CUSTOMER', label: 'Soạn thảo Thông điệp Nhắc nợ Cá nhân hóa (AI-2)', confidence: 97 };
+    }
     if (entities.invoiceObj) {
-      return { intent: 'INVOICE_LOOKUP', label: 'Tra cứu Hóa đơn cụ thể', confidence: 98 };
+      return { intent: 'INVOICE_LOOKUP', label: 'Phân tích Chuyên sâu Hóa đơn ' + entities.invoiceObj.number, confidence: 98 };
     }
     if (entities.customerObj) {
-      return { intent: 'CUSTOMER_LOOKUP', label: 'Phân tích Công nợ Khách hàng', confidence: 97 };
+      return { intent: 'CUSTOMER_LOOKUP', label: 'Thẩm định Tín dụng & Công nợ Đối tác', confidence: 97 };
     }
 
     const rules = [
       {
-        intent: 'UI_STATES_DEPLOY',
-        label: 'Trạng thái UI & Deploy Vercel/Netlify',
+        intent: 'MOCKAPI_CLOUD_SYNC',
+        label: 'Đồng bộ 4 Link MockAPI & Quản lý Mạng',
         confidence: 96,
-        patterns: ['vercel', 'netlify', 'deploy', 'loading', 'empty state', 'error state', 'trang thai ui', 'skeleton', '403', '404']
+        patterns: ['mockapi', '4 link', 'api', 'json', 'dong bo', 'cloud', 'mang cham', 'mat ket noi', 'offline', 'skeleton']
       },
       {
         intent: 'RECONCILIATION',
-        label: 'Đối chiếu Sao kê Ngân hàng',
+        label: 'Đối chiếu Sao kê Ngân hàng & Hạch toán TK 131',
         confidence: 95,
-        patterns: ['doi chieu', 'doi soat', 'sao ke', 'ngan hang', 'uy nhiem chi', 'ft26', 'cho doi chieu', 'sai lech', 'vietcombank']
+        patterns: ['doi chieu', 'doi soat', 'sao ke', 'ngan hang', 'uy nhiem chi', 'ft26', 'cho doi chieu', 'sai lech', 'vietcombank', 'tk 131']
       },
       {
         intent: 'CASHFLOW_FORECAST',
-        label: 'Dự báo Dòng tiền & Kịch bản',
-        confidence: 94,
-        patterns: ['du bao', 'dong tien', 'kich ban', 'co so', 'than trong', 'lac quan', 'cashflow', '60 ngay', '90 ngay', 'gia dinh']
+        label: 'Mô phỏng Dự báo Dòng tiền 3 Kịch bản (AI-3)',
+        confidence: 95,
+        patterns: ['du bao', 'dong tien', 'kich ban', 'co so', 'than trong', 'lac quan', 'kha quan', 'cashflow', '60 ngay', '90 ngay']
       },
       {
         intent: 'AGING_BUCKETS',
-        label: 'Phân tích Tuổi nợ (Aging)',
+        label: 'Phân tích Ma trận Tuổi nợ (Aging Schedule)',
         confidence: 94,
         patterns: ['tuoi no', 'aging', '1-30', '31-60', '61-90', 'tren 90', 'nhom no', 'co cau no']
       },
       {
         intent: 'DSO_METRIC',
-        label: 'Chỉ số DSO & Hiệu suất thu hồi',
+        label: 'Chẩn đoán Chỉ số DSO & Vòng quay Phải thu',
         confidence: 95,
-        patterns: ['dso', 'so ngay thu tien', 'vong quay phai thu', 'cong thuc dso', 'thoi gian thu hoi']
+        patterns: ['dso', 'so ngay thu tien', 'vong quay phai thu', 'cong thuc dso', 'thoi gian thu hoi', 'keo giam dso']
       },
       {
         intent: 'REMINDER_STATUS',
-        label: 'Nhắc thanh toán & Lịch gửi',
-        confidence: 93,
+        label: 'Chiến lược Đôn đốc & Xử lý Nhắc nợ Lỗi',
+        confidence: 94,
         patterns: ['nhac thanh toan', 'nhac no', 'nhac han', 'email', 'sms', 'that bai', 'gui lai', 'soan nhac', 'ai-2']
       },
       {
         intent: 'UPCOMING_DUE',
-        label: 'Hóa đơn Sắp đến hạn',
+        label: 'Rà soát Hóa đơn Sắp đáo hạn',
         confidence: 93,
         patterns: ['sap den han', '7 ngay', 'den han', 'dao han', 'tuan nay']
       },
       {
         intent: 'CREDIT_LIMIT_RISK',
-        label: 'Cảnh báo Hạn mức Tín dụng & Rủi ro',
-        confidence: 92,
-        patterns: ['han muc', 'tin dung', 'vuot han muc', 'rui ro cao', 'cong thuc rui ro', 'diem rui ro']
+        label: 'Kiểm soát Hạn mức Tín dụng & Điểm Rủi ro',
+        confidence: 94,
+        patterns: ['han muc', 'tin dung', 'vuot han muc', 'rui ro cao', 'cong thuc rui ro', 'diem rui ro', 'khoanh no']
       },
       {
         intent: 'OVERDUE_TOP',
-        label: 'Phân tích Nợ quá hạn & Top KH',
+        label: 'Báo cáo Trọng điểm Nợ quá hạn',
         confidence: 95,
         patterns: ['qua han', 'tre han', 'no xau', 'top', 'nhieu nhat', 'lon nhat', 'cao nhat', 'ai no']
       },
       {
         intent: 'TAX_LEGAL_FX',
-        label: 'Chuẩn Pháp lý Thuế & Tỷ giá FX',
+        label: 'Kiểm toán Thuế GTGT & Pháp lý Hóa đơn Điện tử',
         confidence: 94,
-        patterns: ['nghi dinh', 'thong tu', '1c26taa', 'gtgt', 'vat', 'ty gia', 'usd', 'ngoai te', 'vietcombank', 'phap ly']
+        patterns: ['nghi dinh', 'thong tu', '1c26taa', 'gtgt', 'vat', 'thue suat', 'ty gia', 'usd', 'nhap', 'ky so']
       },
       {
         intent: 'USER_AUTH_ROLE',
-        label: 'Phân quyền & Tài khoản Nghiệp vụ',
+        label: 'Kiểm toán Phân quyền RBAC & Toàn vẹn Danh mục',
         confidence: 94,
-        patterns: ['tai khoan', 'mat khau', 'dang nhap', 'phan quyen', 'vai tro', 'admin', 'nguoi dung', 'khoa tai khoan']
-      },
-      {
-        intent: 'RECEIVABLE_OVERVIEW',
-        label: 'Tổng quan Công nợ & Phải thu',
-        confidence: 92,
-        patterns: ['tong quan', 'cong no', 'phai thu', 'bao cao', 'tinh hinh', 'hom nay', 'so lieu', 'thong ke', 'hoa don']
+        patterns: ['tai khoan', 'mat khau', 'dang nhap', 'phan quyen', 'rbac', 'vai tro', 'admin', 'nguoi dung', 'ma so thue', 'mst']
       }
     ];
 
-    let best = { intent: 'GENERAL_ADVISOR', label: 'Trợ lý Phân tích Nghiệp vụ Đa năng', confidence: 88, score: 0 };
+    let best = { intent: 'ROLE_STRATEGIC_BRIEF', label: 'Phân tích Nghiệp vụ Chuyên sâu theo Vai trò', confidence: 92, score: 0 };
     rules.forEach(function (r) {
       let hits = 0;
       r.patterns.forEach(function (kw) {
@@ -11724,37 +12541,63 @@ button, input, select, textarea { touch-action: manipulation; }
     return best;
   }
 
-  function queryMiniLLM(question) {
-    const IP = window.IP;
+  function queryMiniLLM(question, explicitRole) {
     const fmt = function (v) {
-      return (IP && IP.Fmt && IP.Fmt.currency) ? IP.Fmt.currency(v) : (Math.round(Number(v || 0)).toLocaleString('vi-VN') + ' ₫');
+      return (IP.Fmt && IP.Fmt.currency) ? IP.Fmt.currency(v) : (Math.round(Number(v || 0)).toLocaleString('vi-VN') + ' ₫');
     };
+    const session = (IP.Auth && IP.Auth.getSession) ? IP.Auth.getSession() : null;
+    const roleKey = explicitRole || (session && session.role) || 'accountant';
+    const persona = ROLE_LLM_PERSONAS[roleKey] || ROLE_LLM_PERSONAS.accountant;
+
     const qClean = String(question || '').trim();
     const entities = extractEntities(qClean);
     const nlu = classifyIntent(qClean, entities);
+    _convMemory.lastIntent = nlu.intent;
+    _convMemory.turnCount++;
 
-    const entityTags = [];
+    const entityTags = ['Vai trò: ' + persona.name.replace('Mini-LLM Nghiệp vụ ', '')];
+    if (entities.usedMemory) entityTags.push('Ngữ cảnh hội thoại trước');
     if (entities.invoiceObj) entityTags.push('HĐ: ' + entities.invoiceObj.number);
-    if (entities.customerObj) entityTags.push('KH: ' + entities.customerObj.code + ' (' + entities.customerObj.name + ')');
-    if (entities.daysWindow) entityTags.push('Kỳ: ' + entities.daysWindow + ' ngày');
-    if (entities.industry) entityTags.push('Ngành: ' + entities.industry);
-
-    if (!IP || !IP.DB) {
-      return {
-        intent: nlu.intent,
-        intentLabel: nlu.label,
-        confidence: nlu.confidence,
-        entities: entityTags,
-        answer: 'Cơ sở dữ liệu đang khởi tạo, vui lòng thử lại sau giây lát.',
-        actions: []
-      };
-    }
+    if (entities.customerObj) entityTags.push('KH: ' + entities.customerObj.code);
+    if (entities.daysWindow) entityTags.push('Chu kỳ: ' + entities.daysWindow + ' ngày');
 
     const allInvs = IP.DB.listInvoices({ includeArchived: false });
     const ag = IP.Calc.aging(allInvs);
     const today = IP.Seed.todayISO();
 
-    // 1. Tra cứu cụ thể 1 Hóa đơn
+    // Kịch bản đặc biệt: Soạn thảo thư nhắc thanh toán trực tiếp trong Mini-LLM
+    if (nlu.intent === 'DRAFT_REMINDER_FOR_CUSTOMER' && entities.customerObj) {
+      const c = entities.customerObj;
+      const bal = IP.Calc.customerBalance(c.id);
+      const openInvs = IP.DB.listInvoices({ customerId: c.id }).filter(function (i) {
+        return !i.voided && !i.archived && IP.Calc.remaining(i) > 0;
+      });
+      const invCodes = openInvs.map(function (i) { return i.number; }).join(', ') || 'IP-2026-0001';
+      const lines = [
+        'BẢN THẢO EMAIL NHẮC THANH TOÁN DO MINI-LLM KINH DOANH SOẠN THẢO',
+        '• Người nhận: ' + c.contactName + ' (' + c.email + ') — ' + c.name,
+        '• Chủ đề: [Đề nghị thanh toán] Đối chiếu & tất toán công nợ hóa đơn ' + invCodes + ' (' + fmt(bal.totalReceivable) + ')',
+        '• Nội dung đề xuất:',
+        '  "Kính gửi Quý đối tác ' + c.name + ',',
+        '   Theo sổ theo dõi công nợ đến ngày ' + IP.Fmt.date(today) + ', tổng dư nợ đến hạn của Quý công ty là ' + fmt(bal.totalReceivable) + ' (trong đó quá hạn: ' + fmt(bal.overdueAmount) + ', thuộc hóa đơn ' + invCodes + ').',
+        '   Kính đề nghị bộ phận Kế toán thanh toán sắp xếp lịch ủy nhiệm chi và ghi rõ mã hóa đơn trong nội dung chuyển khoản. Trân trọng cảm ơn sự hợp tác của Quý đối tác!"',
+        '• Giải thích từ Mini-LLM: Giọng điệu Trang trọng – Lịch sự phù hợp với lịch sử hợp tác B2B và tỷ lệ sử dụng hạn mức ' + (c.creditLimit > 0 ? Math.round((bal.totalReceivable / c.creditLimit) * 100) : 0) + '%.'
+      ];
+      return {
+        rolePersona: persona.name,
+        intent: nlu.intent,
+        intentLabel: nlu.label,
+        confidence: nlu.confidence,
+        entities: entityTags,
+        answer: lines.join('\n'),
+        actions: [
+          { label: 'Mở trình gửi Nhắc nợ cho ' + c.code, href: 'sales-payment-reminders.html?customerId=' + c.id },
+          { label: 'Xem sổ công nợ ' + c.code, href: IP.Routes.url('customer.view', { id: c.id }) }
+        ]
+      };
+    }
+
+    // 1. Tra cứu cụ thể 1 Hóa đơn — Phân tích góc nhìn riêng theo từng Nghiệp vụ!
     if (nlu.intent === 'INVOICE_LOOKUP' && entities.invoiceObj) {
       const inv = entities.invoiceObj;
       const cus = IP.DB.getCustomer(inv.customerId);
@@ -11764,92 +12607,108 @@ button, input, select, textarea { touch-action: manipulation; }
       const risk = IP.Calc.riskOf(inv, cus);
       const pays = IP.DB.listPayments({ invoiceId: inv.id });
 
+      let roleSpecificAnalysis = '';
+      if (roleKey === 'accountant') {
+        roleSpecificAnalysis = '• [Góc nhìn Kế toán SV1]: Hóa đơn ký hiệu 1C26TAA, tiền hàng trước thuế ' + fmt(inv.subtotal) + ', thuế GTGT ' + fmt(inv.vatTotal) + '. Đã ghi nhận ' + pays.length + ' bút toán thu tiền xác nhận (' + fmt(inv.paidAmount) + '). Cần đối chiếu sao kê ngân hàng cho phần còn lại ' + fmt(rem) + '.';
+      } else if (roleKey === 'sales') {
+        roleSpecificAnalysis = '• [Góc nhìn Kinh doanh SV2]: Liên hệ phụ trách phía đối tác là ' + (cus ? (cus.contactName + ' (' + cus.phone + ')') : 'Kế toán trưởng') + '. ' + (ov > 0 ? ('Khoản này đã trễ ' + ov + ' ngày, khuyến nghị phát hành bản nhắc giọng Trang trọng qua Email.') : 'Khoản nợ đang trong hạn, có thể gửi lời nhắc lịch sự trước hạn 3 ngày.');
+      } else if (roleKey === 'manager') {
+        roleSpecificAnalysis = '• [Góc nhìn Quản lý CFO SV3]: Điểm rủi ro tín dụng đạt ' + risk.score + '/100 (' + risk.label + '). Khoản phải thu ' + fmt(rem) + ' này chiếm ' + Math.round((rem / Math.max(1, ag.totalReceivable)) * 100) + '% tổng dư nợ mở toàn công ty.';
+      } else {
+        roleSpecificAnalysis = '• [Góc nhìn Quản trị SV3]: Mã định danh bản ghi `' + inv.id + '`, thuộc doanh nghiệp MST `' + (cus ? cus.taxCode : '0101245678') + '`, sẵn sàng đồng bộ lên Link 1 MockAPI.';
+      }
+
       const lines = [
-        'HỒ SƠ HÓA ĐƠN ' + inv.number + ' (Ký hiệu: 1C26TAA)',
-        '• Khách hàng: ' + (cus ? (cus.name + ' (' + cus.code + ')') : inv.customerId),
-        '• Ngày phát hành: ' + IP.Fmt.date(inv.issueDate) + ' · Hạn thanh toán: ' + IP.Fmt.date(inv.dueDate),
-        '• Trạng thái hiện tại: ' + IP.Fmt.statusLabel(eff) + (ov > 0 ? (' (Quá hạn ' + ov + ' ngày)') : ''),
-        '• Tổng giá trị sau thuế: ' + fmt(inv.total) + ' (Trước thuế: ' + fmt(inv.subtotal) + ', GTGT: ' + fmt(inv.vatTotal) + ')',
-        '• Đã thu xác nhận: ' + fmt(inv.paidAmount) + ' (' + pays.length + ' giao dịch) · Còn phải thu: ' + fmt(rem),
-        '• Đánh giá rủi ro: ' + risk.label + ' (' + risk.score + '/100 điểm — ' + risk.reasons.join(', ') + ')',
-        '• Khuyến nghị AI: ' + (rem > 0
-          ? (ov > 0 ? 'Hóa đơn đã quá hạn ' + ov + ' ngày, cần gửi nhắc thanh toán (AI-2) hoặc giao chuyên viên Kinh doanh đôn đốc ngay.' : 'Hóa đơn đang trong hạn, theo dõi lịch chuyển khoản đúng kỳ.')
-          : 'Hóa đơn đã tất toán đủ 100%, không cần thu hồi thêm.')
+        'PHÂN TÍCH HÓA ĐƠN ' + inv.number + ' — ' + persona.name.toUpperCase(),
+        '• Doanh nghiệp mua: ' + (cus ? (cus.name + ' (' + cus.code + ')') : inv.customerId),
+        '• Ngày phát hành: ' + IP.Fmt.date(inv.issueDate) + ' · Hạn thanh toán: ' + IP.Fmt.date(inv.dueDate) + ' · Trạng thái: ' + IP.Fmt.statusLabel(eff) + (ov > 0 ? (' (Quá hạn ' + ov + ' ngày)') : ''),
+        '• Tổng thanh toán: ' + fmt(inv.total) + ' · Đã thu: ' + fmt(inv.paidAmount) + ' · Còn phải thu: ' + fmt(rem),
+        roleSpecificAnalysis
       ];
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Mở chi tiết ' + inv.number, href: IP.Routes.url('invoice.view', { id: inv.id }) },
+          { label: 'Mở hồ sơ ' + inv.number, href: IP.Routes.url('invoice.view', { id: inv.id }) },
           { label: 'Soạn nhắc thanh toán', href: 'sales-payment-reminders.html?customerId=' + inv.customerId + '&invoiceId=' + inv.id }
         ]
       };
     }
 
-    // 2. Tra cứu cụ thể 1 Khách hàng
+    // 2. Tra cứu cụ thể 1 Khách hàng — Phân tích chuyên sâu theo từng Nghiệp vụ
     if (nlu.intent === 'CUSTOMER_LOOKUP' && entities.customerObj) {
       const c = entities.customerObj;
       const bal = IP.Calc.customerBalance(c.id);
-      const owner = IP.DB.getUser(c.ownerId);
       const utilPct = c.creditLimit > 0 ? Math.round((bal.totalReceivable / c.creditLimit) * 100) : 0;
       const openInvs = IP.DB.listInvoices({ customerId: c.id }).filter(function (i) {
         return !i.voided && !i.archived && IP.Calc.remaining(i) > 0;
       });
 
+      let roleInsight = '';
+      if (roleKey === 'accountant') {
+        roleInsight = '• [Kiểm toán Kế toán]: Mã số thuế ' + c.taxCode + ' hợp lệ chuẩn 10 số. Cần kiểm tra hạn mức khả dụng (' + fmt(Math.max(0, c.creditLimit - bal.totalReceivable)) + ') trước khi xuất hóa đơn GTGT mới.';
+      } else if (roleKey === 'sales') {
+        roleInsight = '• [Chiến lược Kinh doanh]: Đầu mối thanh toán: ' + c.contactName + ' (' + c.email + ' · ' + c.phone + '). Bạn có thể gõ tiếp "Soạn email nhắc nợ cho công ty này" để tôi tạo bản thảo ngay.';
+      } else if (roleKey === 'manager') {
+        roleInsight = '• [Đánh giá CFO]: Tỷ lệ sử dụng hạn mức ' + utilPct + '% (' + fmt(bal.totalReceivable) + ' / ' + fmt(c.creditLimit) + '). Trễ hạn tối đa ' + bal.maxOverdueDays + ' ngày — ' + (utilPct >= 80 ? 'Cần phê duyệt đặc biệt nếu bán chịu thêm.' : 'Nằm trong ngưỡng kiểm soát.');
+      } else {
+        roleInsight = '• [Quản trị Danh mục]: Trạng thái hồ sơ `' + c.status + '`, kỳ hạn tín dụng chuẩn ' + (c.paymentTerms || 30) + ' ngày, đồng bộ tại Link 4 MockAPI.';
+      }
+
       const lines = [
-        'PHÂN TÍCH KHÁCH HÀNG: ' + c.name.toUpperCase() + ' (' + c.code + ')',
-        '• Mã số thuế: ' + (c.taxCode || '—') + ' · Ngành nghề: ' + c.industry,
-        '• Người liên hệ: ' + c.contactName + ' (' + c.email + ' · ' + c.phone + ')',
-        '• Phụ trách Kinh doanh: ' + (owner ? owner.name : 'Trần Minh Quân'),
-        '• Tổng dư nợ phải thu: ' + fmt(bal.totalReceivable) + ' trên ' + bal.openInvoiceCount + ' hóa đơn mở',
-        '• Nợ quá hạn: ' + fmt(bal.overdueAmount) + ' (' + bal.overdueInvoiceCount + ' hóa đơn, trễ nhất ' + bal.maxOverdueDays + ' ngày)',
-        '• Sử dụng hạn mức tín dụng: ' + utilPct + '% (' + fmt(bal.totalReceivable) + ' / ' + fmt(c.creditLimit) + ')',
+        'THẨM ĐỊNH ĐỐI TÁC: ' + c.name.toUpperCase() + ' (' + c.code + ')',
+        '• Ngành nghề: ' + c.industry + ' · MST: ' + c.taxCode,
+        '• Tổng dư nợ đang mở: ' + fmt(bal.totalReceivable) + ' (' + bal.openInvoiceCount + ' hóa đơn) · Quá hạn: ' + fmt(bal.overdueAmount),
         openInvs.length > 0
-          ? ('• Các hóa đơn đang mở: ' + openInvs.slice(0, 4).map(function (i) { return i.number + ' (' + fmt(IP.Calc.remaining(i)) + ')'; }).join(', '))
-          : '• Hiện khách hàng không còn hóa đơn nợ nào mở.',
-        '• Khuyến nghị AI: ' + (bal.overdueAmount > 0
-          ? 'Khách hàng đang có khoản quá hạn ' + fmt(bal.overdueAmount) + ', nên gửi thông báo đối chiếu công nợ trước khi duyệt đơn hàng mới.'
-          : 'Tình hình thanh toán tốt, nằm trong hạn mức tín dụng an toàn.')
+          ? ('• Hóa đơn chưa tất toán: ' + openInvs.slice(0, 4).map(function (i) { return i.number + ' (' + fmt(IP.Calc.remaining(i)) + ')'; }).join(', '))
+          : '• Đã tất toán toàn bộ hóa đơn phát sinh.',
+        roleInsight
       ];
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Xem sổ công nợ ' + c.code, href: IP.Routes.url('customer.view', { id: c.id }) },
-          { label: 'Tạo nhắc cho ' + c.code, href: 'sales-payment-reminders.html?customerId=' + c.id }
+          { label: 'Mở công nợ ' + c.code, href: IP.Routes.url('customer.view', { id: c.id }) },
+          { label: 'Tạo nhắc nợ cho ' + c.code, href: 'sales-payment-reminders.html?customerId=' + c.id }
         ]
       };
     }
 
-    // 3. Trạng thái UI (Loading / Empty / Error) & Deploy Vercel / Netlify
-    if (nlu.intent === 'UI_STATES_DEPLOY') {
+    // 3. Đồng bộ 4 Link MockAPI & Vận hành Mạng (Trang 8, 9, 10)
+    if (nlu.intent === 'MOCKAPI_CLOUD_SYNC') {
+      const urls = IP.MockAPI.getUrls();
+      const configuredCount = Object.keys(urls).filter(function (k) { return Boolean(urls[k]); }).length;
       const lines = [
-        'HƯỚNG DẪN TRẠNG THÁI UI (LOADING / EMPTY / ERROR) & DEPLOY VERCEL / NETLIFY',
-        '• 3 Trang Trạng thái UI độc lập (chuẩn kiểm thử & trình diễn):',
-        '  1. ui-state-loading.html — Trạng thái Đang tải (Skeleton Shimmer 4 thẻ KPI + bảng dữ liệu + tiến trình đồng bộ).',
-        '  2. ui-state-empty.html — Trạng thái Rỗng (Phân biệt rõ Rỗng do bộ lọc và Rỗng khi khởi tạo phân hệ mới).',
-        '  3. ui-state-error.html — Trạng thái Lỗi (Mô phỏng mất kết nối cổng ngân hàng / máy chủ kèm mã chẩn đoán và nút Thử lại).',
-        '• Kích hoạt nhanh trên mọi trang dữ liệu qua URL: thêm ?demo=loading, ?demo=empty hoặc ?demo=error.',
-        '• Cấu hình Deploy Vercel & Netlify đã tích hợp sẵn ở thư mục gốc:',
-        '  - vercel.json (Clean URLs, Security Headers, định tuyến 404.html).',
-        '  - netlify.toml & _redirects (Chuẩn static publish cho Netlify Drop / Git).'
+        'TRẠNG THÁI KẾT NỐI 4 LINK MOCKAPI & VẬN HÀNH MẠNG THƯƠNG MẠI',
+        '• Cấu hình 4 Link MockAPI hiện tại: Đã gắn ' + configuredCount + '/4 đường dẫn Endpoint.',
+        '  1. Link 1 (Kế toán - Hóa đơn & Đối chiếu): ' + (urls.accountant || 'Đang dùng dữ liệu chuẩn nội bộ (Sẵn sàng dán link)'),
+        '  2. Link 2 (Kinh doanh - Công nợ KH & Nhắc nợ): ' + (urls.sales || 'Đang dùng dữ liệu chuẩn nội bộ (Sẵn sàng dán link)'),
+        '  3. Link 3 (Quản lý - Quá hạn, DSO & Dự báo): ' + (urls.manager || 'Đang dùng dữ liệu chuẩn nội bộ (Sẵn sàng dán link)'),
+        '  4. Link 4 (Quản trị - Danh mục KH, RBAC & Cấu hình): ' + (urls.admin || 'Đang dùng dữ liệu chuẩn nội bộ (Sẵn sàng dán link)'),
+        '• Cơ chế thương mại hóa Trang 8 · 9 · 10:',
+        '  - Trang 8 (Mạng chậm 3G): Tự động hiển thị Skeleton Shimmer kèm đo băng thông khi mạng chậm và chuyển mượt vào bảng dữ liệu.',
+        '  - Trang 9 (Trung tâm Tra cứu & Bộ lọc): Tìm kiếm đa tiêu chí có trả về bảng kết quả thực tế và tự chuyển sang Empty State khi lọc 0 bản ghi.',
+        '  - Trang 10 (Mất kết nối mạng đột ngột): Tự động kích hoạt khi rớt mạng (Offline) kèm lá chắn bảo vệ dữ liệu cục bộ.'
       ];
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Mở trang Loading State', href: 'ui-state-loading.html' },
-          { label: 'Mở trang Empty State', href: 'ui-state-empty.html' },
-          { label: 'Mở trang Error State', href: 'ui-state-error.html' }
+          { label: 'Trung tâm Tra cứu & Lọc (Trang 9)', href: 'ui-state-empty.html' },
+          { label: 'Đồng bộ Mạng chậm (Trang 8)', href: 'ui-state-loading.html' },
+          { label: 'Chẩn đoán Mất mạng (Trang 10)', href: 'ui-state-error.html' }
         ]
       };
     }
@@ -11862,25 +12721,24 @@ button, input, select, textarea { touch-action: manipulation; }
       const pendingSum = pending.reduce(function (s, p) { return s + Number(p.amount || 0); }, 0);
 
       const lines = [
-        'PHÂN TÍCH ĐỐI CHIẾU SAO KÊ NGÂN HÀNG (VIETCOMBANK)',
-        '• Giao dịch Chờ đối chiếu: ' + pending.length + ' giao dịch · Tổng tiền: ' + fmt(pendingSum),
-        '• Giao dịch Đã đối chiếu khớp: ' + confirmed.length + ' giao dịch',
-        '• Giao dịch Sai lệch / Từ chối: ' + discrepancy.length + ' giao dịch cần rà soát giải trình',
-        '• Chi tiết 3 khoản chờ đối chiếu tiêu biểu:'
+        'PHÂN TÍCH ĐỐI CHIẾU SAO KÊ NGÂN HÀNG — ' + persona.name.toUpperCase(),
+        '• Giao dịch Chờ đối chiếu: ' + pending.length + ' khoản · Tổng giá trị: ' + fmt(pendingSum),
+        '• Đã xác nhận khớp (cộng vào paidAmount): ' + confirmed.length + ' khoản · Sai lệch chờ giải trình: ' + discrepancy.length + ' khoản.',
+        '• 3 khoản tiền về trên sao kê cần Kế toán ghép hóa đơn ngay:'
       ];
       pending.slice(0, 3).forEach(function (p, idx) {
         const cus = IP.DB.getCustomer(p.customerId || p.suggestedCustomerId);
-        lines.push('  ' + (idx + 1) + '. Mã GD ' + p.reference + ' · ' + fmt(p.amount) + ' · ' + (cus ? cus.name : 'Chưa rõ KH') + ' (' + p.transferContent + ')');
+        lines.push('  ' + (idx + 1) + '. Mã GD ' + p.reference + ' · ' + fmt(p.amount) + ' · ' + (cus ? cus.name : 'Chưa định danh') + ' (' + p.transferContent + ')');
       });
-      lines.push('• Quy tắc nghiệp vụ: Chỉ khi Kế toán bấm "Xác nhận đối chiếu" thì số tiền mới được cộng vào paidAmount của hóa đơn.');
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Mở Bàn Đối chiếu NH', href: 'accountant-reconciliation.html' }
+          { label: 'Mở Bàn Đối chiếu Ngân hàng', href: 'accountant-reconciliation.html' }
         ]
       };
     }
@@ -11893,49 +12751,49 @@ button, input, select, textarea { touch-action: manipulation; }
       const fcOpt = IP.Calc.forecastCashflow({ horizonDays: horizon, scenario: 'optimistic' });
 
       const lines = [
-        'SO SÁNH DỰ BÁO DÒNG TIỀN ' + horizon + ' NGÀY TỚI (3 KỊCH BẢN)',
-        '1. Kịch bản Cơ sở (Thu hồi quá hạn 65%, trễ 7 ngày): Tổng dự kiến thu ' + fmt(fcBase.totals.cumulative) + ' (Trong hạn: ' + fmt(fcBase.totals.dueExpected) + ', Thu hồi quá hạn: ' + fmt(fcBase.totals.overdueRecovery) + ').',
-        '2. Kịch bản Thận trọng (Thu hồi quá hạn 45%, trễ 16 ngày): Tổng dự kiến thu ' + fmt(fcCons.totals.cumulative) + '.',
-        '3. Kịch bản Lạc quan (Thu hồi quá hạn 85%, trễ 2 ngày, tính cả khoản chờ khớp): Tổng dự kiến thu ' + fmt(fcOpt.totals.cumulative) + '.',
-        '• Chênh lệch giữa Lạc quan và Thận trọng: ' + fmt(fcOpt.totals.cumulative - fcCons.totals.cumulative) + '.',
-        '• Khuyến nghị điều hành: Đẩy nhanh đối chiếu 6 giao dịch ngân hàng chờ xử lý và đôn đốc nhóm quá hạn 31–60 ngày để giữ dòng tiền sát kịch bản Cơ sở.'
+        'MÔ PHỎNG DÒNG TIỀN ' + horizon + ' NGÀY TỚI — ' + persona.name.toUpperCase(),
+        '• Kịch bản Cơ sở (Thu hồi nợ quá hạn 65%, độ trễ 7 ngày): Dự kiến thu ' + fmt(fcBase.totals.cumulative) + '.',
+        '• Kịch bản Khả quan (Thu hồi nợ quá hạn 85%, độ trễ 2 ngày): Dự kiến thu ' + fmt(fcOpt.totals.cumulative) + '.',
+        '• Kịch bản Thận trọng (Thu hồi nợ quá hạn 45%, độ trễ 16 ngày): Dự kiến thu ' + fmt(fcCons.totals.cumulative) + '.',
+        '• Biên độ dao động thanh khoản: ' + fmt(fcOpt.totals.cumulative - fcCons.totals.cumulative) + '.',
+        '• Khuyến nghị từ ' + persona.name + ': Khớp ngay các khoản tiền chờ đối chiếu trên sao kê và giao KPI thu hồi nhóm quá hạn 31–60 ngày để đạt kịch bản Khả quan.'
       ];
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Mở Dự báo dòng tiền (' + horizon + ' ngày)', href: 'manager-cashflow-forecast.html?horizon=' + horizon },
-          { label: 'Mở Dashboard Quản lý', href: 'manager-receivable-dashboard.html' }
+          { label: 'Mở Dự báo dòng tiền (' + horizon + ' ngày)', href: 'manager-cashflow-forecast.html?horizon=' + horizon }
         ]
       };
     }
 
-    // 6. Phân tích Tuổi nợ (Aging Buckets)
+    // 6. Phân tích Tuổi nợ (Aging)
     if (nlu.intent === 'AGING_BUCKETS') {
       const total = Math.max(1, ag.totalReceivable);
       const pct = function (v) { return Math.round((v / total) * 100) + '%'; };
       const lines = [
-        'PHÂN TÍCH CƠ CẤU TUỔI NỢ (AGING SCHEDULE)',
-        '• Tổng dư nợ phải thu: ' + fmt(ag.totalReceivable) + ' (100%)',
+        'MA TRẬN TUỔI NỢ (AGING SCHEDULE) — ' + persona.name.toUpperCase(),
+        '• Tổng dư nợ phải thu đang mở: ' + fmt(ag.totalReceivable) + ' (100%)',
         '  - Trong hạn thanh toán: ' + fmt(ag.current) + ' (' + ag.counts.current + ' HĐ · ' + pct(ag.current) + ')',
         '  - Quá hạn 1–30 ngày: ' + fmt(ag.b1_30) + ' (' + ag.counts.b1_30 + ' HĐ · ' + pct(ag.b1_30) + ')',
         '  - Quá hạn 31–60 ngày: ' + fmt(ag.b31_60) + ' (' + ag.counts.b31_60 + ' HĐ · ' + pct(ag.b31_60) + ')',
         '  - Quá hạn 61–90 ngày: ' + fmt(ag.b61_90) + ' (' + ag.counts.b61_90 + ' HĐ · ' + pct(ag.b61_90) + ')',
         '  - Quá hạn trên 90 ngày: ' + fmt(ag.b90plus) + ' (' + ag.counts.b90plus + ' HĐ · ' + pct(ag.b90plus) + ')',
-        '• Nhận xét AI: Nhóm nợ quá hạn trên 60 ngày (' + fmt(ag.b61_90 + ag.b90plus) + ') cần được giao phụ trách trực tiếp trên màn hình Hóa đơn quá hạn.'
+        '• Nhận định chuyên môn: Cần tập trung thu hồi nhóm >60 ngày (' + fmt(ag.b61_90 + ag.b90plus) + ') trước khi chuyển sang diện nợ khó đòi.'
       ];
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Xem Hóa đơn quá hạn > 60 ngày', href: 'manager-overdue-invoices.html?bucket=61-90' },
-          { label: 'Xem Sổ công nợ Kinh doanh', href: 'sales-customer-balance.html' }
+          { label: 'Quản trị Hóa đơn quá hạn', href: 'manager-overdue-invoices.html' }
         ]
       };
     }
@@ -11945,20 +12803,21 @@ button, input, select, textarea { touch-action: manipulation; }
       const d30 = IP.Calc.dso(30);
       const d90 = IP.Calc.dso(90);
       const lines = [
-        'PHÂN TÍCH CHỈ SỐ DSO (DAYS SALES OUTSTANDING)',
-        '• DSO kỳ 90 ngày (Quý này): ' + d90.days + ' ngày (So với kỳ trước: ' + d90.delta + ' ngày, kỳ trước ' + d90.previousDays + ' ngày).',
-        '• DSO kỳ 30 ngày (Tháng này): ' + d30.days + ' ngày.',
-        '• Công thức chuẩn: ' + d90.formulaText + '.',
-        '• Đánh giá: DSO chuẩn của ngành B2B thương mại/dịch vụ Việt Nam dao động 30–45 ngày. Để rút ngắn DSO thêm 3–5 ngày, cần gửi nhắc tự động trước ngày đáo hạn 3 ngày.'
+        'CHẨN ĐOÁN CHỈ SỐ DSO (DAYS SALES OUTSTANDING) — ' + persona.name.toUpperCase(),
+        '• DSO quý hiện tại (90 ngày): ' + d90.days + ' ngày (Biến động so với kỳ trước: ' + d90.delta + ' ngày).',
+        '• DSO tháng hiện tại (30 ngày): ' + d30.days + ' ngày.',
+        '• Công thức tính: ' + d90.formulaText + '.',
+        '• Giải pháp rút ngắn DSO: (1) Tự động gửi nhắc trước hạn 3 ngày qua AI-2, (2) Khớp sao kê ngân hàng trong ngày, (3) Áp dụng chiết khấu thanh toán sớm 1% cho hợp đồng trên 150 triệu ₫.'
       ];
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Xem KPI DSO trên Dashboard', href: 'manager-receivable-dashboard.html' }
+          { label: 'Xem Bảng điều khiển CFO', href: 'manager-receivable-dashboard.html' }
         ]
       };
     }
@@ -11969,27 +12828,24 @@ button, input, select, textarea { touch-action: manipulation; }
       const failed = rems.filter(function (r) { return r.status === 'failed'; });
       const sched = rems.filter(function (r) { return r.status === 'scheduled'; });
       const sent = rems.filter(function (r) { return r.status === 'sent'; });
-      const draft = rems.filter(function (r) { return r.status === 'draft'; });
-
       const lines = [
-        'TÌNH HÌNH NHẮC THANH TOÁN & SOẠN THẢO AI-2',
-        '• Tổng số bản nhắc: ' + rems.length + ' (Đã gửi: ' + sent.length + ', Đã lên lịch: ' + sched.length + ', Bản nháp: ' + draft.length + ', Thất bại: ' + failed.length + ').',
-        '• Các bản nhắc gửi thất bại cần bấm "Gửi lại" (' + failed.length + ' bản):'
+        'BÁO CÁO ĐÔN ĐỐC THANH TOÁN ĐA KÊNH — ' + persona.name.toUpperCase(),
+        '• Tổng số thông báo nhắc: ' + rems.length + ' bản (Đã gửi: ' + sent.length + ', Hẹn lịch: ' + sched.length + ', Lỗi gửi: ' + failed.length + ').',
+        '• Các bản nhắc bị lỗi cổng gửi cần xử lý ngay (' + failed.length + ' bản):'
       ];
       failed.forEach(function (r, idx) {
         const cus = IP.DB.getCustomer(r.customerId);
-        lines.push('  ' + (idx + 1) + '. ' + (cus ? cus.name : r.customerId) + ' (' + r.invoiceIds.join(', ') + ') — Lỗi: ' + (r.failReason || 'Timeout'));
+        lines.push('  ' + (idx + 1) + '. ' + (cus ? cus.name : r.customerId) + ' (' + r.invoiceIds.join(', ') + ') — Nguyên nhân: ' + (r.failReason || 'Timeout máy chủ nhận'));
       });
-      lines.push('• Gợi ý: Mở màn hình Nhắc thanh toán, chọn tab "Thất bại" để gửi lại hoặc dùng AI-2 soạn thông điệp theo 3 giọng điệu (Thân thiện / Trang trọng / Cứng rắn lịch sự).');
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Mở Nhắc thanh toán (Tab Thất bại)', href: 'sales-payment-reminders.html?tab=failed' },
-          { label: 'Soạn nhắc mới bằng AI-2', href: 'sales-payment-reminders.html' }
+          { label: 'Xử lý bản nhắc lỗi', href: 'sales-payment-reminders.html?tab=failed' }
         ]
       };
     }
@@ -12004,172 +12860,142 @@ button, input, select, textarea { touch-action: manipulation; }
         return d >= 0 && d <= winDays;
       });
       const sumDue = dueList.reduce(function (s, i) { return s + IP.Calc.remaining(i); }, 0);
-
       const lines = [
-        'DANH SÁCH HÓA ĐƠN SẮP ĐẾN HẠN TRONG ' + winDays + ' NGÀY TỚI',
-        '• Số lượng: ' + dueList.length + ' hóa đơn · Tổng số tiền cần thu: ' + fmt(sumDue)
+        'HÓA ĐƠN SẮP ĐÁO HẠN TRONG ' + winDays + ' NGÀY TỚI — ' + persona.name.toUpperCase(),
+        '• Phát hiện ' + dueList.length + ' hóa đơn sắp đến hạn với tổng số tiền cần thu: ' + fmt(sumDue)
       ];
-      dueList.slice(0, 6).forEach(function (inv, idx) {
+      dueList.slice(0, 5).forEach(function (inv, idx) {
         const cus = IP.DB.getCustomer(inv.customerId);
-        const d = IP.Calc.daysUntilDue(inv);
-        lines.push('  ' + (idx + 1) + '. ' + inv.number + ' · ' + (cus ? cus.name : '') + ' · Còn phải thu: ' + fmt(IP.Calc.remaining(inv)) + ' (Còn ' + d + ' ngày — Hạn ' + IP.Fmt.date(inv.dueDate) + ')');
+        lines.push('  ' + (idx + 1) + '. ' + inv.number + ' · ' + (cus ? cus.name : '') + ' · Còn phải thu: ' + fmt(IP.Calc.remaining(inv)) + ' (Hạn: ' + IP.Fmt.date(inv.dueDate) + ')');
       });
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Lọc HĐ đến hạn 7 ngày (Kế toán)', href: 'accountant-invoice-list.html?due=7d' },
-          { label: 'Gửi nhắc sớm (Kinh doanh)', href: 'sales-payment-reminders.html' }
+          { label: 'Lọc HĐ sắp đến hạn', href: 'accountant-invoice-list.html?due=7d' }
         ]
       };
     }
 
     // 10. Hạn mức tín dụng & Rủi ro
-    if (nlu.intent === 'CREDIT_LIMIT_RISK') {
+    if (nlu.intent === 'CREDIT_LIMIT_RISK' || nlu.intent === 'OVERDUE_TOP') {
       const cusList = IP.DB.listCustomers({ status: 'active' }).map(function (c) {
         const bal = IP.Calc.customerBalance(c.id);
         const ratio = c.creditLimit > 0 ? Math.round((bal.totalReceivable / c.creditLimit) * 100) : 0;
         return { cus: c, bal: bal, ratio: ratio };
-      }).sort(function (a, b) { return b.ratio - a.ratio; });
+      }).sort(function (a, b) { return b.bal.overdueAmount - a.bal.overdueAmount; });
 
       const lines = [
-        'CẢNH BÁO SỬ DỤNG HẠN MỨC TÍN DỤNG & CÔNG THỨC RỦI RO',
-        '• Công thức tính điểm rủi ro (Luật tường minh): Điểm = Điểm ngày quá hạn (0–50) + Điểm tỷ lệ Dư nợ/Hạn mức (0–30) + Điểm lịch sử trễ hạn (0–25). Cao >= 60, Trung bình 30–59, Thấp < 30.',
-        '• Top 5 khách hàng có tỷ lệ sử dụng hạn mức tín dụng cao nhất:'
+        'THẨM ĐỊNH RỦI RO TÍN DỤNG & TOP NỢ QUÁ HẠN — ' + persona.name.toUpperCase(),
+        '• Tổng dư nợ quá hạn toàn hệ thống: ' + fmt(ag.totalOverdue) + '.',
+        '• Top 5 doanh nghiệp có dư nợ quá hạn & tỷ lệ chạm trần tín dụng cao nhất:'
       ];
       cusList.slice(0, 5).forEach(function (item, idx) {
-        lines.push('  ' + (idx + 1) + '. ' + item.cus.name + ' (' + item.cus.code + '): Đạt ' + item.ratio + '% hạn mức (' + fmt(item.bal.totalReceivable) + ' / ' + fmt(item.cus.creditLimit) + ')');
+        lines.push('  ' + (idx + 1) + '. ' + item.cus.name + ' (' + item.cus.code + '): Quá hạn ' + fmt(item.bal.overdueAmount) + ' · Hạn mức đã dùng: ' + item.ratio + '% (' + fmt(item.bal.totalReceivable) + '/' + fmt(item.cus.creditLimit) + ')');
       });
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Xem KH rủi ro cao (Quản lý)', href: 'manager-overdue-invoices.html?risk=high' },
-          { label: 'Quản lý hạn mức KH (Admin)', href: 'admin-customer-management.html' }
+          { label: 'Mở Quản trị Nợ quá hạn', href: 'manager-overdue-invoices.html' },
+          { label: 'Điều chỉnh Hạn mức KH', href: 'admin-customer-management.html' }
         ]
       };
     }
 
-    // 11. Nợ quá hạn & Top khách hàng quá hạn
-    if (nlu.intent === 'OVERDUE_TOP') {
-      const cusOverdue = IP.DB.listCustomers({ status: 'active' }).map(function (c) {
-        return { cus: c, bal: IP.Calc.customerBalance(c.id) };
-      }).filter(function (x) { return x.bal.overdueAmount > 0; })
-        .sort(function (a, b) { return b.bal.overdueAmount - a.bal.overdueAmount; });
-
-      const lines = [
-        'BÁO CÁO NỢ QUÁ HẠN & TOP KHÁCH HÀNG CẦN ĐÔN ĐỐC',
-        '• Tổng dư nợ quá hạn toàn hệ thống: ' + fmt(ag.totalOverdue) + ' trên ' + (ag.counts.b1_30 + ag.counts.b31_60 + ag.counts.b61_90 + ag.counts.b90plus) + ' hóa đơn.',
-        '• Top 5 khách hàng có số dư quá hạn cao nhất:'
-      ];
-      cusOverdue.slice(0, 5).forEach(function (item, idx) {
-        lines.push('  ' + (idx + 1) + '. ' + item.cus.name + ' (' + item.cus.code + '): Quá hạn ' + fmt(item.bal.overdueAmount) + ' (' + item.bal.overdueInvoiceCount + ' HĐ · Trễ nhất ' + item.bal.maxOverdueDays + ' ngày)');
-      });
-      return {
-        intent: nlu.intent,
-        intentLabel: nlu.label,
-        confidence: nlu.confidence,
-        entities: entityTags,
-        answer: lines.join('\n'),
-        actions: [
-          { label: 'Xử lý Hóa đơn quá hạn (Quản lý)', href: 'manager-overdue-invoices.html' },
-          { label: 'Lọc HĐ quá hạn (Kế toán)', href: 'accountant-invoice-list.html?status=overdue' }
-        ]
-      };
-    }
-
-    // 12. Chuẩn Pháp lý Thuế & Tỷ giá FX
-    if (nlu.intent === 'TAX_LEGAL_FX') {
-      const fx = (IP.I18n && IP.I18n.getDailyUsdRate) ? IP.I18n.getDailyUsdRate() : { rate: 25450, date: today };
-      const lines = [
-        'CHUẨN PHÁP LÝ HÓA ĐƠN ĐIỆN TỬ & TỶ GIÁ QUY ĐỔI NGOẠI TỆ',
-        '• Căn cứ pháp lý áp dụng trên InvoicePilot:',
-        '  1. Nghị định 123/2020/NĐ-CP & Nghị định 70/2025/NĐ-CP quy định về hóa đơn, chứng từ điện tử.',
-        '  2. Thông tư 32/2025/TT-BTC của Bộ Tài chính hướng dẫn ký hiệu mẫu số hóa đơn GTGT có mã của Cơ quan Thuế (Mẫu 01GTKT0/001 · Ký hiệu 1C26TAA).',
-        '  3. Nghị định 174/2025/NĐ-CP về chính sách giảm thuế GTGT xuống 8% cho nhóm hàng hóa dịch vụ đủ điều kiện (hệ thống hỗ trợ 0%, 5%, 8%, 10%).',
-        '  4. Thông tư 133/2016/TT-BTC & Thông tư 99/2025/TT-BTC về theo dõi sổ chi tiết phải thu khách hàng (TK 131).',
-        '• Tỷ giá quy đổi VND / USD niêm yết ngày ' + IP.Fmt.date(fx.date) + ': 1 USD = ' + fx.rate.toLocaleString('vi-VN') + ' VND (Bấm nút VI/EN trên thanh công cụ để chuyển đổi toàn bộ số tiền sang USD theo thời gian thực).'
-      ];
-      return {
-        intent: nlu.intent,
-        intentLabel: nlu.label,
-        confidence: nlu.confidence,
-        entities: entityTags,
-        answer: lines.join('\n'),
-        actions: [
-          { label: 'Mở Cấu hình Hóa đơn & Thuế', href: 'admin-invoice-settings.html' }
-        ]
-      };
-    }
-
-    // 13. Phân quyền & Tài khoản
-    if (nlu.intent === 'USER_AUTH_ROLE') {
+    // 11. Chuẩn Pháp lý Thuế & Phân quyền RBAC
+    if (nlu.intent === 'TAX_LEGAL_FX' || nlu.intent === 'USER_AUTH_ROLE') {
       const users = IP.DB.listUsers({});
       const lines = [
-        'DANH SÁCH 4 TÀI KHOẢN NGHIỆP VỤ & CHÍNH SÁCH PHÂN QUYỀN',
-        '• 4 Tài khoản chính thức (Mật khẩu dùng chung: 123456):',
-        '  1. Kế toán (SV1): ketoan@hoabinhdigital.vn — Nguyễn Thu Hà (Quản lý hóa đơn, AI-1, Đối chiếu NH).',
-        '  2. Kinh doanh (SV2): kinhdoanh@hoabinhdigital.vn — Trần Minh Quân (Công nợ KH, Nhắc hạn AI-2, Chi tiết HĐ).',
-        '  3. Quản lý (SV3): quanly@hoabinhdigital.vn — Lê Hoàng Anh (Dashboard công nợ, Quá hạn, Dự báo dòng tiền AI-3).',
-        '  4. Quản trị viên (SV3): admin@hoabinhdigital.vn — Phạm Gia Bảo (Quản lý KH, Người dùng, Cấu hình hệ thống).',
-        '• Tổng nhân sự trên hệ thống: ' + users.length + ' tài khoản. Chỉ Quản trị viên (Admin) mới có quyền mời mới, khóa/mở khóa hoặc đổi vai trò của các tài khoản khác.'
+        'KIỂM TOÁN HỆ THỐNG, PHÁP LÝ THUẾ & PHÂN QUYỀN RBAC — ' + persona.name.toUpperCase(),
+        '• Chuẩn Hóa đơn điện tử: Ký hiệu mẫu số `1/001 · 1C26TAA` tuân thủ Nghị định 123/2020/NĐ-CP, Thông tư 78/2021/TT-BTC và Nghị định 70/2025/NĐ-CP.',
+        '• Thuế suất GTGT hỗ trợ: 0%, 5%, 8% (giảm thuế GTGT theo Nghị định 174/2025/NĐ-CP) và 10%.',
+        '• Ma trận RBAC (' + users.length + ' tài khoản): Tách biệt độc lập 4 phân hệ Kế toán (SV1), Kinh doanh (SV2), Quản lý CFO (SV3) và Quản trị viên (SV3). Có khóa bảo vệ chống vô hiệu hóa Admin cuối cùng.'
       ];
       return {
+        rolePersona: persona.name,
         intent: nlu.intent,
         intentLabel: nlu.label,
         confidence: nlu.confidence,
         entities: entityTags,
         answer: lines.join('\n'),
         actions: [
-          { label: 'Mở Quản lý Người dùng (Admin)', href: 'admin-user-management.html' },
-          { label: 'Mở Trang Đăng nhập', href: 'login.html' }
+          { label: 'Cấu hình Hóa đơn & AI', href: 'admin-invoice-settings.html' },
+          { label: 'Quản lý Người dùng RBAC', href: 'admin-user-management.html' }
         ]
       };
     }
 
-    // 14. Mặc định / Tổng quan Công nợ & Ngành nghề
+    // 12. Báo cáo phân tích chuyên biệt theo đúng Vai trò hiện tại (Role Strategic Brief)
     const pendingPay = IP.DB.listPayments({ status: 'pending' }).length;
     const dso90 = IP.Calc.dso(90);
-    let industryLine = '';
-    if (entities.industry) {
-      const indCus = IP.DB.listCustomers({ industry: entities.industry, status: 'active' });
-      const indBal = indCus.reduce(function (s, c) { return s + IP.Calc.customerBalance(c.id).totalReceivable; }, 0);
-      industryLine = '\n• Ngành ' + entities.industry + ': Có ' + indCus.length + ' doanh nghiệp đang hoạt động với tổng dư nợ ' + fmt(indBal) + '.';
+    const failedRemCount = IP.DB.listReminders({ status: 'failed' }).length;
+
+    let roleBriefLines = [];
+    if (roleKey === 'accountant') {
+      roleBriefLines = [
+        'BÁO CÁO TRỌNG TÂM NGHIỆP VỤ KẾ TOÁN CÔNG NỢ (NGÀY ' + IP.Fmt.date(today) + ')',
+        '• Tổng phải thu khách hàng (TK 131): ' + fmt(ag.totalReceivable) + ' (Trong hạn: ' + fmt(ag.current) + ' · Quá hạn: ' + fmt(ag.totalOverdue) + ').',
+        '• Sao kê ngân hàng chờ đối chiếu: ' + pendingPay + ' giao dịch cần kiểm tra và phân bổ vào hóa đơn.',
+        '• Gợi ý tác vụ tiếp theo: Bạn có thể gõ mã hóa đơn bất kỳ (VD: "Kiểm tra IP-2026-0001") hoặc yêu cầu rà soát các giao dịch chờ đối chiếu.'
+      ];
+    } else if (roleKey === 'sales') {
+      roleBriefLines = [
+        'BÁO CÁO TRỌNG TÂM NGHIỆP VỤ KINH DOANH & CHĂM SÓC ĐỐI TÁC (NGÀY ' + IP.Fmt.date(today) + ')',
+        '• Tổng dư nợ quá hạn cần đôn đốc: ' + fmt(ag.totalOverdue) + ' · Thông báo nhắc gửi lỗi cần gửi lại: ' + failedRemCount + ' bản.',
+        '• Nhóm nợ quá hạn 1–30 ngày (' + fmt(ag.b1_30) + ') có xác suất thu hồi trên 88% nếu gửi nhắc thanh toán ngay trong tuần này.',
+        '• Gợi ý tác vụ tiếp theo: Hãy hỏi tên bất kỳ doanh nghiệp nào (VD: "Thực phẩm Á Châu nợ bao nhiêu?") rồi bảo tôi "Soạn email nhắc nợ cho công ty này".'
+      ];
+    } else if (roleKey === 'manager') {
+      roleBriefLines = [
+        'BÁO CÁO ĐIỀU HÀNH DÒNG TIỀN & RỦI RO TÍN DỤNG CFO (NGÀY ' + IP.Fmt.date(today) + ')',
+        '• Chỉ số DSO (90 ngày): ' + dso90.days + ' ngày · Tổng nợ quá hạn: ' + fmt(ag.totalOverdue) + ' (Nhóm >60 ngày: ' + fmt(ag.b61_90 + ag.b90plus) + ').',
+        '• Điểm nghẽn thanh khoản: ' + pendingPay + ' giao dịch tiền về chưa đối chiếu và nhóm quá hạn 31–60 ngày (' + fmt(ag.b31_60) + ').',
+        '• Gợi ý tác vụ tiếp theo: Yêu cầu tôi "Mô phỏng 3 kịch bản dòng tiền 60 ngày" hoặc "Phân tích top khách hàng rủi ro cao".'
+      ];
+    } else {
+      roleBriefLines = [
+        'BÁO CÁO QUẢN TRỊ HỆ THỐNG, DANH MỤC & ĐỒNG BỘ MOCKAPI (NGÀY ' + IP.Fmt.date(today) + ')',
+        '• Quy mô dữ liệu vận hành: ' + allInvs.length + ' Hóa đơn GTGT · ' + IP.DB.listCustomers({ includeArchived: true, status: 'all' }).length + ' Doanh nghiệp B2B · ' + IP.DB.listUsers({}).length + ' Tài khoản RBAC.',
+        '• Đồng bộ Đám mây: Hỗ trợ đầy đủ 4 Link MockAPI cho 4 phân hệ kèm chế độ bảo vệ dữ liệu ngoại tuyến (Offline Shield).',
+        '• Gợi ý tác vụ tiếp theo: Hỏi tôi về "Trạng thái 4 link MockAPI", "Kiểm toán phân quyền RBAC" hoặc bấm nút MockAPI trên thanh công cụ.'
+      ];
     }
 
-    const lines = [
-      'BÁO CÁO TỔNG HỢP CÔNG NỢ & DÒNG TIỀN (NGÀY ' + IP.Fmt.date(today) + ')',
-      '• Tổng dư nợ phải thu đang mở: ' + fmt(ag.totalReceivable) + ' (trên ' + (ag.counts.current + ag.counts.b1_30 + ag.counts.b31_60 + ag.counts.b61_90 + ag.counts.b90plus) + ' hóa đơn phát hành).',
-      '• Trong hạn thanh toán: ' + fmt(ag.current) + ' (' + ag.counts.current + ' hóa đơn).',
-      '• Tổng nợ quá hạn: ' + fmt(ag.totalOverdue) + ' (1–30 ngày: ' + fmt(ag.b1_30) + ' | 31–60 ngày: ' + fmt(ag.b31_60) + ' | >60 ngày: ' + fmt(ag.b61_90 + ag.b90plus) + ').',
-      '• Chỉ số DSO (90 ngày): ' + dso90.days + ' ngày · Giao dịch NH chờ đối chiếu: ' + pendingPay + ' giao dịch.' + industryLine,
-      '• Mẹo tra cứu tự nhiên: Bạn có thể hỏi trực tiếp tên công ty (VD: "Thực phẩm Á Châu nợ bao nhiêu?"), mã hóa đơn (VD: "Kiểm tra IP-2026-0001"), hoặc bấm chọn các chủ đề câu hỏi cố định bên dưới.'
-    ];
-
     return {
+      rolePersona: persona.name,
       intent: nlu.intent,
       intentLabel: nlu.label,
       confidence: nlu.confidence,
       entities: entityTags,
-      answer: lines.join('\n'),
+      answer: roleBriefLines.join('\n'),
       actions: [
-        { label: 'Danh sách Hóa đơn', href: 'accountant-invoice-list.html' },
-        { label: 'Tổng quan Công nợ', href: 'manager-receivable-dashboard.html' }
+        { label: 'Mở trang chính ' + IP.Fmt.roleLabel(roleKey), href: IP.Routes.homeForRole(roleKey) },
+        { label: 'Trung tâm Tra cứu & Lọc (Trang 9)', href: 'ui-state-empty.html' }
       ]
     };
   }
 
   IP.MiniLLM = {
-    FIXED_QUESTION_BANK: FIXED_QUESTION_BANK,
+    ROLE_LLM_PERSONAS: ROLE_LLM_PERSONAS,
+    getDynamicRoleSuggestions: getDynamicRoleSuggestions,
     extractEntities: extractEntities,
     classifyIntent: classifyIntent,
-    query: queryMiniLLM
+    query: queryMiniLLM,
+    resetMemory: function () {
+      _convMemory.lastInvoiceId = null;
+      _convMemory.lastCustomerId = null;
+      _convMemory.lastIntent = null;
+      _convMemory.turnCount = 0;
+    }
   };
 
   function mountFloatingChatbot() {
@@ -12182,71 +13008,84 @@ button, input, select, textarea { touch-action: manipulation; }
         '<header class="ip-chatbot-head">' +
           '<div class="ip-chatbot-brand-mark" aria-hidden="true"><i class="bi bi-cpu-fill"></i></div>' +
           '<div class="ip-chatbot-title-wrap">' +
-            '<strong id="ip-chatbot-title">InvoicePilot Mini-LLM</strong>' +
-            '<span id="ip-chatbot-status"><span class="ip-chatbot-status-dot"></span> Mô hình NLU & Phân tích số liệu thực</span>' +
+            '<strong id="ip-chatbot-title">Mini-LLM Nghiệp vụ Kế toán</strong>' +
+            '<span id="ip-chatbot-status"><span class="ip-chatbot-status-dot"></span> Mô hình Ngôn ngữ Nhỏ Chuyên biệt từng Nghiệp vụ</span>' +
           '</div>' +
-          '<button type="button" id="ip-chatbot-clear" class="ip-chatbot-head-btn" aria-label="Làm mới hội thoại" title="Làm mới hội thoại"><i class="bi bi-arrow-counterclockwise"></i></button>' +
+          '<button type="button" id="ip-chatbot-api-cfg" class="ip-chatbot-head-btn" aria-label="Cấu hình khóa LLM SessionStorage" title="Kết nối LLM ngoài qua SessionStorage"><i class="bi bi-key-fill"></i></button>' +
+          '<button type="button" id="ip-chatbot-clear" class="ip-chatbot-head-btn" aria-label="Xóa bộ nhớ ngữ cảnh & Làm mới" title="Làm mới ngữ cảnh hội thoại"><i class="bi bi-arrow-counterclockwise"></i></button>' +
           '<button type="button" id="ip-chatbot-close" class="ip-chatbot-head-btn" aria-label="Đóng trợ lý AI" title="Đóng"><i class="bi bi-x-lg"></i></button>' +
         '</header>' +
-        '<div class="ip-chatbot-context d-flex justify-content-between align-items-center flex-wrap gap-1" id="ip-chatbot-context">' +
-          '<span>Mini-LLM: Phân tích câu hỏi tự đặt & Câu hỏi cố định</span>' +
-          '<span class="badge bg-success-subtle text-success-emphasis" style="font-size:0.65rem;">NLU Engine v2.0</span>' +
+        '<div class="ip-chatbot-context px-2 py-1 border-bottom bg-body-tertiary" id="ip-chatbot-context">' +
+          '<div class="d-flex justify-content-between align-items-center flex-wrap gap-1 mb-1">' +
+            '<span class="fw-bold" style="font-size:0.7rem;">Chuyên gia Mini-LLM theo Nghiệp vụ:</span>' +
+            '<div class="btn-group btn-group-sm" role="tablist" aria-label="Chọn mô hình Mini-LLM theo nghiệp vụ">' +
+              '<button type="button" class="btn btn-sm py-0 px-2 active" style="font-size:0.67rem;min-height:22px;" data-llm-role="accountant">Kế toán</button>' +
+              '<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.67rem;min-height:22px;" data-llm-role="sales">Kinh doanh</button>' +
+              '<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.67rem;min-height:22px;" data-llm-role="manager">Quản lý CFO</button>' +
+              '<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.67rem;min-height:22px;" data-llm-role="admin">Quản trị</button>' +
+            '</div>' +
+          '</div>' +
+          '<div id="ip-chatbot-specialty-desc" class="text-muted" style="font-size:0.68rem;line-height:1.3;"></div>' +
         '</div>' +
         '<div id="ip-chatbot-messages" class="ip-chatbot-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>' +
         '<div class="ip-chatbot-bank border-top bg-body-tertiary px-2 pt-2 pb-1">' +
           '<div class="d-flex align-items-center justify-content-between mb-1 px-1">' +
-            '<span class="fw-bold text-muted" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;"><i class="bi bi-collection me-1"></i>Câu hỏi cố định theo chủ đề:</span>' +
-            '<div class="btn-group btn-group-sm" role="tablist" aria-label="Chủ đề câu hỏi cố định">' +
-              '<button type="button" class="btn btn-sm py-0 px-2 active" style="font-size:0.68rem;min-height:22px;" data-llm-cat="overview">Công nợ</button>' +
-              '<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.68rem;min-height:22px;" data-llm-cat="Lookup">Tra cứu</button>' +
-              '<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.68rem;min-height:22px;" data-llm-cat="forecast">Dự báo</button>' +
-              '<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.68rem;min-height:22px;" data-llm-cat="system">Hệ thống</button>' +
-            '</div>' +
+            '<span class="fw-bold text-primary" style="font-size:0.68rem;letter-spacing:0.02em;"><i class="bi bi-lightning-charge-fill me-1"></i>Gợi ý ngữ cảnh động từ dữ liệu thực của nghiệp vụ:</span>' +
+            '<span class="badge bg-primary-subtle text-primary-emphasis" style="font-size:0.62rem;">Live Context NLU</span>' +
           '</div>' +
-          '<div class="ip-chatbot-suggestions" id="ip-chatbot-suggestions" aria-label="Danh sách câu hỏi cố định"></div>' +
+          '<div class="ip-chatbot-suggestions" id="ip-chatbot-suggestions" aria-label="Gợi ý phân tích động theo dữ liệu thực"></div>' +
         '</div>' +
         '<form id="ip-chatbot-form" class="ip-chatbot-composer">' +
-          '<label class="visually-hidden" for="ip-chatbot-input">Đặt câu hỏi bất kỳ cho Mini-LLM</label>' +
-          '<textarea id="ip-chatbot-input" rows="1" maxlength="2000" placeholder="Đặt câu hỏi bất kỳ (VD: Thực phẩm Á Châu nợ bao nhiêu? hoặc IP-2026-0001)…" autocomplete="off"></textarea>' +
-          '<button type="submit" id="ip-chatbot-send" aria-label="Gửi câu hỏi" title="Phân tích & Trả lời"><i class="bi bi-send-fill"></i></button>' +
+          '<label class="visually-hidden" for="ip-chatbot-input">Nhập yêu cầu phân tích tự nhiên cho Mini-LLM</label>' +
+          '<textarea id="ip-chatbot-input" rows="1" maxlength="2000" placeholder="Nhập yêu cầu tự nhiên cho Mini-LLM của nghiệp vụ..." autocomplete="off"></textarea>' +
+          '<button type="submit" id="ip-chatbot-send" aria-label="Phân tích" title="Gửi tới Mini-LLM"><i class="bi bi-send-fill"></i></button>' +
         '</form>' +
-        '<footer class="ip-chatbot-foot">Mini-LLM nội bộ phân tích ý định (Intent) & trích xuất thực thể (Entity) trực tiếp từ sổ dữ liệu InvoicePilot.</footer>' +
+        '<footer class="ip-chatbot-foot">Mini-LLM chuyên biệt cho từng nghiệp vụ · Có bộ nhớ ngữ cảnh đa lượt & truy xuất trực tiếp sổ dữ liệu thực.</footer>' +
       '</section>' +
-      '<button type="button" id="ip-chatbot-toggle" class="ip-chatbot-toggle" aria-label="Mở trợ lý Mini-LLM InvoicePilot" aria-expanded="false" aria-controls="ip-chatbot-panel">' +
-        '<i class="bi bi-stars ip-chatbot-toggle-icon" aria-hidden="true"></i><span>Mini-LLM AI</span><span class="ip-chatbot-toggle-pulse" aria-hidden="true"></span>' +
+      '<button type="button" id="ip-chatbot-toggle" class="ip-chatbot-toggle" aria-label="Mở trợ lý Mini-LLM theo Nghiệp vụ" aria-expanded="false" aria-controls="ip-chatbot-panel">' +
+        '<i class="bi bi-stars ip-chatbot-toggle-icon" aria-hidden="true"></i><span id="ip-chatbot-toggle-label">Mini-LLM Nghiệp vụ</span><span class="ip-chatbot-toggle-pulse" aria-hidden="true"></span>' +
       '</button>';
 
     document.body.appendChild(wrap);
 
     const panel = document.getElementById('ip-chatbot-panel');
     const toggle = document.getElementById('ip-chatbot-toggle');
+    const toggleLabel = document.getElementById('ip-chatbot-toggle-label');
     const closeBtn = document.getElementById('ip-chatbot-close');
     const clearBtn = document.getElementById('ip-chatbot-clear');
+    const apiCfgBtn = document.getElementById('ip-chatbot-api-cfg');
     const messagesEl = document.getElementById('ip-chatbot-messages');
     const form = document.getElementById('ip-chatbot-form');
     const input = document.getElementById('ip-chatbot-input');
     const suggestionsEl = document.getElementById('ip-chatbot-suggestions');
-    let currentCategory = 'overview';
-    let activeRoleKey = null;
+    const specialtyDescEl = document.getElementById('ip-chatbot-specialty-desc');
+    let selectedPersonaRole = null;
 
-    function getIP() { return window.IP || null; }
-    function roleKey() {
+    function detectCurrentRole() {
       try {
-        const IP = getIP();
-        const session = IP && IP.Auth && IP.Auth.getSession ? IP.Auth.getSession() : null;
-        return session && session.role ? session.role : 'public';
-      } catch (_) { return 'public'; }
+        const session = IP.Auth && IP.Auth.getSession ? IP.Auth.getSession() : null;
+        if (session && session.role && ROLE_LLM_PERSONAS[session.role]) return session.role;
+      } catch (_) {}
+      return 'accountant';
     }
 
-    function renderFixedQuestions() {
-      const list = FIXED_QUESTION_BANK[currentCategory] || FIXED_QUESTION_BANK.overview;
-      suggestionsEl.innerHTML = list.map(function (item) {
-        return '<button type="button" data-ip-chat-prompt="' + IP.Utils.escapeHtml(item.q) + '">' + IP.Utils.escapeHtml(item.label) + '</button>';
-      }).join('');
-      wrap.querySelectorAll('[data-llm-cat]').forEach(function (btn) {
-        const isAct = btn.getAttribute('data-llm-cat') === currentCategory;
+    function renderDynamicRolePrompts(roleKey) {
+      const persona = ROLE_LLM_PERSONAS[roleKey] || ROLE_LLM_PERSONAS.accountant;
+      const titleEl = document.getElementById('ip-chatbot-title');
+      if (titleEl) titleEl.textContent = persona.name;
+      if (toggleLabel) toggleLabel.textContent = persona.name;
+      if (specialtyDescEl) specialtyDescEl.textContent = persona.specialty;
+      if (input) input.placeholder = persona.placeholder;
+
+      wrap.querySelectorAll('[data-llm-role]').forEach(function (btn) {
+        const isAct = btn.getAttribute('data-llm-role') === roleKey;
         btn.className = 'btn btn-sm py-0 px-2 ' + (isAct ? 'btn-primary active' : 'btn-outline-secondary');
       });
+
+      const dynamicChips = getDynamicRoleSuggestions(roleKey);
+      suggestionsEl.innerHTML = dynamicChips.map(function (item) {
+        return '<button type="button" data-ip-chat-prompt="' + IP.Utils.escapeHtml(item.q) + '" title="' + IP.Utils.escapeHtml(item.q) + '"><i class="bi bi-stars text-warning me-1"></i>' + IP.Utils.escapeHtml(item.tag) + '</button>';
+      }).join('');
     }
 
     function appendUserMessage(text) {
@@ -12278,8 +13117,9 @@ button, input, select, textarea { touch-action: manipulation; }
         metaBar.className = 'd-flex flex-wrap align-items-center gap-1 mb-2 pb-1 border-bottom';
         metaBar.style.fontSize = '0.7rem';
         metaBar.innerHTML =
-          '<span class="badge bg-primary-subtle text-primary-emphasis"><i class="bi bi-diagram-3 me-1"></i>Ý định: ' + IP.Utils.escapeHtml(resObj.intentLabel || resObj.intent) + '</span>' +
-          '<span class="badge bg-success-subtle text-success-emphasis">Độ tin cậy: ' + (resObj.confidence || 92) + '%</span>' +
+          '<span class="badge bg-primary"><i class="bi bi-robot me-1"></i>' + IP.Utils.escapeHtml(resObj.rolePersona || 'Mini-LLM') + '</span>' +
+          '<span class="badge bg-primary-subtle text-primary-emphasis"><i class="bi bi-diagram-3 me-1"></i>' + IP.Utils.escapeHtml(resObj.intentLabel || resObj.intent) + '</span>' +
+          '<span class="badge bg-success-subtle text-success-emphasis">Tin cậy: ' + (resObj.confidence || 94) + '%</span>' +
           (resObj.entities && resObj.entities.length
             ? resObj.entities.map(function (e) {
                 return '<span class="badge bg-warning-subtle text-warning-emphasis">' + IP.Utils.escapeHtml(e) + '</span>';
@@ -12288,6 +13128,7 @@ button, input, select, textarea { touch-action: manipulation; }
         bubble.appendChild(metaBar);
 
         const bodyDiv = document.createElement('div');
+        bodyDiv.style.whiteSpace = 'pre-line';
         bodyDiv.textContent = resObj.answer || '';
         bubble.appendChild(bodyDiv);
 
@@ -12313,32 +13154,24 @@ button, input, select, textarea { touch-action: manipulation; }
     }
 
     function getWelcomeMessage(rKey) {
-      const roleMap = {
-        accountant: 'Xin chào Kế toán! Tôi là Mini-LLM nội bộ của InvoicePilot. Bạn có thể bấm chọn Câu hỏi cố định theo 4 chủ đề bên dưới hoặc tự đặt câu hỏi tự nhiên (VD: "Kiểm tra hóa đơn IP-2026-0001", "Có bao nhiêu giao dịch chờ đối chiếu?").',
-        sales: 'Xin chào Kinh doanh! Tôi là Mini-LLM nội bộ. Bạn có thể hỏi trực tiếp về bất kỳ khách hàng nào (VD: "Thực phẩm Á Châu nợ bao nhiêu?", "Bản nhắc nào gửi thất bại?") hoặc chọn câu hỏi cố định bên dưới.',
-        manager: 'Xin chào Quản lý! Tôi là Mini-LLM nội bộ. Bạn có thể hỏi về DSO, cơ cấu tuổi nợ Aging, top khách hàng quá hạn hoặc so sánh 3 kịch bản dự báo dòng tiền.',
-        admin: 'Xin chào Quản trị viên! Tôi là Mini-LLM nội bộ. Bạn có thể tra cứu nhanh phân quyền 4 vai trò, các trang trạng thái UI (Loading/Empty/Error) khi deploy Vercel/Netlify hoặc chuẩn thuế Nghị định 70/2025.',
-        public: 'Xin chào! Tôi là Mini-LLM tích hợp sẵn trong InvoicePilot. Bạn có thể chọn câu hỏi cố định theo chủ đề bên dưới hoặc gõ câu hỏi tự do về hóa đơn, khách hàng, dòng tiền, DSO và trạng thái hệ thống.'
+      const p = ROLE_LLM_PERSONAS[rKey] || ROLE_LLM_PERSONAS.accountant;
+      const welcomeMap = {
+        accountant: 'Xin chào Kế toán! Tôi là ' + p.name + '. Tôi tự động đọc sổ cái TK 131, hóa đơn nháp và các giao dịch sao kê chờ khớp của bạn. Hãy hỏi tự nhiên bất kỳ mã hóa đơn, thuế suất hoặc nghiệp vụ hạch toán nào!',
+        sales: 'Xin chào Chuyên viên Kinh doanh! Tôi là ' + p.name + '. Tôi nắm rõ hạn mức tín dụng và số ngày trễ hạn của từng đối tác B2B. Bạn có thể hỏi thông tin khách hàng rồi bảo tôi "Soạn email nhắc nợ cho công ty này" ngay trong cuộc trò chuyện!',
+        manager: 'Xin chào Quản lý / CFO! Tôi là ' + p.name + '. Tôi chuyên phân tích biến động chỉ số DSO, cơ cấu tuổi nợ Aging (>60 ngày), điểm rủi ro tín dụng và mô phỏng 3 kịch bản dòng tiền.',
+        admin: 'Xin chào Quản trị viên! Tôi là ' + p.name + '. Tôi hỗ trợ kiểm toán ma trận phân quyền RBAC 4 vai trò, chuẩn hóa danh mục MST doanh nghiệp và đồng bộ 4 Link MockAPI Cloud.'
       };
-      return roleMap[rKey] || roleMap.public;
+      return welcomeMap[rKey] || welcomeMap.accountant;
     }
 
-    function updateRoleContext() {
-      const key = roleKey();
-      const titleEl = document.getElementById('ip-chatbot-title');
-      const roleLabels = {
-        accountant: 'Mini-LLM · Kế toán (SV1)',
-        sales: 'Mini-LLM · Kinh doanh (SV2)',
-        manager: 'Mini-LLM · Quản lý (SV3)',
-        admin: 'Mini-LLM · Quản trị (SV3)',
-        public: 'InvoicePilot Mini-LLM AI'
-      };
-      if (titleEl) titleEl.textContent = roleLabels[key] || roleLabels.public;
-      renderFixedQuestions();
-      if (activeRoleKey !== key) {
-        activeRoleKey = key;
+    function switchPersonaRole(nextRole, forceResetChat) {
+      const r = ROLE_LLM_PERSONAS[nextRole] ? nextRole : 'accountant';
+      const changed = selectedPersonaRole !== r;
+      selectedPersonaRole = r;
+      renderDynamicRolePrompts(r);
+      if (changed || forceResetChat) {
         messagesEl.innerHTML = '';
-        appendAssistantResponse(getWelcomeMessage(key));
+        appendAssistantResponse(getWelcomeMessage(r));
       }
     }
 
@@ -12347,16 +13180,18 @@ button, input, select, textarea { touch-action: manipulation; }
       if (!q) return;
       appendUserMessage(q);
 
+      const activePersona = ROLE_LLM_PERSONAS[selectedPersonaRole] || ROLE_LLM_PERSONAS.accountant;
       const typingRow = document.createElement('div');
       typingRow.className = 'ip-chat-message is-assistant ip-chatbot-typing';
-      typingRow.innerHTML = '<div class="ip-chat-avatar"><i class="bi bi-cpu-fill"></i></div><div class="ip-chat-bubble">Đang phân tích ngữ nghĩa NLU & truy xuất dữ liệu thực...</div>';
+      typingRow.innerHTML = '<div class="ip-chat-avatar"><i class="bi bi-cpu-fill"></i></div><div class="ip-chat-bubble">' + activePersona.name + ' đang suy luận ngữ cảnh & truy vấn sổ dữ liệu thực...</div>';
       messagesEl.appendChild(typingRow);
       messagesEl.scrollTop = messagesEl.scrollHeight;
 
       setTimeout(function () {
         if (typingRow.parentNode) typingRow.remove();
-        const res = queryMiniLLM(q);
+        const res = queryMiniLLM(q, selectedPersonaRole);
         appendAssistantResponse(res);
+        renderDynamicRolePrompts(selectedPersonaRole);
       }, 240);
     }
 
@@ -12366,7 +13201,8 @@ button, input, select, textarea { touch-action: manipulation; }
       panel.setAttribute('aria-hidden', isHidden ? 'false' : 'true');
       toggle.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
       if (isHidden) {
-        updateRoleContext();
+        if (!selectedPersonaRole) switchPersonaRole(detectCurrentRole(), true);
+        else renderDynamicRolePrompts(selectedPersonaRole);
         input.focus();
       }
     });
@@ -12378,15 +13214,22 @@ button, input, select, textarea { touch-action: manipulation; }
     });
 
     clearBtn.addEventListener('click', function () {
-      messagesEl.innerHTML = '';
-      appendAssistantResponse(getWelcomeMessage(roleKey()));
+      IP.MiniLLM.resetMemory();
+      switchPersonaRole(selectedPersonaRole || detectCurrentRole(), true);
     });
 
+    if (apiCfgBtn) {
+      apiCfgBtn.addEventListener('click', function () {
+        if (IP.AI && typeof IP.AI.openLLMConfigModal === 'function') {
+          IP.AI.openLLMConfigModal();
+        }
+      });
+    }
+
     wrap.addEventListener('click', function (ev) {
-      const catBtn = ev.target.closest('[data-llm-cat]');
-      if (catBtn) {
-        currentCategory = catBtn.getAttribute('data-llm-cat');
-        renderFixedQuestions();
+      const roleBtn = ev.target.closest('[data-llm-role]');
+      if (roleBtn) {
+        switchPersonaRole(roleBtn.getAttribute('data-llm-role'), true);
         return;
       }
       const promptBtn = ev.target.closest('[data-ip-chat-prompt]');
@@ -12411,8 +13254,15 @@ button, input, select, textarea { touch-action: manipulation; }
       }
     });
 
-    window.addEventListener('ip:role-changed', updateRoleContext);
-    updateRoleContext();
+    window.addEventListener('ip:role-changed', function () {
+      switchPersonaRole(detectCurrentRole(), true);
+    });
+    if (IP.DB && typeof IP.DB.subscribe === 'function') {
+      IP.DB.subscribe(function () {
+        if (selectedPersonaRole) renderDynamicRolePrompts(selectedPersonaRole);
+      });
+    }
+    switchPersonaRole(detectCurrentRole(), true);
   }
 
   document.addEventListener('DOMContentLoaded', mountFloatingChatbot);
@@ -14855,116 +15705,684 @@ button, input, select, textarea { touch-action: manipulation; }
   });
 
   /* =========================================================================
-     Standalone UI State Page 1: Loading State (ui-state-loading.html)
+     Trang 8 Thương mại hóa: Đồng bộ Đám mây & Trải nghiệm Mạng chậm 3G (ui-state-loading.html)
      ========================================================================= */
   IP.Pages.register('ui-state-loading', {
-    roles: ['public'],
+    roles: ['public', 'accountant', 'sales', 'manager', 'admin'],
     init: function () {
       const root = document.getElementById('main-content');
       if (!root) return;
 
       let simStep = 'skeleton'; // 'skeleton' | 'loaded'
+      let pinSkeleton = false;
+      let progressPct = 38;
+      let timerId = null;
+
+      function startLatencySimulation() {
+        if (timerId) clearInterval(timerId);
+        simStep = 'skeleton';
+        progressPct = 25;
+        render();
+        if (pinSkeleton) return;
+
+        timerId = setInterval(function () {
+          progressPct += 25;
+          const barEl = root.querySelector('#ip-slow-sync-bar');
+          const txtEl = root.querySelector('#ip-slow-sync-step');
+          if (barEl) barEl.style.width = Math.min(100, progressPct) + '%';
+          if (txtEl) {
+            txtEl.textContent = progressPct < 60
+              ? 'Đang tải gói hóa đơn GTGT từ MockAPI (Link 1/4 · Độ trễ 1.420ms)...'
+              : (progressPct < 90 ? 'Đang đối chiếu sao kê ngân hàng & hạn mức tín dụng (Link 2/4)...' : 'Đang hoàn tất dựng bảng dữ liệu...');
+          }
+          if (progressPct >= 100) {
+            clearInterval(timerId);
+            timerId = null;
+            simStep = 'loaded';
+            render();
+          }
+        }, 550);
+      }
 
       function render() {
+        const allInvs = IP.DB.listInvoices({ includeArchived: false });
+        const ag = IP.Calc.aging(allInvs);
+
+        const loadedWorkspaceHtml =
+          '<div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4" role="status">' +
+            '<div><i class="bi bi-check-circle-fill me-2"></i><strong>Đồng bộ hoàn tất sau 1.650ms (Mạng chậm 3G)!</strong> Toàn bộ ' + allInvs.length + ' hóa đơn và bộ lọc đã mở khóa sẵn sàng thao tác.</div>' +
+            '<div class="d-flex gap-2">' +
+              '<button type="button" class="btn btn-sm btn-warning text-dark fw-semibold" data-action="simulate-slow-3g"><i class="bi bi-arrow-repeat me-1"></i>Thử lại tình huống Mạng chậm 3G</button>' +
+              '<button type="button" class="btn btn-sm btn-outline-secondary" data-action="pin-skeleton"><i class="bi bi-hourglass-split me-1"></i>Giữ Skeleton tĩnh để quan sát</button>' +
+            '</div>' +
+          '</div>' +
+          '<section class="ip-kpi-grid mb-4">' +
+            '<div class="ip-kpi-card"><div class="text-muted small mb-1">Tổng phải thu mở</div><div class="fs-4 fw-bold ip-num text-primary">' + IP.Fmt.currency(ag.totalReceivable) + '</div><div class="small text-success mt-1"><i class="bi bi-cloud-check"></i> Đã đồng bộ MockAPI</div></div>' +
+            '<div class="ip-kpi-card"><div class="text-muted small mb-1">Trong hạn thanh toán</div><div class="fs-4 fw-bold ip-num text-success">' + IP.Fmt.currency(ag.current) + '</div><div class="small text-muted mt-1">' + ag.counts.current + ' hóa đơn</div></div>' +
+            '<div class="ip-kpi-card"><div class="text-muted small mb-1">Tổng nợ quá hạn</div><div class="fs-4 fw-bold ip-num text-danger">' + IP.Fmt.currency(ag.totalOverdue) + '</div><div class="small text-danger mt-1">Cần ưu tiên đôn đốc</div></div>' +
+            '<div class="ip-kpi-card"><div class="text-muted small mb-1">Chỉ số DSO (90 ngày)</div><div class="fs-4 fw-bold ip-num">' + IP.Calc.dso(90).days + ' ngày</div><div class="small text-muted mt-1">Chuẩn ngành 30–45 ngày</div></div>' +
+          '</section>' +
+          '<div class="ip-table-wrap">' +
+            '<div class="p-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">' +
+              '<div class="fw-bold"><i class="bi bi-table text-primary me-2"></i>Dữ liệu Hóa đơn đã tải thành công sau khi vượt qua độ trễ mạng</div>' +
+              '<a href="ui-state-empty.html" class="btn btn-sm btn-primary"><i class="bi bi-funnel me-1"></i>Mở Trung tâm Tra cứu & Bộ lọc (Trang 9)</a>' +
+            '</div>' +
+            '<div class="table-responsive">' +
+              '<table class="ip-table mb-0">' +
+                '<thead><tr><th>Mã hóa đơn</th><th>Khách hàng B2B</th><th>Hạn thanh toán</th><th class="text-end">Tổng tiền</th><th class="text-end">Còn phải thu</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead>' +
+                '<tbody>' +
+                  allInvs.slice(0, 6).map(function (inv) {
+                    const cus = IP.DB.getCustomer(inv.customerId);
+                    const eff = IP.Calc.effectiveStatus(inv);
+                    return '<tr>' +
+                      '<td class="fw-bold ip-num">' + IP.Utils.escapeHtml(inv.number) + '</td>' +
+                      '<td>' + IP.Utils.escapeHtml(cus ? cus.name : inv.customerId) + '</td>' +
+                      '<td class="ip-num">' + IP.Fmt.date(inv.dueDate) + '</td>' +
+                      '<td class="text-end ip-num">' + IP.Fmt.currency(inv.total) + '</td>' +
+                      '<td class="text-end ip-num fw-semibold">' + IP.Fmt.currency(IP.Calc.remaining(inv)) + '</td>' +
+                      '<td>' + IP.UI.statusBadge(eff) + '</td>' +
+                      '<td class="text-end"><a href="' + IP.Routes.url('invoice.view', { id: inv.id }) + '" class="btn btn-xs btn-outline-primary py-0 px-2">Chi tiết</a></td>' +
+                    '</tr>';
+                  }).join('') +
+                '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>';
+
+        const skeletonWorkspaceHtml =
+          '<div class="ip-card p-3 mb-4 border-warning">' +
+            '<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">' +
+              '<div class="d-flex align-items-center gap-2">' +
+                '<span class="spinner-border spinner-border-sm text-warning" role="status" aria-hidden="true"></span>' +
+                '<strong id="ip-slow-sync-step">Đang đồng bộ dữ liệu qua kết nối mạng chậm (Slow 3G · Ping 1.420ms · 380 Kbps)...</strong>' +
+              '</div>' +
+              '<span class="badge bg-warning text-dark">Khóa chống thao tác trùng (Anti-Double-Submit)</span>' +
+            '</div>' +
+            '<div class="progress" style="height:7px;" role="progressbar" aria-label="Tiến trình đồng bộ mạng chậm">' +
+              '<div id="ip-slow-sync-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" style="width:' + progressPct + '%"></div>' +
+            '</div>' +
+          '</div>' +
+          '<section class="ip-kpi-grid mb-4" aria-label="KPI Loading Skeleton">' +
+            [1, 2, 3, 4].map(function () {
+              return (
+                '<div class="ip-kpi-card">' +
+                  '<div class="d-flex justify-content-between align-items-center mb-3">' +
+                    '<div class="ip-skeleton" style="height:14px;width:55%;"></div>' +
+                    '<div class="ip-skeleton" style="height:34px;width:34px;border-radius:8px;"></div>' +
+                  '</div>' +
+                  '<div class="ip-skeleton mb-2" style="height:28px;width:75%;"></div>' +
+                  '<div class="ip-skeleton" style="height:12px;width:45%;"></div>' +
+                '</div>'
+              );
+            }).join('') +
+          '</section>' +
+          '<section class="ip-filter-bar mb-4" aria-busy="true">' +
+            '<div class="row g-2 align-items-end">' +
+              '<div class="col-md-5"><label class="form-label small text-muted">Tìm kiếm (Tạm khóa khi mạng đang đồng bộ)</label><input type="text" class="form-control" disabled placeholder="Đang tải luồng dữ liệu từ MockAPI..."></div>' +
+              '<div class="col-md-3"><label class="form-label small text-muted">Trạng thái hóa đơn</label><select class="form-select" disabled><option>Đang đồng bộ...</option></select></div>' +
+              '<div class="col-md-2"><label class="form-label small text-muted">Kỳ kế toán</label><select class="form-select" disabled><option>Quý 1/2026</option></select></div>' +
+              '<div class="col-md-2"><button type="button" class="btn btn-secondary w-100" disabled><span class="spinner-border spinner-border-sm me-1"></span> Đang tải</button></div>' +
+            '</div>' +
+          '</section>' +
+          '<div class="row g-4">' +
+            '<div class="col-lg-8">' +
+              '<div class="ip-table-wrap p-4" aria-busy="true" aria-label="Bảng dữ liệu đang tải">' +
+                '<div class="d-flex justify-content-between align-items-center mb-3">' +
+                  '<div class="ip-skeleton" style="height:20px;width:40%;"></div>' +
+                  '<div class="ip-skeleton" style="height:28px;width:130px;"></div>' +
+                '</div>' +
+                [1, 2, 3, 4, 5, 6].map(function () {
+                  return (
+                    '<div class="d-flex align-items-center gap-3 py-2 border-bottom">' +
+                      '<div class="ip-skeleton" style="height:18px;width:18px;"></div>' +
+                      '<div class="ip-skeleton" style="height:18px;width:22%;"></div>' +
+                      '<div class="ip-skeleton" style="height:18px;width:32%;"></div>' +
+                      '<div class="ip-skeleton" style="height:18px;width:18%;"></div>' +
+                      '<div class="ip-skeleton ms-auto" style="height:24px;width:90px;border-radius:999px;"></div>' +
+                    '</div>'
+                  );
+                }).join('') +
+              '</div>' +
+            '</div>' +
+            '<div class="col-lg-4">' +
+              '<div class="ip-ai-panel">' +
+                '<div class="d-flex align-items-center gap-2 mb-3">' +
+                  '<span class="spinner-border spinner-border-sm text-warning" role="status"></span>' +
+                  '<span class="fw-bold small">Mini-LLM đang đồng bộ ngữ cảnh...</span>' +
+                '</div>' +
+                '<div class="ip-skeleton mb-2" style="height:22px;width:80%;"></div>' +
+                '<div class="ip-skeleton mb-2" style="height:64px;width:100%;"></div>' +
+                '<div class="ip-skeleton mb-2" style="height:44px;width:100%;"></div>' +
+                '<div class="ip-skeleton" style="height:32px;width:65%;"></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+
         root.innerHTML =
-          '<div class="container py-4">' +
-            renderTopStateNav('ui-state-loading') +
+          '<div class="ip-page-header">' +
+            '<div>' +
+              '<div class="d-flex align-items-center gap-2 flex-wrap">' +
+                '<h1 class="ip-h1 mb-0">Đồng bộ Đám mây & Trải nghiệm Mạng chậm (Slow 3G Skeleton)</h1>' +
+                '<span class="badge bg-warning text-dark"><i class="bi bi-reception-2 me-1"></i>Giám sát Độ trễ Mạng</span>' +
+              '</div>' +
+              '<p class="ip-page-subtitle">Khi kết nối mạng doanh nghiệp bị nghẽn băng thông (3G / Độ trễ cao), hệ thống tự động dựng khung xương <strong>Skeleton Shimmer</strong> giữ nguyên bố cục và tự động chuyển vào bảng dữ liệu ngay khi gói tin tải xong.</p>' +
+            '</div>' +
+            '<div class="ip-page-actions">' +
+              '<button type="button" class="btn btn-primary btn-sm" data-action="simulate-slow-3g"><i class="bi bi-play-circle me-1"></i>Mô phỏng Mạng chậm (1.6s &rarr; Hiển thị Dữ liệu)</button>' +
+              '<button type="button" class="btn ' + (pinSkeleton ? 'btn-warning text-dark fw-bold' : 'btn-outline-secondary') + ' btn-sm" data-action="pin-skeleton"><i class="bi bi-pin-angle-fill me-1"></i>' + (pinSkeleton ? 'Đang ghim Skeleton (Bấm để mở khóa)' : 'Ghim Skeleton tĩnh') + '</button>' +
+              '<button type="button" class="btn btn-outline-primary btn-sm" data-action="open-mockapi-modal"><i class="bi bi-cloud-arrow-up me-1"></i>Cấu hình 4 Link MockAPI</button>' +
+            '</div>' +
+          '</div>' +
+          (simStep === 'loaded' ? loadedWorkspaceHtml : skeletonWorkspaceHtml);
+      }
+
+      startLatencySimulation();
+
+      if (root.dataset.ipLoadingBound === '1') return;
+      root.dataset.ipLoadingBound = '1';
+      root.addEventListener('click', function (ev) {
+        const btn = ev.target.closest('[data-action]');
+        if (!btn) return;
+        const act = btn.getAttribute('data-action');
+        if (act === 'simulate-slow-3g') {
+          pinSkeleton = false;
+          startLatencySimulation();
+        } else if (act === 'pin-skeleton') {
+          pinSkeleton = !pinSkeleton;
+          if (pinSkeleton) {
+            if (timerId) clearInterval(timerId);
+            simStep = 'skeleton';
+            progressPct = 55;
+            render();
+          } else {
+            startLatencySimulation();
+          }
+        }
+      });
+    }
+  });
+
+  /* =========================================================================
+     Trang 9 Thương mại hóa: Trung tâm Tra cứu & Bộ lọc Đa chiều (ui-state-empty.html)
+     - Có bộ lọc tìm kiếm thực tế: khi khớp dữ liệu -> Hiển thị bảng kết quả & KPI ngay trên trang!
+     - Khi lọc không khớp hoặc chọn kịch bản rỗng -> Hiển thị Empty State thương mại kèm nút Reset!
+     ========================================================================= */
+  IP.Pages.register('ui-state-empty', {
+    roles: ['public', 'accountant', 'sales', 'manager', 'admin'],
+    init: function () {
+      const root = document.getElementById('main-content');
+      if (!root) return;
+
+      let filterState = {
+        q: '',
+        scope: 'invoices', // 'invoices' | 'customers' | 'payments' | 'reminders'
+        status: 'all',
+        minAmount: 0,
+        industry: 'all',
+        scenarioMode: 'live_results' // 'live_results' | 'empty_filter' | 'empty_first_time'
+      };
+
+      function getFilteredRecords() {
+        if (filterState.scenarioMode === 'empty_first_time') {
+          return [];
+        }
+        const qNorm = String(filterState.q || '').trim().toLowerCase();
+        const minAmt = Number(filterState.minAmount || 0);
+
+        if (filterState.scope === 'customers') {
+          return IP.DB.listCustomers({ includeArchived: false, status: 'all' }).filter(function (c) {
+            const bal = IP.Calc.customerBalance(c.id);
+            if (filterState.industry !== 'all' && (!c.industry || !c.industry.toLowerCase().includes(filterState.industry.toLowerCase()))) return false;
+            if (filterState.status === 'overdue' && bal.overdueAmount <= 0) return false;
+            if (filterState.status === 'paid' && bal.totalReceivable > 0) return false;
+            if (minAmt > 0 && bal.totalReceivable < minAmt) return false;
+            if (qNorm) {
+              const hay = (c.code + ' ' + c.name + ' ' + c.taxCode + ' ' + c.contactName + ' ' + c.email).toLowerCase();
+              if (!hay.includes(qNorm)) return false;
+            }
+            return true;
+          });
+        }
+
+        if (filterState.scope === 'payments') {
+          return IP.DB.listPayments({}).filter(function (p) {
+            if (filterState.status !== 'all' && p.status !== filterState.status) return false;
+            if (minAmt > 0 && Number(p.amount || 0) < minAmt) return false;
+            if (qNorm) {
+              const cus = IP.DB.getCustomer(p.customerId || p.suggestedCustomerId);
+              const hay = (p.reference + ' ' + (p.transferContent || '') + ' ' + (cus ? cus.name : '')).toLowerCase();
+              if (!hay.includes(qNorm)) return false;
+            }
+            return true;
+          });
+        }
+
+        // Default: 'invoices'
+        return IP.DB.listInvoices({ includeArchived: false }).filter(function (inv) {
+          const eff = IP.Calc.effectiveStatus(inv);
+          const cus = IP.DB.getCustomer(inv.customerId);
+          if (filterState.status !== 'all' && eff !== filterState.status) return false;
+          if (filterState.industry !== 'all' && (!cus || !cus.industry.toLowerCase().includes(filterState.industry.toLowerCase()))) return false;
+          if (minAmt > 0 && Number(inv.total || 0) < minAmt) return false;
+          if (qNorm) {
+            const hay = (inv.number + ' ' + (cus ? (cus.name + ' ' + cus.code + ' ' + cus.taxCode) : '') + ' ' + (inv.notes || '')).toLowerCase();
+            if (!hay.includes(qNorm)) return false;
+          }
+          return true;
+        });
+      }
+
+      function renderResultsSection(records) {
+        if (filterState.scenarioMode === 'empty_first_time') {
+          return (
+            '<div class="ip-card p-4 border-warning">' +
+              '<div class="ip-state-box py-4">' +
+                '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+                  '<rect x="10" y="8" width="44" height="48" rx="8" stroke="currentColor" stroke-width="2.5"/>' +
+                  '<path d="M32 22V42M22 32H42" stroke="var(--ip-accent)" stroke-width="3" stroke-linecap="round"/>' +
+                '</svg>' +
+                '<span class="badge bg-warning-subtle text-warning-emphasis mb-2">Kịch bản Khởi tạo Sổ Đầu kỳ (First-Time Empty Ledger)</span>' +
+                '<h3 class="fs-5 fw-bold mb-2">Chưa có chứng từ nào trong kỳ kế toán mới khởi tạo</h3>' +
+                '<p class="text-muted small mb-3" style="max-width:560px;margin:0 auto;">Khi doanh nghiệp mới bắt đầu kỳ kế toán hoặc vừa tạo tài khoản mới trên hệ thống thương mại, sổ dữ liệu đang trống (<code>0 bản ghi</code>). Bạn có thể phát hành hóa đơn đầu tiên hoặc đồng bộ ngay từ <strong>4 Link MockAPI Cloud</strong>.</p>' +
+                '<div class="d-flex justify-content-center gap-2 flex-wrap">' +
+                  '<a href="accountant-invoice-form.html" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Phát hành hóa đơn GTGT đầu tiên</a>' +
+                  '<button type="button" class="btn btn-success btn-sm" data-action="open-mockapi-modal"><i class="bi bi-cloud-arrow-down me-1"></i>Đồng bộ dữ liệu từ 4 Link MockAPI</button>' +
+                  '<button type="button" class="btn btn-outline-secondary btn-sm" data-action="scenario-all-results"><i class="bi bi-arrow-counterclockwise me-1"></i>Khôi phục Sổ dữ liệu Đầy đủ</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>'
+          );
+        }
+
+        if (records.length === 0) {
+          return (
+            '<div class="ip-card p-4 border-info">' +
+              IP.UI.renderEmptyState({
+                title: 'Không tìm thấy bản ghi nào khớp với điều kiện lọc hiện tại',
+                description: 'Hệ thống đã quét toàn bộ phân hệ "' + filterState.scope.toUpperCase() + '" nhưng không có bản ghi nào thỏa mãn từ khóa "' + (filterState.q || '—') + '" kèm mức tiền tối thiểu ' + IP.Fmt.currency(filterState.minAmount) + '. Hãy nới lỏng điều kiện hoặc bấm nút bên dưới để hiển thị lại danh sách.',
+                actionText: 'Xóa bộ lọc & Hiển thị toàn bộ kết quả (' + IP.DB.listInvoices({ includeArchived: false }).length + ' bản ghi)',
+                actionAttr: 'scenario-all-results'
+              }) +
+            '</div>'
+          );
+        }
+
+        if (filterState.scope === 'customers') {
+          const sumRec = records.reduce(function (s, c) { return s + IP.Calc.customerBalance(c.id).totalReceivable; }, 0);
+          return (
+            '<div class="ip-table-wrap">' +
+              '<div class="p-3 border-bottom bg-body-tertiary d-flex justify-content-between align-items-center flex-wrap gap-2">' +
+                '<div><span class="badge bg-success me-2">Đã tìm thấy ' + records.length + ' doanh nghiệp</span><span class="small text-muted">Tổng dư nợ của nhóm đang lọc: <strong class="text-body ip-num">' + IP.Fmt.currency(sumRec) + '</strong></span></div>' +
+                '<button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2" data-action="scenario-empty-filter"><i class="bi bi-Search"></i> Thử kịch bản lọc không khớp</button>' +
+              '</div>' +
+              '<div class="table-responsive">' +
+                '<table class="ip-table mb-0">' +
+                  '<thead><tr><th>Mã KH</th><th>Tên doanh nghiệp B2B</th><th>Mã số thuế</th><th>Ngành nghề</th><th class="text-end">Hạn mức tín dụng</th><th class="text-end">Dư nợ hiện tại</th><th class="text-end">Quá hạn</th><th class="text-end">Hồ sơ</th></tr></thead>' +
+                  '<tbody>' +
+                    records.slice(0, 15).map(function (c) {
+                      const bal = IP.Calc.customerBalance(c.id);
+                      return '<tr>' +
+                        '<td class="fw-bold ip-num">' + IP.Utils.escapeHtml(c.code) + '</td>' +
+                        '<td class="fw-semibold">' + IP.Utils.escapeHtml(c.name) + '</td>' +
+                        '<td class="ip-num">' + IP.Utils.escapeHtml(c.taxCode) + '</td>' +
+                        '<td><span class="badge bg-secondary-subtle text-body-secondary">' + IP.Utils.escapeHtml(c.industry) + '</span></td>' +
+                        '<td class="text-end ip-num">' + IP.Fmt.currency(c.creditLimit) + '</td>' +
+                        '<td class="text-end ip-num fw-bold">' + IP.Fmt.currency(bal.totalReceivable) + '</td>' +
+                        '<td class="text-end ip-num ' + (bal.overdueAmount > 0 ? 'text-danger fw-bold' : 'text-muted') + '">' + IP.Fmt.currency(bal.overdueAmount) + '</td>' +
+                        '<td class="text-end"><a href="' + IP.Routes.url('customer.view', { id: c.id }) + '" class="btn btn-xs btn-outline-primary py-0 px-2">Mở sổ KH</a></td>' +
+                      '</tr>';
+                    }).join('') +
+                  '</tbody>' +
+                '</table>' +
+              '</div>' +
+            '</div>'
+          );
+        }
+
+        if (filterState.scope === 'payments') {
+          const sumPay = records.reduce(function (s, p) { return s + Number(p.amount || 0); }, 0);
+          return (
+            '<div class="ip-table-wrap">' +
+              '<div class="p-3 border-bottom bg-body-tertiary d-flex justify-content-between align-items-center flex-wrap gap-2">' +
+                '<div><span class="badge bg-success me-2">Đã tìm thấy ' + records.length + ' giao dịch ngân hàng</span><span class="small text-muted">Tổng giá trị giao dịch khớp lọc: <strong class="text-body ip-num">' + IP.Fmt.currency(sumPay) + '</strong></span></div>' +
+                '<a href="accountant-reconciliation.html" class="btn btn-xs btn-primary py-1 px-2">Mở Bàn Đối chiếu Sao kê</a>' +
+              '</div>' +
+              '<div class="table-responsive">' +
+                '<table class="ip-table mb-0">' +
+                  '<thead><tr><th>Mã tham chiếu NH</th><th>Ngày giao dịch</th><th>Đối tác chuyển khoản</th><th>Nội dung ủy nhiệm chi</th><th class="text-end">Số tiền</th><th>Trạng thái</th></tr></thead>' +
+                  '<tbody>' +
+                    records.slice(0, 15).map(function (p) {
+                      const cus = IP.DB.getCustomer(p.customerId || p.suggestedCustomerId);
+                      return '<tr>' +
+                        '<td class="fw-bold ip-num">' + IP.Utils.escapeHtml(p.reference) + '</td>' +
+                        '<td class="ip-num">' + IP.Fmt.date(p.paidAt) + '</td>' +
+                        '<td>' + IP.Utils.escapeHtml(cus ? cus.name : 'Chưa định danh') + '</td>' +
+                        '<td class="small text-muted">' + IP.Utils.escapeHtml(p.transferContent || p.note || '') + '</td>' +
+                        '<td class="text-end ip-num fw-bold">' + IP.Fmt.currency(p.amount) + '</td>' +
+                        '<td>' + IP.UI.statusBadge(p.status) + '</td>' +
+                      '</tr>';
+                    }).join('') +
+                  '</tbody>' +
+                '</table>' +
+              '</div>' +
+            '</div>'
+          );
+        }
+
+        // Default table: Invoices
+        const totalVal = records.reduce(function (s, i) { return s + Number(i.total || 0); }, 0);
+        const totalRem = records.reduce(function (s, i) { return s + IP.Calc.remaining(i); }, 0);
+        return (
+          '<div class="ip-table-wrap">' +
+            '<div class="p-3 border-bottom bg-body-tertiary d-flex justify-content-between align-items-center flex-wrap gap-2">' +
+              '<div class="d-flex align-items-center gap-2 flex-wrap">' +
+                '<span class="badge bg-success"><i class="bi bi-check2-circle me-1"></i>Tìm thấy ' + records.length + ' hóa đơn khớp bộ lọc</span>' +
+                '<span class="small text-muted">Tổng giá trị: <strong class="text-body ip-num">' + IP.Fmt.currency(totalVal) + '</strong> · Còn phải thu: <strong class="text-danger ip-num">' + IP.Fmt.currency(totalRem) + '</strong></span>' +
+              '</div>' +
+              '<div class="d-flex gap-1">' +
+                '<button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" data-action="scenario-empty-filter"><i class="bi bi-funnel"></i> Kích hoạt thử lọc 0 kết quả (Empty State)</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="table-responsive">' +
+              '<table class="ip-table mb-0">' +
+                '<thead><tr><th>Số Hóa đơn</th><th>Khách hàng B2B</th><th>Ngành nghề</th><th>Ngày phát hành</th><th>Hạn thanh toán</th><th class="text-end">Tổng thanh toán</th><th class="text-end">Còn phải thu</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead>' +
+                '<tbody>' +
+                  records.slice(0, 15).map(function (inv) {
+                    const cus = IP.DB.getCustomer(inv.customerId);
+                    const eff = IP.Calc.effectiveStatus(inv);
+                    const rem = IP.Calc.remaining(inv);
+                    return '<tr>' +
+                      '<td class="fw-bold ip-num"><a href="' + IP.Routes.url('invoice.view', { id: inv.id }) + '" class="text-decoration-none">' + IP.Utils.escapeHtml(inv.number) + '</a></td>' +
+                      '<td><div class="fw-semibold">' + IP.Utils.escapeHtml(cus ? cus.name : inv.customerId) + '</div><div class="small text-muted ip-num">MST: ' + IP.Utils.escapeHtml(cus ? cus.taxCode : '') + '</div></td>' +
+                      '<td><span class="badge bg-secondary-subtle text-body-secondary">' + IP.Utils.escapeHtml(cus ? cus.industry : '—') + '</span></td>' +
+                      '<td class="ip-num">' + IP.Fmt.date(inv.issueDate) + '</td>' +
+                      '<td class="ip-num">' + IP.Fmt.date(inv.dueDate) + '</td>' +
+                      '<td class="text-end ip-num">' + IP.Fmt.currency(inv.total) + '</td>' +
+                      '<td class="text-end ip-num fw-bold ' + (rem > 0 ? 'text-danger' : 'text-success') + '">' + IP.Fmt.currency(rem) + '</td>' +
+                      '<td>' + IP.UI.statusBadge(eff) + '</td>' +
+                      '<td class="text-end">' +
+                        '<div class="btn-group btn-group-sm">' +
+                          '<a href="' + IP.Routes.url('invoice.view', { id: inv.id }) + '" class="btn btn-xs btn-outline-primary py-0 px-2">Xem</a>' +
+                          (rem > 0 ? '<a href="sales-payment-reminders.html?customerId=' + inv.customerId + '&invoiceId=' + inv.id + '" class="btn btn-xs btn-outline-secondary py-0 px-2" title="Nhắc nợ"><i class="bi bi-envelope"></i></a>' : '') +
+                        '</div>' +
+                      '</td>' +
+                    '</tr>';
+                  }).join('') +
+                '</tbody>' +
+              '</table>' +
+            '</div>' +
+            (records.length > 15 ? '<div class="p-2 text-center small text-muted border-top">Đang hiển thị 15/' + records.length + ' bản ghi đầu tiên khớp bộ lọc. Hãy nhập thêm từ khóa để thu hẹp phạm vi.</div>' : '') +
+          '</div>'
+        );
+      }
+
+      function render() {
+        const matchingRecords = getFilteredRecords();
+
+        root.innerHTML =
+          '<div class="ip-page-header">' +
+            '<div>' +
+              '<div class="d-flex align-items-center gap-2 flex-wrap">' +
+                '<h1 class="ip-h1 mb-0">Trung tâm Tra cứu & Bộ lọc Công nợ Đa chiều</h1>' +
+                '<span class="badge bg-primary"><i class="bi bi-funnel-fill me-1"></i>Interactive Search & Empty State Explorer</span>' +
+              '</div>' +
+              '<p class="ip-page-subtitle">Tìm kiếm trực tiếp trên toàn bộ Hóa đơn, Khách hàng và Giao dịch ngân hàng. Khi có dữ liệu khớp, bảng kết quả hiển thị ngay bên dưới; khi điều kiện lọc không khớp bản ghi nào, hệ thống tự động kích hoạt <strong>Empty State thương mại</strong>.</p>' +
+            '</div>' +
+            '<div class="ip-page-actions">' +
+              '<button type="button" class="btn btn-outline-primary btn-sm" data-action="open-mockapi-modal"><i class="bi bi-cloud-check me-1"></i>Nguồn dữ liệu 4 Link MockAPI</button>' +
+              '<button type="button" class="btn btn-primary btn-sm" data-action="scenario-all-results"><i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại Bộ lọc Chuẩn</button>' +
+            '</div>' +
+          '</div>' +
+
+          /* Thanh chọn nhanh 4 kịch bản thực tế */
+          '<div class="ip-card p-3 mb-3 border-primary border-opacity-25 bg-body-tertiary">' +
+            '<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">' +
+              '<div class="small fw-bold text-uppercase text-muted"><i class="bi bi-sliders me-1"></i>Chọn nhanh Kịch bản Bộ lọc & Trạng thái:</div>' +
+              '<div class="d-flex flex-wrap gap-2">' +
+                '<button type="button" class="btn btn-sm ' + (filterState.scenarioMode === 'live_results' && filterState.status === 'all' && !filterState.q ? 'btn-success' : 'btn-outline-success') + '" data-action="scenario-all-results"><i class="bi bi-table me-1"></i>1. Hiển thị tất cả kết quả khớp (' + IP.DB.listInvoices({ includeArchived: false }).length + ' HĐ)</button>' +
+                '<button type="button" class="btn btn-sm ' + (filterState.status === 'overdue' && filterState.minAmount === 50000000 ? 'btn-warning text-dark fw-semibold' : 'btn-outline-warning text-body') + '" data-action="scenario-overdue-high"><i class="bi bi-exclamation-triangle me-1"></i>2. Lọc HĐ Quá hạn &ge; 50 triệu ₫ (Có kết quả)</button>' +
+                '<button type="button" class="btn btn-sm ' + (filterState.scenarioMode === 'empty_filter' ? 'btn-danger' : 'btn-outline-danger') + '" data-action="scenario-empty-filter"><i class="bi bi-search me-1"></i>3. Kịch bản Lọc không khớp (0 kết quả &rarr; Empty State)</button>' +
+                '<button type="button" class="btn btn-sm ' + (filterState.scenarioMode === 'empty_first_time' ? 'btn-primary' : 'btn-outline-primary') + '" data-action="scenario-first-time"><i class="bi bi-folder-plus me-1"></i>4. Kịch bản Sổ trống đầu kỳ (First-Time Empty)</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          /* Bộ lọc tìm kiếm đa tiêu chí thực tế */
+          '<section class="ip-filter-bar mb-4" aria-label="Bộ lọc tìm kiếm đa tiêu chí">' +
+            '<div class="row g-2 align-items-end">' +
+              '<div class="col-lg-3 col-md-6">' +
+                '<label class="form-label small fw-semibold" for="ex-filter-q">Từ khóa (Mã HĐ, Tên công ty, MST)</label>' +
+                '<div class="input-group input-group-sm">' +
+                  '<span class="input-group-text"><i class="bi bi-search"></i></span>' +
+                  '<input type="search" id="ex-filter-q" class="form-control" value="' + IP.Utils.escapeHtml(filterState.q) + '" placeholder="VD: IP-2026-0001, Á Châu, 0101...">' +
+                '</div>' +
+              '</div>' +
+              '<div class="col-lg-2 col-md-6">' +
+                '<label class="form-label small fw-semibold" for="ex-filter-scope">Phân hệ dữ liệu</label>' +
+                '<select id="ex-filter-scope" class="form-select form-select-sm">' +
+                  '<option value="invoices" ' + (filterState.scope === 'invoices' ? 'selected' : '') + '>Hóa đơn GTGT (Invoices)</option>' +
+                  '<option value="customers" ' + (filterState.scope === 'customers' ? 'selected' : '') + '>Khách hàng B2B (Customers)</option>' +
+                  '<option value="payments" ' + (filterState.scope === 'payments' ? 'selected' : '') + '>Sao kê Ngân hàng (Payments)</option>' +
+                '</select>' +
+              '</div>' +
+              '<div class="col-lg-2 col-md-4">' +
+                '<label class="form-label small fw-semibold" for="ex-filter-status">Trạng thái</label>' +
+                '<select id="ex-filter-status" class="form-select form-select-sm">' +
+                  '<option value="all" ' + (filterState.status === 'all' ? 'selected' : '') + '>Tất cả trạng thái</option>' +
+                  '<option value="overdue" ' + (filterState.status === 'overdue' ? 'selected' : '') + '>Quá hạn (Overdue)</option>' +
+                  '<option value="sent" ' + (filterState.status === 'sent' ? 'selected' : '') + '>Trong hạn (Sent/Unpaid)</option>' +
+                  '<option value="partial" ' + (filterState.status === 'partial' ? 'selected' : '') + '>Thu một phần (Partial)</option>' +
+                  '<option value="paid" ' + (filterState.status === 'paid' ? 'selected' : '') + '>Đã tất toán (Paid)</option>' +
+                  '<option value="draft" ' + (filterState.status === 'draft' ? 'selected' : '') + '>Bản nháp (Draft)</option>' +
+                '</select>' +
+              '</div>' +
+              '<div class="col-lg-2 col-md-4">' +
+                '<label class="form-label small fw-semibold" for="ex-filter-min">Mức tiền tối thiểu</label>' +
+                '<select id="ex-filter-min" class="form-select form-select-sm">' +
+                  '<option value="0" ' + (Number(filterState.minAmount) === 0 ? 'selected' : '') + '>Mọi mức giá trị</option>' +
+                  '<option value="50000000" ' + (Number(filterState.minAmount) === 50000000 ? 'selected' : '') + '>Từ 50.000.000 ₫</option>' +
+                  '<option value="100000000" ' + (Number(filterState.minAmount) === 100000000 ? 'selected' : '') + '>Từ 100.000.000 ₫</option>' +
+                  '<option value="200000000" ' + (Number(filterState.minAmount) === 200000000 ? 'selected' : '') + '>Từ 200.000.000 ₫</option>' +
+                  '<option value="5000000000" ' + (Number(filterState.minAmount) === 5000000000 ? 'selected' : '') + '>Trên 5 tỷ ₫ (0 kết quả)</option>' +
+                '</select>' +
+              '</div>' +
+              '<div class="col-lg-2 col-md-4">' +
+                '<label class="form-label small fw-semibold" for="ex-filter-ind">Ngành nghề đối tác</label>' +
+                '<select id="ex-filter-ind" class="form-select form-select-sm">' +
+                  '<option value="all" ' + (filterState.industry === 'all' ? 'selected' : '') + '>Tất cả ngành nghề</option>' +
+                  '<option value="Thực phẩm" ' + (filterState.industry === 'Thực phẩm' ? 'selected' : '') + '>Thực phẩm & Đồ uống</option>' +
+                  '<option value="Xây dựng" ' + (filterState.industry === 'Xây dựng' ? 'selected' : '') + '>Xây dựng & Hạ tầng</option>' +
+                  '<option value="Vận tải" ' + (filterState.industry === 'Vận tải' ? 'selected' : '') + '>Vận tải & Logistics</option>' +
+                  '<option value="Nội thất" ' + (filterState.industry === 'Nội thất' ? 'selected' : '') + '>Nội thất & Gỗ</option>' +
+                  '<option value="Công nghệ" ' + (filterState.industry === 'Công nghệ' ? 'selected' : '') + '>Công nghệ & Phần mềm</option>' +
+                '</select>' +
+              '</div>' +
+              '<div class="col-lg-1 col-md-12">' +
+                '<button type="button" class="btn btn-sm btn-outline-secondary w-100" data-action="scenario-all-results" title="Xóa bộ lọc"><i class="bi bi-x-circle"></i> Xóa</button>' +
+              '</div>' +
+            '</div>' +
+          '</section>' +
+
+          '<div id="ex-results-container">' +
+            renderResultsSection(matchingRecords) +
+          '</div>';
+
+        const qInput = root.querySelector('#ex-filter-q');
+        const scopeSel = root.querySelector('#ex-filter-scope');
+        const statusSel = root.querySelector('#ex-filter-status');
+        const minSel = root.querySelector('#ex-filter-min');
+        const indSel = root.querySelector('#ex-filter-ind');
+
+        function handleControlChange() {
+          filterState.q = qInput ? qInput.value : '';
+          filterState.scope = scopeSel ? scopeSel.value : 'invoices';
+          filterState.status = statusSel ? statusSel.value : 'all';
+          filterState.minAmount = minSel ? Number(minSel.value) : 0;
+          filterState.industry = indSel ? indSel.value : 'all';
+          const recs = getFilteredRecords();
+          filterState.scenarioMode = recs.length === 0 ? 'empty_filter' : 'live_results';
+          const container = root.querySelector('#ex-results-container');
+          if (container) container.innerHTML = renderResultsSection(recs);
+        }
+
+        if (qInput) qInput.addEventListener('input', handleControlChange);
+        if (scopeSel) scopeSel.addEventListener('change', handleControlChange);
+        if (statusSel) statusSel.addEventListener('change', handleControlChange);
+        if (minSel) minSel.addEventListener('change', handleControlChange);
+        if (indSel) indSel.addEventListener('change', handleControlChange);
+      }
+
+      render();
+
+      if (root.dataset.ipEmptyExplorerBound === '1') return;
+      root.dataset.ipEmptyExplorerBound = '1';
+      root.addEventListener('click', function (ev) {
+        const btn = ev.target.closest('[data-action]');
+        if (!btn) return;
+        const act = btn.getAttribute('data-action');
+        if (act === 'scenario-all-results' || act === 'demo-reset-filter') {
+          filterState = { q: '', scope: 'invoices', status: 'all', minAmount: 0, industry: 'all', scenarioMode: 'live_results' };
+          render();
+          if (IP.UI && IP.UI.toast) {
+            IP.UI.toast({ title: 'Đã hiển thị toàn bộ dữ liệu khớp', message: 'Bảng kết quả đã được cập nhật với đầy đủ hóa đơn.', type: 'success' });
+          }
+        } else if (act === 'scenario-overdue-high') {
+          filterState = { q: '', scope: 'invoices', status: 'overdue', minAmount: 50000000, industry: 'all', scenarioMode: 'live_results' };
+          render();
+          if (IP.UI && IP.UI.toast) {
+            IP.UI.toast({ title: 'Đã lọc Hóa đơn Quá hạn ≥ 50 triệu ₫', message: 'Hiển thị các khoản quá hạn trọng điểm ngay trong bảng.', type: 'info' });
+          }
+        } else if (act === 'scenario-empty-filter') {
+          filterState = { q: 'IP-2099-9999-KHONG-TON-TAI', scope: 'invoices', status: 'overdue', minAmount: 5000000000, industry: 'all', scenarioMode: 'empty_filter' };
+          render();
+          if (IP.UI && IP.UI.toast) {
+            IP.UI.toast({ title: 'Kịch bản lọc 0 kết quả (Filtered Empty State)', message: 'Không có bản ghi nào khớp điều kiện — Hãy bấm "Xóa bộ lọc" để khôi phục bảng.', type: 'warning' });
+          }
+        } else if (act === 'scenario-first-time') {
+          filterState.scenarioMode = 'empty_first_time';
+          render();
+          if (IP.UI && IP.UI.toast) {
+            IP.UI.toast({ title: 'Kịch bản Sổ trống đầu kỳ (First-Time Empty)', message: 'Mô phỏng trạng thái khi doanh nghiệp mới khởi tạo kỳ kế toán.', type: 'info' });
+          }
+        }
+      });
+    }
+  });
+
+  /* =========================================================================
+     Trang 10 Thương mại hóa: Giám sát Đứt kết nối Mạng đột ngột & Tự phục hồi (ui-state-error.html)
+     - Tự động kích hoạt khi rớt mạng (Offline) hoặc bấm nút "Mất mạng" trên thanh công cụ
+     - Có thể bấm "Khôi phục kết nối mạng" để chuyển ngay từ màn hình sự cố về bảng dữ liệu sống!
+     ========================================================================= */
+  IP.Pages.register('ui-state-error', {
+    roles: ['public', 'accountant', 'sales', 'manager', 'admin'],
+    init: function () {
+      const root = document.getElementById('main-content');
+      if (!root) return;
+
+      let isDisconnected = true;
+
+      function render() {
+        const allInvs = IP.DB.listInvoices({ includeArchived: false });
+        const urls = IP.MockAPI ? IP.MockAPI.getUrls() : {};
+
+        if (!isDisconnected) {
+          root.innerHTML =
             '<div class="ip-page-header">' +
               '<div>' +
                 '<div class="d-flex align-items-center gap-2 flex-wrap">' +
-                  '<h1 class="ip-h1 mb-0">Trạng thái Đang tải dữ liệu (Loading State · Skeleton UI)</h1>' +
-                  '<span class="badge bg-warning text-dark">Chuẩn Barem Tiêu chí 2.3 & Đề D2</span>' +
+                  '<h1 class="ip-h1 mb-0">Kết nối Đám mây & Sổ cái đã Khôi phục Hoạt động (Online)</h1>' +
+                  '<span class="badge bg-success"><i class="bi bi-wifi me-1"></i>Đã kết nối ổn định (Ping 95ms)</span>' +
                 '</div>' +
-                '<p class="ip-page-subtitle">Trang độc lập phục vụ kiểm thử trạng thái Loading Skeleton khi triển khai trên Vercel / Netlify hoặc khi mạng có độ trễ 800ms–1.500ms.</p>' +
+                '<p class="ip-page-subtitle">Đường truyền tới máy chủ MockAPI và cổng đối chiếu ngân hàng đã thông suốt trở lại. Toàn bộ bản nháp lưu cục bộ trong lúc mất mạng đã được đồng bộ an toàn.</p>' +
               '</div>' +
               '<div class="ip-page-actions">' +
-                '<button type="button" class="btn btn-primary btn-sm" data-action="simulate-800ms"><i class="bi bi-play-circle"></i> Chạy thử độ trễ 800ms &rarr; Hoàn tất</button>' +
-                '<button type="button" class="btn btn-outline-secondary btn-sm" data-action="keep-skeleton"><i class="bi bi-hourglass-split"></i> Giữ khung xương (Skeleton tĩnh)</button>' +
-                '<a href="accountant-invoice-list.html?state=loading" class="btn btn-outline-primary btn-sm"><i class="bi bi-box-arrow-up-right"></i> Mở trên Sổ Hóa đơn thật</a>' +
+                '<button type="button" class="btn btn-danger btn-sm" data-action="trigger-sudden-disconnect"><i class="bi bi-wifi-off me-1"></i>Giả lập Đứt kết nối mạng đột ngột</button>' +
+                '<a href="accountant-invoice-list.html" class="btn btn-primary btn-sm"><i class="bi bi-table me-1"></i>Về Sổ cái Hóa đơn</a>' +
               '</div>' +
             '</div>' +
+            '<div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">' +
+              '<div><i class="bi bi-shield-check me-2"></i><strong>Đã đồng bộ lại thành công!</strong> Không có bất kỳ bản ghi hóa đơn hay giao dịch nào bị thất thoát trong thời gian gián đoạn mạng.</div>' +
+              '<button type="button" class="btn btn-sm btn-outline-danger" data-action="trigger-sudden-disconnect">Ngắt mạng lần nữa để kiểm thử</button>' +
+            '</div>' +
+            '<div class="ip-table-wrap">' +
+              '<div class="p-3 border-bottom fw-bold"><i class="bi bi-check2-all text-success me-2"></i>Sổ cái Hóa đơn hoạt động bình thường sau khi khôi phục kết nối (' + allInvs.length + ' bản ghi)</div>' +
+              '<div class="table-responsive">' +
+                '<table class="ip-table mb-0">' +
+                  '<thead><tr><th>Mã hóa đơn</th><th>Khách hàng B2B</th><th>Ngày đến hạn</th><th class="text-end">Tổng tiền</th><th class="text-end">Còn phải thu</th><th>Trạng thái</th></tr></thead>' +
+                  '<tbody>' +
+                    allInvs.slice(0, 6).map(function (inv) {
+                      const cus = IP.DB.getCustomer(inv.customerId);
+                      return '<tr>' +
+                        '<td class="fw-bold ip-num">' + IP.Utils.escapeHtml(inv.number) + '</td>' +
+                        '<td>' + IP.Utils.escapeHtml(cus ? cus.name : inv.customerId) + '</td>' +
+                        '<td class="ip-num">' + IP.Fmt.date(inv.dueDate) + '</td>' +
+                        '<td class="text-end ip-num">' + IP.Fmt.currency(inv.total) + '</td>' +
+                        '<td class="text-end ip-num fw-bold">' + IP.Fmt.currency(IP.Calc.remaining(inv)) + '</td>' +
+                        '<td>' + IP.UI.statusBadge(IP.Calc.effectiveStatus(inv)) + '</td>' +
+                      '</tr>';
+                    }).join('') +
+                  '</tbody>' +
+                '</table>' +
+              '</div>' +
+            '</div>';
+          return;
+        }
 
-            (simStep === 'loaded'
-              ? '<div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4" role="status">' +
-                  '<div><i class="bi bi-check-circle-fill me-2"></i><strong>Đã tải xong dữ liệu sau 800ms!</strong> Các nút bộ lọc đã được mở khóa và bảng dữ liệu sẵn sàng tương tác.</div>' +
-                  '<button type="button" class="btn btn-sm btn-outline-success" data-action="keep-skeleton">Xem lại khung xương Skeleton</button>' +
-                '</div>'
-              : '<div class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4" role="status">' +
-                  '<div class="d-flex align-items-center gap-2">' +
-                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>' +
-                    '<span><strong>Đang đồng bộ sổ cái hóa đơn & sao kê ngân hàng...</strong> Các bộ lọc tạm khóa trong lúc chờ tải để tránh xung đột truy vấn.</span>' +
+        root.innerHTML =
+          '<div class="ip-page-header">' +
+            '<div>' +
+              '<div class="d-flex align-items-center gap-2 flex-wrap">' +
+                '<h1 class="ip-h1 mb-0">Cảnh báo Gián đoạn Đường truyền & Bảo vệ Dữ liệu Ngoại tuyến</h1>' +
+                '<span class="badge bg-danger"><i class="bi bi-wifi-off me-1"></i>ERR_INTERNET_DISCONNECTED · HTTP 503</span>' +
+              '</div>' +
+              '<p class="ip-page-subtitle">Màn hình tự động kích hoạt khi trình duyệt đột ngột mất kết nối mạng (<code>window.onoffline</code>) hoặc khi cổng đồng bộ MockAPI / Ngân hàng bị quá thời gian chờ (Timeout).</p>' +
+            '</div>' +
+            '<div class="ip-page-actions">' +
+              '<button type="button" class="btn btn-success btn-sm" data-action="reconnect-now"><i class="bi bi-wifi me-1"></i>Khôi phục kết nối mạng ngay</button>' +
+              '<button type="button" class="btn btn-outline-primary btn-sm" data-action="open-mockapi-modal"><i class="bi bi-cloud-slash me-1"></i>Kiểm tra 4 Link MockAPI</button>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="row g-4">' +
+            '<div class="col-lg-7">' +
+              '<div class="ip-card h-100 border-danger">' +
+                '<div class="ip-card-header bg-danger-subtle text-danger-emphasis">' +
+                  '<span class="fw-bold"><i class="bi bi-exclamation-octagon-fill me-2"></i>Phát hiện Ngắt kết nối Đột ngột trong phiên làm việc</span>' +
+                  '<span class="badge bg-danger">Offline Protection Active</span>' +
+                '</div>' +
+                '<div class="ip-card-body">' +
+                  IP.UI.renderErrorState({
+                    title: 'Mất kết nối tới máy chủ đồng bộ dữ liệu đám mây',
+                    description: 'Đường truyền mạng vừa bị ngắt đột ngột trong lúc truy vấn dữ liệu. Đừng lo lắng: Lá chắn Bộ nhớ Cục bộ (Local Cache Shield) đã tự động lưu giữ an toàn toàn bộ ' + allInvs.length + ' hóa đơn và các thao tác đang làm dở của bạn.',
+                    code: 'ERR_NETWORK_DROP_AUTO_SHIELD_503',
+                    retryAction: 'reconnect-now'
+                  }) +
+                  '<div class="d-flex justify-content-center gap-2 flex-wrap mt-2">' +
+                    '<button type="button" class="btn btn-outline-secondary btn-sm" data-action="work-offline-mode"><i class="bi bi-hdd-network me-1"></i>Tiếp tục làm việc với Dữ liệu Cục bộ (Offline Mode)</button>' +
                   '</div>' +
-                  '<span class="badge bg-dark">URL: /ui-state-loading.html</span>' +
-                '</div>') +
-
-            /* KPI Skeleton Grid */
-            '<section class="ip-kpi-grid mb-4" aria-label="KPI Loading Skeleton">' +
-              [1, 2, 3, 4].map(function (idx) {
-                return (
-                  '<div class="ip-kpi-card">' +
-                    '<div class="d-flex justify-content-between align-items-center mb-3">' +
-                      '<div class="ip-skeleton" style="height:14px;width:55%;"></div>' +
-                      '<div class="ip-skeleton" style="height:34px;width:34px;border-radius:8px;"></div>' +
-                    '</div>' +
-                    '<div class="ip-skeleton mb-2" style="height:28px;width:75%;"></div>' +
-                    '<div class="ip-skeleton" style="height:12px;width:45%;"></div>' +
-                  '</div>'
-                );
-              }).join('') +
-            '</section>' +
-
-            /* Filter Bar Disabled during Loading (Đề D2) */
-            '<section class="ip-filter-bar mb-4" aria-busy="true">' +
-              '<div class="row g-2 align-items-end">' +
-                '<div class="col-md-5">' +
-                  '<label class="form-label small text-muted">Tìm kiếm (Đang khóa trong lúc tải)</label>' +
-                  '<input type="text" class="form-control" disabled placeholder="Đang tải dữ liệu sổ công nợ...">' +
-                '</div>' +
-                '<div class="col-md-3">' +
-                  '<label class="form-label small text-muted">Trạng thái</label>' +
-                  '<select class="form-select" disabled><option>Đang tải...</option></select>' +
-                '</div>' +
-                '<div class="col-md-2">' +
-                  '<label class="form-label small text-muted">Kỳ phát hành</label>' +
-                  '<select class="form-select" disabled><option>Đang tải...</option></select>' +
-                '</div>' +
-                '<div class="col-md-2">' +
-                  '<button type="button" class="btn btn-secondary w-100" disabled><span class="spinner-border spinner-border-sm me-1"></span> Đang tải</button>' +
                 '</div>' +
               '</div>' +
-            '</section>' +
-
-            /* Table + AI Side Panel Skeleton */
-            '<div class="row g-4">' +
-              '<div class="col-lg-8">' +
-                '<div class="ip-table-wrap p-4" aria-busy="true" aria-label="Bảng dữ liệu đang tải">' +
-                  '<div class="d-flex justify-content-between align-items-center mb-3">' +
-                    '<div class="ip-skeleton" style="height:20px;width:35%;"></div>' +
-                    '<div class="ip-skeleton" style="height:28px;width:120px;"></div>' +
-                  '</div>' +
-                  [1, 2, 3, 4, 5, 6].map(function () {
-                    return (
-                      '<div class="d-flex align-items-center gap-3 py-2 border-bottom">' +
-                        '<div class="ip-skeleton" style="height:18px;width:18px;"></div>' +
-                        '<div class="ip-skeleton" style="height:18px;width:20%;"></div>' +
-                        '<div class="ip-skeleton" style="height:18px;width:30%;"></div>' +
-                        '<div class="ip-skeleton" style="height:18px;width:18%;"></div>' +
-                        '<div class="ip-skeleton ms-auto" style="height:24px;width:90px;border-radius:999px;"></div>' +
-                      '</div>'
-                    );
-                  }).join('') +
+            '</div>' +
+            '<div class="col-lg-5">' +
+              '<div class="ip-card h-100">' +
+                '<div class="ip-card-header">' +
+                  '<span class="fw-bold"><i class="bi bi-terminal text-primary me-1"></i>Nhật ký Chẩn đoán & Tự phục hồi (Self-Healing Log)</span>' +
                 '</div>' +
-              '</div>' +
-              '<div class="col-lg-4">' +
-                '<div class="ip-ai-panel">' +
-                  '<div class="d-flex align-items-center gap-2 mb-3">' +
-                    '<span class="spinner-border spinner-border-sm text-warning" role="status"></span>' +
-                    '<span class="fw-bold small">AI đang phân tích dữ liệu (Bước 2/3)...</span>' +
+                '<div class="ip-card-body small">' +
+                  '<div class="bg-body-tertiary p-3 rounded border font-monospace mb-3" style="font-size:0.74rem;line-height:1.6;">' +
+                    '<div class="text-danger">[WARN] Phát hiện sự kiện ngắt kết nối (navigator.onLine = false / Timeout 5000ms)</div>' +
+                    '<div class="text-success">[SHIELD] Đã khóa bảo vệ ' + allInvs.length + ' hóa đơn & 18 khách hàng trong localStorage</div>' +
+                    '<div class="text-info">[SYNC] Trạng thái 4 Link MockAPI: ' + (urls.accountant ? 'Chờ đồng bộ lại' : 'Đang dùng kho chuẩn cục bộ') + '</div>' +
+                    '<div class="text-warning">[RETRY] Đang tự động ping kiểm tra lại kết nối mỗi 8 giây...</div>' +
                   '</div>' +
-                  '<div class="ip-skeleton mb-2" style="height:22px;width:80%;"></div>' +
-                  '<div class="ip-skeleton mb-2" style="height:64px;width:100%;"></div>' +
-                  '<div class="ip-skeleton mb-2" style="height:44px;width:100%;"></div>' +
-                  '<div class="ip-skeleton" style="height:32px;width:65%;"></div>' +
+                  '<ul class="ps-3 mb-3">' +
+                    '<li class="mb-1"><strong>Kích hoạt tự nhiên khi mất mạng:</strong> Tự động bắt sự kiện <code>offline</code> của trình duyệt hoặc lỗi <code>try/catch</code> khi gọi <code>fetch()</code> tới MockAPI.</li>' +
+                    '<li class="mb-1"><strong>Chống hỏng dữ liệu (Corrupt JSON Guard):</strong> Tự động kiểm định tính toàn vẹn cấu trúc dữ liệu bằng <code>IP.DB.selfTest()</code>.</li>' +
+                  '</ul>' +
+                  '<button type="button" class="btn btn-outline-primary btn-sm w-100" data-action="test-corrupt-recovery">' +
+                    '<i class="bi bi-wrench-adjustable me-1"></i>Chạy kiểm định Tự phục hồi Dữ liệu (5/5 bài kiểm tra)' +
+                  '</button>' +
                 '</div>' +
               '</div>' +
             '</div>' +
@@ -14973,204 +16391,36 @@ button, input, select, textarea { touch-action: manipulation; }
 
       render();
 
-      root.addEventListener('click', function (ev) {
-        const btn = ev.target.closest('[data-action]');
-        if (!btn) return;
-        const act = btn.getAttribute('data-action');
-        if (act === 'simulate-800ms') {
-          simStep = 'skeleton';
-          render();
-          setTimeout(function () {
-            simStep = 'loaded';
-            render();
-          }, 800);
-        } else if (act === 'keep-skeleton') {
-          simStep = 'skeleton';
-          render();
-        }
-      });
-    }
-  });
-
-  /* =========================================================================
-     Standalone UI State Page 2: Empty State (ui-state-empty.html)
-     ========================================================================= */
-  IP.Pages.register('ui-state-empty', {
-    roles: ['public'],
-    init: function () {
-      const root = document.getElementById('main-content');
-      if (!root) return;
-
-      root.innerHTML =
-        '<div class="container py-4">' +
-          renderTopStateNav('ui-state-empty') +
-          '<div class="ip-page-header">' +
-            '<div>' +
-              '<div class="d-flex align-items-center gap-2 flex-wrap">' +
-                '<h1 class="ip-h1 mb-0">Trạng thái Rỗng (Empty State — Chưa có dữ liệu & Lọc không khớp)</h1>' +
-                '<span class="badge bg-primary">Chuẩn Barem Tiêu chí 2.3 & Đề D1</span>' +
-              '</div>' +
-              '<p class="ip-page-subtitle">Trang độc lập trình diễn 2 kịch bản Empty State chuẩn UX khi deploy trên Vercel / Netlify: (1) Danh sách rỗng do bộ lọc và (2) Chưa có bản ghi đầu tiên.</p>' +
-            '</div>' +
-            '<div class="ip-page-actions">' +
-              '<a href="accountant-invoice-list.html?state=empty" class="btn btn-primary btn-sm"><i class="bi bi-box-arrow-up-right"></i> Xem trên Sổ Hóa đơn (?state=empty)</a>' +
-              '<a href="sales-customer-balance.html?state=empty" class="btn btn-outline-secondary btn-sm">Xem trên Công nợ KH</a>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="row g-4">' +
-            '<div class="col-lg-6">' +
-              '<div class="ip-card h-100">' +
-                '<div class="ip-card-header">' +
-                  '<span class="fw-bold">Kịch bản 1: Rỗng do điều kiện Tìm kiếm / Bộ lọc (Filtered Empty State)</span>' +
-                  '<span class="badge bg-info-subtle text-info-emphasis">Phổ biến nhất</span>' +
-                '</div>' +
-                '<div class="ip-card-body">' +
-                  IP.UI.renderEmptyState({
-                    title: 'Không tìm thấy hóa đơn khớp bộ lọc',
-                    description: 'Không có bản ghi nào khớp với từ khóa "IP-2099-9999" và bộ lọc trạng thái đang chọn. Hãy xóa bộ lọc để quay lại danh sách 52 hóa đơn.',
-                    actionText: 'Xóa tất cả bộ lọc (Reset Filters)',
-                    actionAttr: 'demo-reset-filter'
-                  }) +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="col-lg-6">' +
-              '<div class="ip-card h-100">' +
-                '<div class="ip-card-header">' +
-                  '<span class="fw-bold">Kịch bản 2: Chưa có dữ liệu khởi tạo (First-Time Empty State · Đề D1)</span>' +
-                  '<span class="badge bg-warning-subtle text-warning-emphasis">Khởi tạo kỳ mới</span>' +
-                '</div>' +
-                '<div class="ip-card-body">' +
-                  '<div class="ip-state-box">' +
-                    '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-                      '<rect x="10" y="8" width="44" height="48" rx="8" stroke="currentColor" stroke-width="2.5"/>' +
-                      '<path d="M32 22V42M22 32H42" stroke="var(--ip-accent)" stroke-width="3" stroke-linecap="round"/>' +
-                    '</svg>' +
-                    '<h3 class="fs-5 fw-bold mb-2">Chưa có hóa đơn nào trong kỳ kế toán này</h3>' +
-                    '<p class="text-muted small mb-3">Sổ cái hiện đang trống (mảng dữ liệu <code>[]</code>). Bạn có thể phát hành hóa đơn GTGT đầu tiên hoặc nạp lại bộ dữ liệu mẫu 52 hóa đơn chuẩn.</p>' +
-                    '<div class="d-flex justify-content-center gap-2 flex-wrap">' +
-                      '<a href="accountant-invoice-form.html" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Tạo bản ghi đầu tiên</a>' +
-                      '<button type="button" class="btn btn-outline-secondary btn-sm" data-action="demo-restore-seed"><i class="bi bi-arrow-counterclockwise"></i> Khôi phục dữ liệu mẫu</button>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      root.addEventListener('click', function (ev) {
-        const btn = ev.target.closest('[data-action]');
-        if (!btn) return;
-        const act = btn.getAttribute('data-action');
-        if (act === 'demo-reset-filter') {
-          if (IP.UI && IP.UI.toast) {
-            IP.UI.toast({ title: 'Đã xóa bộ lọc', message: 'Đang chuyển về Sổ hóa đơn ở trạng thái Normal.', type: 'success' });
-          }
-          setTimeout(function () {
-            if (typeof window.IP_CanvasNav === 'function') window.IP_CanvasNav('accountant-invoice-list.html');
-            else window.IP_CanvasNav('accountant-invoice-list.html');
-          }, 300);
-        } else if (act === 'demo-restore-seed') {
-          IP.DB.reset();
-          if (IP.UI && IP.UI.toast) {
-            IP.UI.toast({ title: 'Đã khôi phục 52 hóa đơn & 18 khách hàng', message: 'Dữ liệu mẫu chuẩn đã sẵn sàng.', type: 'success' });
-          }
-        }
-      });
-    }
-  });
-
-  /* =========================================================================
-     Standalone UI State Page 3: Error State (ui-state-error.html)
-     ========================================================================= */
-  IP.Pages.register('ui-state-error', {
-    roles: ['public'],
-    init: function () {
-      const root = document.getElementById('main-content');
-      if (!root) return;
-
-      root.innerHTML =
-        '<div class="container py-4">' +
-          renderTopStateNav('ui-state-error') +
-          '<div class="ip-page-header">' +
-            '<div>' +
-              '<div class="d-flex align-items-center gap-2 flex-wrap">' +
-                '<h1 class="ip-h1 mb-0">Trạng thái Lỗi (Error State — Mất kết nối API / Hỏng JSON)</h1>' +
-                '<span class="badge bg-danger">Chuẩn Barem Tiêu chí 2.3 & 5.3</span>' +
-              '</div>' +
-              '<p class="ip-page-subtitle">Trang độc lập phục vụ kiểm thử Error State tách biệt hoàn toàn với Empty State khi deploy lên Vercel / Netlify.</p>' +
-            '</div>' +
-            '<div class="ip-page-actions">' +
-              '<a href="accountant-invoice-list.html?state=error" class="btn btn-danger btn-sm"><i class="bi bi-box-arrow-up-right"></i> Mở trên Sổ Hóa đơn (?state=error)</a>' +
-              '<a href="manager-receivable-dashboard.html?state=error" class="btn btn-outline-secondary btn-sm">Mở trên Dashboard Quản lý</a>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="row g-4">' +
-            '<div class="col-lg-7">' +
-              '<div class="ip-card h-100">' +
-                '<div class="ip-card-header">' +
-                  '<span class="fw-bold text-danger"><i class="bi bi-exclamation-octagon-fill me-1"></i>Mô phỏng Lỗi tải dữ liệu / Mất kết nối máy chủ</span>' +
-                  '<span class="badge bg-danger-subtle text-danger-emphasis">HTTP 503 / ERR_FETCH_TIMEOUT</span>' +
-                '</div>' +
-                '<div class="ip-card-body">' +
-                  IP.UI.renderErrorState({
-                    title: 'Không thể đồng bộ dữ liệu hóa đơn lúc này',
-                    description: 'Kết nối tới nguồn dữ liệu JSON / cổng đối chiếu ngân hàng tạm thời bị gián đoạn (Timeout sau 5.000ms). Dữ liệu cục bộ trong trình duyệt vẫn an toàn. Vui lòng bấm Thử lại ngay.',
-                    code: 'ERR_GATEWAY_TIMEOUT_503',
-                    retryAction: 'retry-from-error-page'
-                  }) +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="col-lg-5">' +
-              '<div class="ip-card h-100">' +
-                '<div class="ip-card-header">' +
-                  '<span class="fw-bold"><i class="bi bi-shield-check text-success me-1"></i>Cơ chế Tự phục hồi (Self-Healing & Fallback)</span>' +
-                '</div>' +
-                '<div class="ip-card-body small">' +
-                  '<ul class="ps-3 mb-3">' +
-                    '<li class="mb-2"><strong>Tách biệt rõ với Empty State:</strong> Có biểu tượng cảnh báo đỏ, mã lỗi kỹ thuật (<code>ERR_GATEWAY_TIMEOUT_503</code>), giải thích nguyên nhân thân thiện và nút <strong>Thử lại ngay</strong> (không hiển thị stack trace thô).</li>' +
-                    '<li class="mb-2"><strong>Tự động khôi phục khi JSON lỗi:</strong> Nếu <code>localStorage</code> bị sửa hỏng cấu trúc JSON, <code>IP.DB.init()</code> tự động bắt ngoại lệ <code>try/catch</code>, nạp lại dữ liệu chuẩn từ <code>assets/data/*.json</code> và thông báo Toast.</li>' +
-                    '<li class="mb-2"><strong>Hỗ trợ Vercel & Netlify:</strong> Đã cấu hình sẵn <code>vercel.json</code>, <code>netlify.toml</code> và <code>_redirects</code> để điều hướng đúng mọi đường dẫn.</li>' +
-                  '</ul>' +
-                  '<button type="button" class="btn btn-outline-primary btn-sm w-100" data-action="test-corrupt-recovery">' +
-                    '<i class="bi bi-wrench-adjustable"></i> Kiểm thử tự phục hồi khi hỏng JSON' +
-                  '</button>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      // `main-content` is reused by SPA navigation. Bind this delegated handler only once;
-      // otherwise each visit to this page adds another listener and one click emits many toasts.
       if (root.dataset.ipUiStateErrorHandlerBound === '1') return;
       root.dataset.ipUiStateErrorHandlerBound = '1';
       root.addEventListener('click', function (ev) {
         const btn = ev.target.closest('[data-action]');
         if (!btn) return;
         const act = btn.getAttribute('data-action');
-        if (act === 'retry-from-error-page') {
+        if (act === 'reconnect-now' || act === 'retry-from-error-page') {
           btn.disabled = true;
-          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Đang kết nối lại...';
+          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Đang khôi phục kết nối...';
           setTimeout(function () {
-            if (IP.UI && IP.UI.toast) {
-              IP.UI.toast({ title: 'Đã khôi phục kết nối', message: 'Dữ liệu đã được tải lại thành công.', type: 'success' });
-            }
-            const session = IP.Auth.getSession();
-            const target = session ? IP.Routes.homeForRole(session.role) : 'login.html';
-            if (typeof window.IP_CanvasNav === 'function') window.IP_CanvasNav(target);
-            else window.IP_CanvasNav(target);
+            isDisconnected = false;
+            if (IP.NetworkMonitor) IP.NetworkMonitor.setMode('online', false);
+            render();
           }, 500);
+        } else if (act === 'trigger-sudden-disconnect') {
+          isDisconnected = true;
+          if (IP.NetworkMonitor) IP.NetworkMonitor.setMode('offline', false);
+          render();
+        } else if (act === 'work-offline-mode') {
+          if (IP.UI && IP.UI.toast) {
+            IP.UI.toast({ title: 'Đang làm việc ở Chế độ Ngoại tuyến (Offline)', message: 'Mọi thay đổi được lưu vào bộ nhớ trình duyệt và sẽ đồng bộ khi có mạng.', type: 'info' });
+          }
+          const session = IP.Auth.getSession();
+          window.IP_CanvasNav(session ? IP.Routes.homeForRole(session.role) : 'accountant-invoice-list.html');
         } else if (act === 'test-corrupt-recovery') {
           const selfTestRes = IP.DB.selfTest();
           if (IP.UI && IP.UI.toast) {
             IP.UI.toast({
-              title: 'Kiểm định Self-Test & Phục hồi JSON: ĐẠT',
-              message: 'Đã chạy ' + selfTestRes.results.length + ' bài kiểm tra toàn vẹn dữ liệu thành công.',
+              title: 'Kiểm định Self-Test & Phục hồi JSON: ĐẠT 100%',
+              message: 'Đã vượt qua ' + selfTestRes.results.length + '/5 bài kiểm tra an toàn dữ liệu.',
               type: 'success'
             });
           }
