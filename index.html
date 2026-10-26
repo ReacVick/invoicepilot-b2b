@@ -2709,12 +2709,28 @@ button, input, select, textarea { touch-action: manipulation; }
   background: rgba(220, 38, 38, 0.25);
   color: #fca5a5;
 }
+.ip-net-pill.is-explorer {
+  border-color: rgba(56, 189, 248, 0.85);
+  background: rgba(2, 132, 199, 0.32);
+  color: #7dd3fc;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.28);
+}
 .ip-net-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: currentColor;
   box-shadow: 0 0 6px currentColor;
+}
+#ip-network-live-banner-root {
+  position: relative;
+  z-index: 1035;
+}
+@media (min-width: 992px) {
+  body:has(.ip-app-shell) #ip-network-live-banner-root {
+    margin-left: var(--ip-sidebar-width);
+    width: calc(100% - var(--ip-sidebar-width));
+  }
 }
 .ip-offline-banner {
   background: linear-gradient(90deg, #7f1d1d 0%, #991b1b 50%, #7f1d1d 100%);
@@ -2726,7 +2742,7 @@ button, input, select, textarea { touch-action: manipulation; }
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  z-index: 1080;
+  z-index: 1035;
   animation: ipPulseBorder 2s infinite;
 }
 .ip-slow-banner {
@@ -2739,7 +2755,68 @@ button, input, select, textarea { touch-action: manipulation; }
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  z-index: 1079;
+  z-index: 1035;
+}
+/* Auto-hide floating chatbot when any modal or right-side drawer is open so action buttons are never covered */
+body.modal-open #ip-chatbot-root,
+body:has(.modal.show) #ip-chatbot-root,
+body:has(.offcanvas.show) #ip-chatbot-root {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(28px) !important;
+}
+.ip-chatbot-toggle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ip-chatbot-collapse-pill {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(15, 23, 42, 0.78);
+  color: #e2e8f0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.ip-chatbot-collapse-pill:hover {
+  background: rgba(15, 23, 42, 0.95);
+  color: #fff;
+}
+.ip-chatbot-root.is-collapsed .ip-chatbot-toggle {
+  min-height: 40px;
+  width: 40px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0.75;
+}
+.ip-chatbot-root.is-collapsed .ip-chatbot-toggle:hover {
+  opacity: 1;
+}
+.ip-chatbot-root.is-collapsed #ip-chatbot-toggle-label,
+.ip-chatbot-root.is-collapsed .ip-chatbot-collapse-pill {
+  display: none !important;
+}
+@media (max-width: 991.98px) {
+  .ip-canvas-bar .ip-net-label-txt,
+  .ip-canvas-bar [data-net-sim] span:not(.ip-net-dot),
+  .ip-canvas-bar [data-canvas-state] span:not(.ip-net-dot),
+  .ip-canvas-bar #ip-mockapi-cloud-btn span {
+    display: none !important;
+  }
+  .ip-canvas-bar [data-net-sim],
+  .ip-canvas-bar [data-canvas-state],
+  .ip-canvas-bar #ip-mockapi-cloud-btn {
+    padding: 4px 8px !important;
+    min-height: 26px;
+    justify-content: center;
+  }
 }
 @media (max-width: 767.98px) {
   .ip-canvas-bar {
@@ -2806,14 +2883,14 @@ button, input, select, textarea { touch-action: manipulation; }
       <button type="button" id="ip-mockapi-cloud-btn" class="btn btn-sm btn-warning text-dark fw-semibold py-0 px-2" style="font-size:0.72rem;min-height:24px;" title="Cấu hình & Đồng bộ 4 Link MockAPI cho 4 Nghiệp vụ">
         <i class="bi bi-cloud-arrow-up-fill me-1"></i><span>MockAPI (4 Nghiệp vụ)</span>
       </button>
-      <span class="ip-bar-hide-sm opacity-75 ms-1">Mạng & Tra cứu:</span>
+      <span class="ip-bar-hide-sm ip-net-label-txt opacity-75 ms-1">Mạng & Tra cứu:</span>
       <button type="button" class="ip-net-pill is-online" data-net-sim="online" title="Mạng ổn định 5G (Độ trễ ~110ms)">
-        <span class="ip-net-dot"></span><span class="ip-bar-hide-sm">Online</span>
+        <span class="ip-net-dot"></span><span>Online</span>
       </button>
       <button type="button" class="ip-net-pill" data-net-sim="slow" data-canvas-state="ui-state-loading.html" title="Giả lập Mạng chậm 3G (Hiện Skeleton Loading thực tế - Trang 8)">
         <i class="bi bi-hourglass-split text-warning"></i><span>Mạng chậm</span>
       </button>
-      <button type="button" class="ip-net-pill" data-canvas-state="ui-state-empty.html" title="Trung tâm Tra cứu & Bộ lọc đa chiều (Có kết quả thực & Kịch bản rỗng - Trang 9)">
+      <button type="button" class="ip-net-pill" data-net-sim="explorer" data-canvas-state="ui-state-empty.html" title="Trung tâm Tra cứu & Bộ lọc đa chiều (Có kết quả thực & Kịch bản rỗng - Trang 9)">
         <i class="bi bi-funnel-fill text-info"></i><span>Bộ lọc & Tra cứu</span>
       </button>
       <button type="button" class="ip-net-pill" data-net-sim="offline" title="Giả lập Mất kết nối mạng đột ngột ngay trên trang hiện tại (Trang 10)">
@@ -2862,21 +2939,38 @@ button, input, select, textarea { touch-action: manipulation; }
     'admin-invoice-settings.html': { pageId: 'admin-invoice-settings', roles: 'admin' }
   };
 
-  window.IP_CanvasNav = function(rawHref) {
+  window.IP_CanvasNav = function(rawHref, opts) {
     if (!rawHref) return;
+    const options = opts || {};
     const str = String(rawHref).trim();
-    if (str.startsWith('#')) {
+    if (str.startsWith('#') && !str.includes('.html')) {
       const target = document.querySelector(str);
       if (target) target.scrollIntoView({ behavior: 'smooth' });
       return;
     }
-    const hashParts = str.split('#');
+    const cleanTarget = str.replace(/^#+/, '');
+    const hashParts = cleanTarget.split('#');
     const qParts = hashParts[0].split('?');
     const fileName = qParts[0].replace(/^\/+/, '') || 'login.html';
     const meta = FILE_TO_META[fileName] || FILE_TO_META['404.html'];
+    const normalizedRoute = fileName + (qParts[1] ? ('?' + qParts[1]) : '');
 
     window.__IP_VIRTUAL_PATH = '/' + fileName;
     window.__IP_VIRTUAL_SEARCH = qParts[1] ? ('?' + qParts[1]) : '';
+
+    if (!options.fromPopState && window.history && typeof window.history.pushState === 'function') {
+      const currentSess = (window.IP && window.IP.Auth && window.IP.Auth.getSession) ? window.IP.Auth.getSession() : null;
+      const statePayload = {
+        ipRoute: normalizedRoute,
+        role: currentSess ? currentSess.role : null
+      };
+      const curState = window.history.state;
+      if (!curState || curState.ipRoute !== normalizedRoute) {
+        try {
+          window.history.pushState(statePayload, '', '#/' + normalizedRoute);
+        } catch (e) {}
+      }
+    }
 
     document.querySelectorAll('.modal-backdrop, .offcanvas-backdrop, .modal.show').forEach(function(el) { el.remove(); });
     document.body.classList.remove('modal-open');
@@ -2907,12 +3001,45 @@ button, input, select, textarea { touch-action: manipulation; }
     window.IP.Layout.boot();
   };
 
+  window.addEventListener('popstate', function(ev) {
+    let targetRoute = null;
+    if (ev.state && ev.state.ipRoute) {
+      targetRoute = ev.state.ipRoute;
+      if (ev.state.role && window.IP && window.IP.Auth && typeof window.IP.Auth.getSession === 'function') {
+        const curSess = window.IP.Auth.getSession();
+        if (!curSess || curSess.role !== ev.state.role) {
+          window.IP.Auth.switchRole(ev.state.role, false);
+        }
+      }
+    } else if (window.location.hash && window.location.hash.startsWith('#/')) {
+      targetRoute = window.location.hash.slice(2);
+    }
+    if (targetRoute) {
+      window.IP_CanvasNav(targetRoute, { fromPopState: true });
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.history && typeof window.history.replaceState === 'function') {
+      const initHash = (window.location.hash && window.location.hash.startsWith('#/')) ? window.location.hash.slice(2) : '';
+      if (initHash && initHash.includes('.html')) {
+        setTimeout(function() {
+          window.IP_CanvasNav(initHash, { fromPopState: true });
+        }, 10);
+      } else {
+        try {
+          window.history.replaceState({ ipRoute: 'login.html', role: null }, '', '#/login.html');
+        } catch (e) {}
+      }
+    }
+  });
+
   document.addEventListener('click', function(ev) {
     const a = ev.target.closest('a[href]');
     if (!a) return;
     const href = a.getAttribute('href') || '';
     if (href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
-    if (href.startsWith('#')) {
+    if (href.startsWith('#') && !href.startsWith('#/')) {
       ev.preventDefault();
       const target = document.querySelector(href);
       if (target) target.scrollIntoView({ behavior: 'smooth' });
@@ -2920,7 +3047,7 @@ button, input, select, textarea { touch-action: manipulation; }
     }
     if (href.includes('.html')) {
       ev.preventDefault();
-      window.IP_CanvasNav(href);
+      window.IP_CanvasNav(href.replace(/^#\/+/, ''));
     }
   });
 })(window);
@@ -4226,6 +4353,17 @@ button, input, select, textarea { touch-action: manipulation; }
           type: 'payment',
           title: '6 giao dịch sao kê ngân hàng mới chờ đối chiếu',
           message: 'Hệ thống ghi nhận 6 khoản chuyển khoản từ sao kê Vietcombank đang ở trạng thái Chờ đối chiếu.',
+          docCode: 'VCB-FEED-202610',
+          partnerName: 'Nhiều đối tác B2B (6 giao dịch)',
+          amountText: '284.500.000 ₫',
+          actorName: 'Cổng Ngân hàng Điện tử Vietcombank',
+          department: 'Phân hệ Kế toán Công nợ (TK 131)',
+          detailBody: 'Hệ thống vừa đồng bộ tự động 6 ủy nhiệm chi mới từ tài khoản Vietcombank 0011004567890. Thuật toán chấm điểm quy tắc (Rule-based Matching) đã gợi ý hóa đơn khớp cho từng khoản thu dựa trên nội dung chuyển khoản, mã số thuế và số dư phải thu.',
+          actionSteps: [
+            'Mở màn hình Đối chiếu Sao kê Ngân hàng (Tab Chờ đối chiếu).',
+            'Kiểm tra điểm khớp gợi ý (95% – 100%) giữa sao kê và hóa đơn mở.',
+            'Nhấn "Xác nhận khớp lệnh" để hệ thống tự động trừ nợ gốc và chuyển hóa đơn sang Đã thu đủ / Thanh toán một phần.'
+          ],
           targetRouteKey: 'reconciliation',
           targetParams: { tab: 'pending' },
           read: false,
@@ -4235,8 +4373,19 @@ button, input, select, textarea { touch-action: manipulation; }
           id: 'ntf_002',
           role: 'manager',
           type: 'invoice',
-          title: 'Hóa đơn IP-2026-0001 quá hạn trên 100 ngày',
+          title: 'Hóa đơn IP-2026-0001 quá hạn trên 100 ngày (Rủi ro Cao)',
           message: 'Khoản phải thu của CTCP Đầu tư Hạ tầng Thăng Long cần được ưu tiên đôn đốc thu hồi.',
+          docCode: 'IP-2026-0001 (Ký hiệu: 1C26TAA)',
+          partnerName: 'CTCP Đầu tư Hạ tầng Thăng Long (KH-001 · MST: 0101234567)',
+          amountText: '165.000.000 ₫',
+          actorName: 'Hệ thống Cảnh báo Rủi ro AI-3',
+          department: 'Phân hệ Quản lý / CFO & Контроль Tín dụng',
+          detailBody: 'Hóa đơn IP-2026-0001 đã vượt quá hạn thanh toán hơn 100 ngày (Nhóm tuổi nợ >90 ngày). Tỷ lệ sử dụng hạn mức tín dụng của khách hàng đạt ngưỡng cảnh báo đỏ và làm tăng chỉ số DSO toàn công ty thêm 4,2 ngày.',
+          actionSteps: [
+            'Mở Bảng điều khiển CFO hoặc Danh mục Hóa đơn Quá hạn để rà soát lịch sử nhắc nợ.',
+            'Phân công trực tiếp Chuyên viên Kinh doanh phụ trách liên hệ Giám đốc Tài chính phía đối tác.',
+            'Tạm dừng phê duyệt xuất hóa đơn tín dụng mới cho tới khi thu hồi tối thiểu 50% dư nợ quá hạn.'
+          ],
           targetRouteKey: 'manager.dashboard',
           targetParams: {},
           read: false,
@@ -4248,6 +4397,17 @@ button, input, select, textarea { touch-action: manipulation; }
           type: 'reminder',
           title: 'Gửi nhắc thanh toán chưa thành công (rem_003)',
           message: 'Email nhắc thanh toán gửi tới Xây dựng Hòa Phát Đạt bị gián đoạn kết nối, vui lòng kiểm tra và gửi lại.',
+          docCode: 'REM-2026-003 (HĐ: IP-2026-0006)',
+          partnerName: 'Công ty TNHH Xây dựng Hòa Phát Đạt (KH-003)',
+          amountText: '92.400.000 ₫',
+          actorName: 'Trần Minh Quân (Trưởng phòng Kinh doanh B2B)',
+          department: 'Phân hệ Chăm sóc & Thu hồi nợ Kinh doanh',
+          detailBody: 'Bản nhắc thanh toán qua kênh Email (Giọng điệu: Trang trọng) gửi tới địa chỉ kế toán của Xây dựng Hòa Phát Đạt phản hồi mã lỗi SMTP_TIMEOUT_421 do máy chủ thư điện tử của đối tác tạm thời quá tải.',
+          actionSteps: [
+            'Mở màn hình Nhắc thanh toán Đa kênh & AI-2 (Tab Gửi lỗi).',
+            'Kiểm tra lại địa chỉ email người nhận hoặc chuyển sang kênh SMS doanh nghiệp.',
+            'Bấm "Gửi lại ngay" hoặc sử dụng AI-2 để soạn lại thông điệp ngắn gọn hơn.'
+          ],
           targetRouteKey: 'sales.reminders',
           targetParams: { tab: 'failed' },
           read: false,
@@ -4259,6 +4419,17 @@ button, input, select, textarea { touch-action: manipulation; }
           type: 'invoice',
           title: '6 hóa đơn sắp đến hạn trong 7 ngày tới',
           message: 'Các hóa đơn từ IP-2026-0023 đến IP-2026-0028 sẽ đáo hạn trong tuần này.',
+          docCode: 'IP-2026-0023 → IP-2026-0028',
+          partnerName: '6 Doanh nghiệp đối tác B2B đang mở',
+          amountText: '418.000.000 ₫',
+          actorName: 'Bộ lập lịch Nhắc hạn Tự động',
+          department: 'Phân hệ Kinh doanh B2B',
+          detailBody: 'Có 6 hóa đơn GTGT chuẩn bị chạm mốc đáo hạn thanh toán trong vòng 7 ngày tới. Việc chủ động gửi thư nhắc lịch sự trước hạn 3–5 ngày giúp tăng tỷ lệ thu hồi đúng hạn thêm 32%.',
+          actionSteps: [
+            'Mở màn hình Theo dõi Công nợ Khách hàng của Kinh doanh.',
+            'Lọc nhóm khách hàng có hóa đơn sắp đến hạn trong 7 ngày.',
+            'Sử dụng trợ lý AI-2 để khởi tạo loạt thông báo nhắc thanh toán giọng điệu Thân thiện.'
+          ],
           targetRouteKey: 'sales.balance',
           targetParams: {},
           read: false,
@@ -4268,8 +4439,19 @@ button, input, select, textarea { touch-action: manipulation; }
           id: 'ntf_005',
           role: 'accountant',
           type: 'payment',
-          title: 'Phát hiện 2 giao dịch có chênh lệch số tiền',
+          title: 'Phát hiện 2 giao dịch có chênh lệch số tiền cần xử lý',
           message: 'Khoản chuyển khoản của Thương mại Minh Tâm và Bao bì Phú Mỹ lệch so với số dư hóa đơn.',
+          docCode: 'PAY-014 & PAY-015',
+          partnerName: 'Thương mại Minh Tâm & Bao bì Phú Mỹ',
+          amountText: 'Lệch 1.650.000 ₫ (Phí NH / Thanh toán thiếu)',
+          actorName: 'Nguyễn Thu Hà (Kế toán trưởng công nợ)',
+          department: 'Phân hệ Kế toán Đối chiếu Ngân hàng',
+          detailBody: 'Hệ thống phát hiện 2 giao dịch chuyển khoản có số tiền thực nhận trên sao kê chênh lệch nhỏ so với số dư còn phải thu trên hóa đơn GTGT (do khách hàng trừ phí chuyển tiền liên ngân hàng hoặc chuyển thiếu phần lẻ).',
+          actionSteps: [
+            'Mở màn hình Đối chiếu Sao kê Ngân hàng (Tab Chênh lệch).',
+            'Xem biên bản so sánh giữa Số tiền sao kê và Số dư hóa đơn.',
+            'Chọn "Ghi nhận thanh toán một phần" hoặc liên hệ Kinh doanh xác nhận phần chênh lệch.'
+          ],
           targetRouteKey: 'reconciliation',
           targetParams: { tab: 'discrepancy' },
           read: false,
@@ -4279,8 +4461,19 @@ button, input, select, textarea { touch-action: manipulation; }
           id: 'ntf_006',
           role: 'manager',
           type: 'system',
-          title: 'Đã lưu báo cáo phân tích dòng tiền 90 ngày',
+          title: 'Đã lưu báo cáo phân tích dòng tiền 90 ngày (AI-3)',
           message: 'Lê Hoàng Anh đã tạo và lưu bản chụp phân tích dòng tiền kịch bản Cơ sở.',
+          docCode: 'RPT-CF-90D-BASE',
+          partnerName: 'Toàn bộ danh mục phải thu B2B',
+          amountText: 'Dự kiến thu: 1.485.000.000 ₫',
+          actorName: 'Lê Hoàng Anh (Giám đốc Tài chính CFO)',
+          department: 'Phân hệ Quản lý & Dự báo Dòng tiền',
+          detailBody: 'Báo cáo dự báo dòng tiền 90 ngày theo kịch bản Cơ sở (Tỷ lệ thu hồi nợ quá hạn 65%, độ trễ trung bình 7 ngày) đã được lưu vào kho lưu trữ điều hành để phục vụ họp giao ban tài chính.',
+          actionSteps: [
+            'Mở Bảng điều khiển CFO hoặc màn hình Dự báo Dòng tiền 3 Kịch bản.',
+            'So sánh kịch bản Cơ sở với kịch bản Thận trọng và Tích cực.',
+            'Xuất tệp CSV/JSON nếu cần đính kèm vào biên bản họp Ban Giám đốc.'
+          ],
           targetRouteKey: 'manager.dashboard',
           targetParams: {},
           read: true,
@@ -4292,6 +4485,16 @@ button, input, select, textarea { touch-action: manipulation; }
           type: 'payment',
           title: 'Đã thu đủ hóa đơn IP-2026-0037 (Vận tải Biển Đông)',
           message: 'Khoản thanh toán 39.600.000 ₫ đã được xác nhận và cập nhật vào sổ công nợ.',
+          docCode: 'IP-2026-0037 · UNC-0037',
+          partnerName: 'CTCP Logistics & Vận tải Biển Đông (KH-004)',
+          amountText: '39.600.000 ₫ (Đã thu 100%)',
+          actorName: 'Nguyễn Thu Hà (Kế toán trưởng công nợ)',
+          department: 'Phân hệ Kế toán Công nợ',
+          detailBody: 'Khoản thanh toán 39.600.000 ₫ qua chuyển khoản Vietcombank đã được đối chiếu thành công. Trạng thái hóa đơn IP-2026-0037 tự động chuyển sang "Đã thu đủ" và hạn mức tín dụng khả dụng của Vận tải Biển Đông đã được khôi phục.',
+          actionSteps: [
+            'Mở Sổ cái Hóa đơn GTGT để xem chi tiết lịch sử thanh toán của hóa đơn IP-2026-0037.',
+            'Có thể xuất phiếu xác nhận tất toán hoặc bản in hóa đơn A4 gửi khách hàng.'
+          ],
           targetRouteKey: 'invoice.view',
           targetParams: { id: 'inv_037' },
           read: true,
@@ -4303,6 +4506,16 @@ button, input, select, textarea { touch-action: manipulation; }
           type: 'reminder',
           title: 'Đã lên lịch 2 thông báo nhắc hạn tự động',
           message: 'Hai bản nhắc cho Vận tải Biển Đông và Sao Khuê Tech đã được xếp lịch gửi.',
+          docCode: 'REM-2026-004 & REM-2026-005',
+          partnerName: 'Vận tải Biển Đông & Giải pháp Số Sao Khuê',
+          amountText: '146.300.000 ₫',
+          actorName: 'Trần Minh Quân (Kinh doanh B2B)',
+          department: 'Phân hệ Kinh doanh B2B',
+          detailBody: 'Hai bản nhắc thanh toán định kỳ đã được kiểm duyệt nội dung bằng AI-2 và đưa vào hàng đợi gửi tự động vào 08:30 sáng ngày làm việc tiếp theo.',
+          actionSteps: [
+            'Mở màn hình Nhắc thanh toán Đa kênh (Tab Đã lên lịch).',
+            'Kiểm tra nội dung xem trước hoặc nhấn "Gửi ngay" nếu muốn phát hành sớm.'
+          ],
           targetRouteKey: 'sales.reminders',
           targetParams: { tab: 'scheduled' },
           read: true,
@@ -4312,23 +4525,88 @@ button, input, select, textarea { touch-action: manipulation; }
           id: 'ntf_009',
           role: 'admin',
           type: 'system',
-          title: 'Đã cấp tài khoản mới: Bùi Thanh Tùng',
+          title: 'Đã cấp tài khoản mới: Bùi Thanh Tùng (Kế toán viên)',
           message: 'Tài khoản kế toán viên đối chiếu ngân hàng (tung.bui@hoabinhdigital.vn) đang ở trạng thái Đã mời.',
+          docCode: 'USR-RBAC-006',
+          partnerName: 'Bùi Thanh Tùng (tung.bui@hoabinhdigital.vn)',
+          amountText: 'Quyền: Kế toán (Accountant)',
+          actorName: 'Phạm Gia Bảo (Quản trị viên Hệ thống)',
+          department: 'Phân hệ Quản trị Hệ thống & Bảo mật RBAC',
+          detailBody: 'Quản trị viên đã khởi tạo tài khoản nhân sự mới cho chuyên viên Bùi Thanh Tùng thuộc bộ phận Kế toán đối chiếu ngân hàng. Tài khoản được gán quyền truy cập chuẩn RBAC của phân hệ Kế toán và sẽ tự động kích hoạt ngay trong lần đăng nhập đầu tiên.',
+          actionSteps: [
+            'Mở màn hình Phân quyền Người dùng RBAC (admin-user-management.html).',
+            'Kiểm tra trạng thái "Đã mời" hoặc cấp lại mật khẩu khởi tạo nếu nhân sự yêu cầu.',
+            'Rà soát định kỳ ma trận phân quyền 4 vai trò để đảm bảo an toàn dữ liệu công nợ.'
+          ],
           targetRouteKey: 'admin.users',
           targetParams: { status: 'invited' },
-          read: true,
-          createdAt: h.addHoursISO(-52)
+          read: false,
+          createdAt: h.addHoursISO(-46)
         },
         {
           id: 'ntf_010',
           role: 'accountant',
           type: 'invoice',
-          title: '3 hóa đơn dự thảo đang chờ kiểm tra & phát hành',
+          title: '3 hóa đơn dự thảo đang chờ kiểm tra AI-1 & phát hành',
           message: 'Các hóa đơn IP-2026-0047, IP-2026-0048, IP-2026-0049 đang ở trạng thái Nháp.',
+          docCode: 'IP-2026-0047, 0048, 0049',
+          partnerName: '3 Doanh nghiệp B2B',
+          amountText: '215.800.000 ₫',
+          actorName: 'Nguyễn Thu Hà (Kế toán trưởng công nợ)',
+          department: 'Phân hệ Kế toán Công nợ',
+          detailBody: 'Có 3 hóa đơn GTGT dự thảo đã được nhập liệu dòng hàng nhưng chưa ký số và phát hành mã Cơ quan Thuế (1C26TAA).',
+          actionSteps: [
+            'Mở Sổ cái Hóa đơn GTGT và lọc trạng thái "Nháp".',
+            'Chạy trình kiểm toán AI-1 để rà soát thuế suất GTGT, hạn thanh toán và hạn mức tín dụng.',
+            'Bấm "Lưu & Gửi hóa đơn" để chính thức ghi nhận vào công nợ phải thu.'
+          ],
           targetRouteKey: 'invoice.list',
           targetParams: { status: 'draft' },
           read: true,
-          createdAt: h.addHoursISO(-68)
+          createdAt: h.addHoursISO(-58)
+        },
+        {
+          id: 'ntf_011',
+          role: 'admin',
+          type: 'system',
+          title: 'Kiểm toán bảo mật RBAC & Đồng bộ 4 Link MockAPI hoàn tất',
+          message: 'Hệ thống xác nhận 4 phân hệ nghiệp vụ hoạt động ổn định, nhật ký kiểm toán và cấu hình hóa đơn 1C26TAA đồng bộ.',
+          docCode: 'SYS-AUDIT-202610',
+          partnerName: 'Toàn hệ thống InvoicePilot Enterprise',
+          amountText: '4 Phân hệ · 22 Màn hình chuẩn',
+          actorName: 'Phạm Gia Bảo (Quản trị viên Hệ thống)',
+          department: 'Phân hệ Quản trị Hệ thống & Hạ tầng Cloud',
+          detailBody: 'Hệ thống đã hoàn tất kiểm tra định kỳ: (1) Quy tắc đánh số hóa đơn tiền tố IP-2026- hoạt động chính xác; (2) 6 mẫu thông báo nhắc thanh toán Email/SMS hợp lệ; (3) Cơ chế bảo vệ dữ liệu cục bộ (Local Cache Shield) và kết nối 4 Endpoint MockAPI sẵn sàng.',
+          actionSteps: [
+            'Mở màn hình Cấu hình Hóa đơn, AI & MockAPI (admin-invoice-settings.html) để kiểm tra thông số.',
+            'Sử dụng nút "MockAPI (4 Nghiệp vụ)" trên thanh công cụ nếu muốn đồng bộ dữ liệu đám mây mới.'
+          ],
+          targetRouteKey: 'admin.settings',
+          targetParams: { tab: 'company' },
+          read: false,
+          createdAt: h.addHoursISO(-12)
+        },
+        {
+          id: 'ntf_012',
+          role: 'admin',
+          type: 'invoice',
+          title: 'Cảnh báo Quản trị: 2 Khách hàng B2B vượt 85% hạn mức tín dụng',
+          message: 'Hạ tầng Thăng Long và Xây dựng Hòa Phát Đạt đang tiệm cận trần tín dụng quy định trong danh mục doanh nghiệp.',
+          docCode: 'KH-001 & KH-003',
+          partnerName: 'Hạ tầng Thăng Long & Xây dựng Hòa Phát Đạt',
+          amountText: 'Tổng dư nợ: 485.000.000 ₫',
+          actorName: 'Hệ thống Giám sát Danh mục Doanh nghiệp',
+          department: 'Phân hệ Quản trị Danh mục Khách hàng',
+          detailBody: 'Hệ thống ghi nhận 2 khách hàng trọng điểm có tổng dư nợ phải thu vượt 85% hạn mức tín dụng được cấp trong hồ sơ doanh nghiệp. Quản trị viên và Quản lý CFO có thể phối hợp điều chỉnh hạn mức hoặc tạm khóa cấp tín dụng mới.',
+          actionSteps: [
+            'Mở màn hình Quản lý Danh mục Doanh nghiệp (admin-customer-management.html).',
+            'Nhấn vào từng doanh nghiệp để xem chi tiết dư nợ hiện tại so với hạn mức.',
+            'Cập nhật hạn mức tín dụng mới nếu đã có phê duyệt của Giám đốc Tài chính.'
+          ],
+          targetRouteKey: 'admin.customers',
+          targetParams: {},
+          read: false,
+          createdAt: h.addHoursISO(-18)
         }
       ];
     }
@@ -5527,6 +5805,32 @@ button, input, select, textarea { touch-action: manipulation; }
     const loaded = loadFromStorage();
     if (loaded) {
       _state = loaded;
+      // Tự động bổ sung các thông báo mới (bao gồm thông báo Quản trị viên ntf_011, ntf_012) nếu bộ nhớ cục bộ cũ chưa có
+      try {
+        const freshSeed = IP.Seed.buildInitialState();
+        if (freshSeed && Array.isArray(freshSeed.notifications)) {
+          _state.notifications = Array.isArray(_state.notifications) ? _state.notifications : [];
+          let addedNotif = false;
+          freshSeed.notifications.forEach(function (seedN) {
+            const existingIdx = _state.notifications.findIndex(function (x) { return x.id === seedN.id; });
+            if (existingIdx < 0) {
+              _state.notifications.push(seedN);
+              addedNotif = true;
+            } else {
+              _state.notifications[existingIdx] = Object.assign({}, seedN, _state.notifications[existingIdx], {
+                docCode: seedN.docCode,
+                partnerName: seedN.partnerName,
+                amountText: seedN.amountText,
+                actorName: seedN.actorName,
+                department: seedN.department,
+                detailBody: seedN.detailBody,
+                actionSteps: seedN.actionSteps
+              });
+            }
+          });
+          if (addedNotif) persistState();
+        }
+      } catch (e) {}
     } else {
       _state = IP.Seed.buildInitialState();
       persistState();
@@ -5926,8 +6230,14 @@ button, input, select, textarea { touch-action: manipulation; }
         return DB.err('VALIDATION', 'Mã số thuế phải gồm 10 hoặc 13 chữ số.', 'taxCode');
       }
 
-      const nextIdx = st.customers.length + 1;
-      const code = String(d.code || ('KH-' + String(nextIdx).padStart(3, '0'))).trim().toUpperCase();
+      let nextIdx = st.customers.length + 1;
+      let code = String(d.code || ('KH-' + String(nextIdx).padStart(3, '0'))).trim().toUpperCase();
+      if (!d.code) {
+        while (st.customers.some(function (c) { return c.code && c.code.toLowerCase() === code.toLowerCase(); })) {
+          nextIdx++;
+          code = 'KH-' + String(nextIdx).padStart(3, '0');
+        }
+      }
 
       if (st.customers.some(function (c) { return c.code.toLowerCase() === code.toLowerCase(); })) {
         return DB.err('DUPLICATE_CODE', 'Mã khách hàng "' + code + '" đã tồn tại trong hệ thống.', 'code');
@@ -7582,17 +7892,75 @@ button, input, select, textarea { touch-action: manipulation; }
   }
 
   function notificationBelongsToRole(n, role) {
+    if (role === 'admin') return true;
     return n.role === role || (n.role === 'all' && notificationOwnerRole(n) === role);
   }
 
+  function enrichNotificationRecord(n) {
+    if (!n) return n;
+    const owner = n.role && n.role !== 'all' ? n.role : notificationOwnerRole(n);
+    const ROLE_DEPT = {
+      accountant: 'Phân hệ Kế toán Công nợ (TK 131)',
+      sales: 'Phân hệ Chăm sóc & Kinh doanh B2B',
+      manager: 'Phân hệ Quản lý / Giám đốc Tài chính CFO',
+      admin: 'Phân hệ Quản trị Hệ thống & Bảo mật RBAC'
+    };
+    const ROLE_ACTOR = {
+      accountant: 'Nguyễn Thu Hà (Kế toán trưởng công nợ)',
+      sales: 'Trần Minh Quân (Trưởng phòng Kinh doanh B2B)',
+      manager: 'Lê Hoàng Anh (Giám đốc Tài chính CFO)',
+      admin: 'Phạm Gia Bảo (Quản trị viên Hệ thống)'
+    };
+    const DEFAULT_STEPS = {
+      invoice: [
+        'Mở danh sách hoặc hồ sơ chi tiết hóa đơn GTGT để kiểm tra dòng hàng, thuế suất và hạn thanh toán.',
+        'Đối chiếu hạn mức tín dụng khả dụng của khách hàng B2B.',
+        'Thực hiện phát hành, đôn đốc thu hồi hoặc lưu trữ theo đúng quy trình nghiệp vụ.'
+      ],
+      payment: [
+        'Kiểm tra mã tham chiếu ủy nhiệm chi và số tiền thực nhận trên sao kê ngân hàng.',
+        'Đối chiếu với số dư còn phải thu của hóa đơn GTGT tương ứng.',
+        'Xác nhận khớp lệnh để hệ thống tự động trừ dư nợ phải thu.'
+      ],
+      reminder: [
+        'Kiểm tra trạng thái gửi thông báo nhắc thanh toán (Email / SMS) và phản hồi của khách hàng.',
+        'Sử dụng trợ lý AI-2 để điều chỉnh giọng điệu nhắc nợ phù hợp với tuổi nợ.',
+        'Cập nhật ghi chú cam kết thanh toán của đối tác vào hồ sơ công nợ.'
+      ],
+      system: [
+        'Kiểm tra nhật ký hoạt động, phân quyền RBAC hoặc cấu hình tham số hệ thống.',
+        'Đảm bảo các quy tắc đánh số hóa đơn và kết nối dữ liệu hoạt động ổn định.'
+      ]
+    };
+    return Object.assign({}, n, {
+      ownerRole: owner,
+      docCode: n.docCode || (n.targetParams && (n.targetParams.id || n.targetParams.open)) || ('SYS-' + String(n.id || '001').toUpperCase()),
+      partnerName: n.partnerName || 'Đối tác B2B / Nội bộ hệ thống',
+      amountText: n.amountText || 'Theo chứng từ gốc',
+      actorName: n.actorName || ROLE_ACTOR[owner] || 'Hệ thống Tự động',
+      department: n.department || ROLE_DEPT[owner] || 'Hệ thống InvoicePilot',
+      detailBody: n.detailBody || (n.message + ' Sự kiện này đã được ghi nhận vào nhật ký vận hành để các bộ phận liên quan tra cứu và phối hợp xử lý.'),
+      actionSteps: Array.isArray(n.actionSteps) && n.actionSteps.length ? n.actionSteps : (DEFAULT_STEPS[n.type] || DEFAULT_STEPS.system)
+    });
+  }
+
   DB.extend('notifications', {
+    getNotification: function (id) {
+      const st = DB._rawState();
+      const found = st.notifications.find(function (x) { return x.id === id; });
+      return found ? enrichNotificationRecord(found) : null;
+    },
+
     listNotifications: function (filter) {
       const f = filter || {};
       const st = DB._rawState();
-      let list = st.notifications.slice();
+      let list = st.notifications.map(enrichNotificationRecord);
 
       if (f.role && f.role !== 'all') {
         list = list.filter(function (n) { return notificationBelongsToRole(n, f.role); });
+      }
+      if (f.ownerRole && f.ownerRole !== 'all') {
+        list = list.filter(function (n) { return n.ownerRole === f.ownerRole || n.role === f.ownerRole; });
       }
 
       if (f.type && f.type !== 'all' && f.type !== 'unread') {
@@ -8619,13 +8987,6 @@ button, input, select, textarea { touch-action: manipulation; }
       href: 'ui-state-empty.html'
     },
     {
-      key: 'state.loading',
-      pageId: 'ui-state-loading',
-      label: 'Đồng bộ & Tốc độ mạng',
-      icon: 'bi-cloud-arrow-down',
-      href: 'ui-state-loading.html'
-    },
-    {
       key: 'notifications',
       pageId: 'notifications',
       label: 'Thông báo',
@@ -9230,6 +9591,33 @@ button, input, select, textarea { touch-action: manipulation; }
     });
   }
 
+  function closeModal(modalEl, bsModal) {
+    try {
+      if (bsModal && typeof bsModal.hide === 'function') {
+        bsModal.hide();
+      }
+    } catch (e) {}
+    try {
+      if (bsModal && typeof bsModal.dispose === 'function') {
+        bsModal.dispose();
+      }
+    } catch (e) {}
+    if (modalEl) {
+      modalEl.classList.remove('show');
+      modalEl.style.display = 'none';
+      if (modalEl.parentNode) modalEl.remove();
+    }
+    setTimeout(function () {
+      const anyOpenModal = document.querySelector('.modal.show');
+      if (!anyOpenModal) {
+        document.querySelectorAll('.modal-backdrop').forEach(function (b) { b.remove(); });
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+      }
+    }, 30);
+  }
+
   function confirmModal(opts) {
     const o = opts || {};
     const modalId = 'ip-confirm-modal';
@@ -9286,8 +9674,7 @@ button, input, select, textarea { touch-action: manipulation; }
           return;
         }
       }
-      if (bsModal) bsModal.hide();
-      else modalEl.remove();
+      closeModal(modalEl, bsModal);
       if (typeof o.onConfirm === 'function') {
         o.onConfirm(reasonVal);
       }
@@ -9481,6 +9868,7 @@ button, input, select, textarea { touch-action: manipulation; }
     }
     const cus = IP.DB.getCustomer(inv.customerId);
     const today = IP.Seed.todayISO();
+    const halfRem = Math.max(1, Math.round(rem / 2));
 
     const modalId = 'ip-payment-modal';
     let modalEl = document.getElementById(modalId);
@@ -9491,49 +9879,79 @@ button, input, select, textarea { touch-action: manipulation; }
     modalEl.className = 'modal fade';
     modalEl.tabIndex = -1;
     modalEl.innerHTML =
-      '<div class="modal-dialog modal-dialog-centered">' +
-        '<div class="modal-content">' +
+      '<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">' +
+        '<div class="modal-content shadow-lg border-0">' +
           '<form id="ip-payment-form" novalidate>' +
-            '<div class="modal-header">' +
+            '<div class="modal-header bg-body-tertiary">' +
               '<div>' +
-                '<h2 class="modal-title fs-5 fw-bold">Ghi nhận thanh toán · ' + IP.Utils.escapeHtml(inv.number) + '</h2>' +
-                '<div class="small text-muted">' + IP.Utils.escapeHtml(cus ? cus.name : '') + ' · Còn phải thu: <strong class="ip-num">' + IP.Fmt.currency(rem) + '</strong></div>' +
+                '<div class="d-flex align-items-center gap-2 flex-wrap">' +
+                  '<h2 class="modal-title fs-5 fw-bold mb-0"><i class="bi bi-cash-coin text-success me-2"></i>Bảng ghi nhận & Lưu thanh toán · ' + IP.Utils.escapeHtml(inv.number) + '</h2>' +
+                  statusBadge(IP.Calc.effectiveStatus(inv)) +
+                '</div>' +
+                '<div class="small text-muted mt-1">' + IP.Utils.escapeHtml(cus ? (cus.name + ' (' + cus.code + ')') : '') + ' · Phát hành: ' + IP.Fmt.date(inv.issueDate) + ' · Hạn TT: ' + IP.Fmt.date(inv.dueDate) + '</div>' +
               '</div>' +
               '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>' +
             '</div>' +
-            '<div class="modal-body">' +
+            '<div class="modal-body p-4">' +
               '<div id="ip-pay-err-box" class="alert alert-danger py-2 small d-none" role="alert"></div>' +
+              '<div class="row g-2 mb-3 p-3 rounded border bg-body-tertiary small">' +
+                '<div class="col-6 col-md-3">' +
+                  '<div class="text-muted">Tổng giá trị HĐ</div>' +
+                  '<div class="fw-bold ip-num fs-6">' + IP.Fmt.currency(inv.total) + '</div>' +
+                '</div>' +
+                '<div class="col-6 col-md-3">' +
+                  '<div class="text-muted">Đã thu xác nhận</div>' +
+                  '<div class="fw-bold ip-num text-success fs-6">' + IP.Fmt.currency(inv.paidAmount) + '</div>' +
+                '</div>' +
+                '<div class="col-6 col-md-3">' +
+                  '<div class="text-muted">Còn phải thu</div>' +
+                  '<div class="fw-bold ip-num text-danger fs-6">' + IP.Fmt.currency(rem) + '</div>' +
+                '</div>' +
+                '<div class="col-6 col-md-3">' +
+                  '<div class="text-muted">Dư nợ sau khi lưu</div>' +
+                  '<div class="fw-bold ip-num text-primary fs-6" id="ip-pay-after-rem">0 ₫ (Tất toán)</div>' +
+                '</div>' +
+              '</div>' +
               '<div class="mb-3">' +
-                '<label class="form-label" for="ip-pay-amount">Số tiền nhận (VND) <span class="text-danger">*</span></label>' +
-                '<input type="number" id="ip-pay-amount" class="form-control ip-num" value="' + rem + '" min="1" max="' + rem + '" required>' +
-                '<div class="form-text">Tối đa bằng số còn phải thu: ' + IP.Fmt.currency(rem) + '</div>' +
+                '<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-1">' +
+                  '<label class="form-label fw-semibold mb-0" for="ip-pay-amount">Số tiền thực nhận (VND) <span class="text-danger">*</span></label>' +
+                  '<div class="d-flex gap-1">' +
+                    '<button type="button" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size:0.74rem;" data-pay-preset="' + rem + '">Thu đủ 100% (' + IP.Fmt.currency(rem) + ')</button>' +
+                    '<button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2" style="font-size:0.74rem;" data-pay-preset="' + halfRem + '">Thu 50% (' + IP.Fmt.currency(halfRem) + ')</button>' +
+                  '</div>' +
+                '</div>' +
+                '<input type="number" id="ip-pay-amount" class="form-control form-control-lg ip-num fw-bold text-success" value="' + rem + '" min="1" max="' + rem + '" required>' +
+                '<div class="form-text">Nhập số tiền nguyên VND (Tối đa bằng số còn phải thu: ' + IP.Fmt.currency(rem) + '). Chỉ cần bấm <strong>Xác nhận & Lưu thanh toán</strong> 1 lần để hoàn tất.</div>' +
               '</div>' +
               '<div class="row g-3 mb-3">' +
-                '<div class="col-sm-6">' +
-                  '<label class="form-label" for="ip-pay-method">Phương thức thanh toán</label>' +
+                '<div class="col-sm-4">' +
+                  '<label class="form-label fw-semibold" for="ip-pay-method">Phương thức thanh toán</label>' +
                   '<select id="ip-pay-method" class="form-select">' +
                     '<option value="transfer">Chuyển khoản ngân hàng</option>' +
                     '<option value="cash">Tiền mặt</option>' +
                     '<option value="ewallet">Ví điện tử doanh nghiệp</option>' +
                   '</select>' +
                 '</div>' +
-                '<div class="col-sm-6">' +
-                  '<label class="form-label" for="ip-pay-date">Ngày nhận tiền <span class="text-danger">*</span></label>' +
+                '<div class="col-sm-4">' +
+                  '<label class="form-label fw-semibold" for="ip-pay-date">Ngày nhận tiền <span class="text-danger">*</span></label>' +
                   '<input type="date" id="ip-pay-date" class="form-control" value="' + today + '" min="' + inv.issueDate + '" max="' + today + '" required>' +
                 '</div>' +
+                '<div class="col-sm-4">' +
+                  '<label class="form-label fw-semibold" for="ip-pay-ref">Số Ủy nhiệm chi / Tham chiếu</label>' +
+                  '<input type="text" id="ip-pay-ref" class="form-control font-monospace" value="UNC-' + inv.number.slice(-4) + '-' + String(Date.now()).slice(-3) + '" placeholder="VD: VCB20260988">' +
+                '</div>' +
               '</div>' +
-              '<div class="mb-3">' +
-                '<label class="form-label" for="ip-pay-ref">Mã tham chiếu / Ủy nhiệm chi</label>' +
-                '<input type="text" id="ip-pay-ref" class="form-control" value="UNC-' + inv.number.slice(-4) + '-' + String(Date.now()).slice(-3) + '" placeholder="VD: VCB20260988">' +
-              '</div>' +
-              '<div class="mb-1">' +
-                '<label class="form-label" for="ip-pay-note">Ghi chú kế toán (Tối đa 200 ký tự)</label>' +
-                '<textarea id="ip-pay-note" class="form-control" rows="2" data-char-limit="200" placeholder="Nhập ghi chú đợt thu tiền..."></textarea>' +
+              '<div class="mb-2">' +
+                '<label class="form-label fw-semibold" for="ip-pay-note">Ghi chú hạch toán kế toán (Tối đa 200 ký tự)</label>' +
+                '<textarea id="ip-pay-note" class="form-control" rows="2" data-char-limit="200" placeholder="Nhập ghi chú đợt thu tiền (VD: Thu đủ công nợ theo UNC Vietcombank)..."></textarea>' +
               '</div>' +
             '</div>' +
-            '<div class="modal-footer">' +
-              '<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>' +
-              '<button type="submit" class="btn btn-primary" id="ip-pay-submit"><i class="bi bi-check2-circle"></i> Lưu thanh toán</button>' +
+            '<div class="modal-footer bg-body-tertiary d-flex justify-content-between align-items-center">' +
+              '<div class="small text-muted"><i class="bi bi-shield-check text-success me-1"></i>Tự động cập nhật sổ cái TK 131 & trạng thái hóa đơn ngay sau khi lưu.</div>' +
+              '<div class="d-flex gap-2">' +
+                '<button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">Hủy bỏ</button>' +
+                '<button type="submit" class="btn btn-success px-4 fw-bold" id="ip-pay-submit"><i class="bi bi-check2-circle me-1"></i> Xác nhận & Lưu thanh toán</button>' +
+              '</div>' +
             '</div>' +
           '</form>' +
         '</div>' +
@@ -9544,6 +9962,25 @@ button, input, select, textarea { touch-action: manipulation; }
     const bsModal = window.bootstrap && window.bootstrap.Modal ? new window.bootstrap.Modal(modalEl) : null;
     const form = modalEl.querySelector('#ip-payment-form');
     const errBox = modalEl.querySelector('#ip-pay-err-box');
+    const amtInput = modalEl.querySelector('#ip-pay-amount');
+    const afterRemEl = modalEl.querySelector('#ip-pay-after-rem');
+
+    function updateProjectedBalance() {
+      const val = Math.max(0, Number(amtInput.value || 0));
+      const left = Math.max(0, rem - val);
+      if (afterRemEl) {
+        afterRemEl.textContent = left === 0 ? '0 ₫ (Tất toán đủ)' : (IP.Fmt.currency(left) + ' (Còn lại)');
+        afterRemEl.className = 'fw-bold ip-num fs-6 ' + (left === 0 ? 'text-success' : 'text-warning');
+      }
+    }
+
+    amtInput.addEventListener('input', updateProjectedBalance);
+    modalEl.querySelectorAll('[data-pay-preset]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        amtInput.value = btn.getAttribute('data-pay-preset');
+        updateProjectedBalance();
+      });
+    });
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -9551,7 +9988,7 @@ button, input, select, textarea { touch-action: manipulation; }
       const submitBtn = modalEl.querySelector('#ip-pay-submit');
       if (submitBtn) submitBtn.disabled = true;
 
-      const amount = Number(modalEl.querySelector('#ip-pay-amount').value);
+      const amount = Number(amtInput.value);
       const method = modalEl.querySelector('#ip-pay-method').value;
       const paidAt = modalEl.querySelector('#ip-pay-date').value;
       const reference = modalEl.querySelector('#ip-pay-ref').value;
@@ -9570,15 +10007,14 @@ button, input, select, textarea { touch-action: manipulation; }
         if (submitBtn) submitBtn.disabled = false;
         errBox.textContent = res.error.message;
         errBox.classList.remove('d-none');
-        if (res.error.field === 'amount') modalEl.querySelector('#ip-pay-amount').focus();
+        if (res.error.field === 'amount') amtInput.focus();
         if (res.error.field === 'paidAt') modalEl.querySelector('#ip-pay-date').focus();
         return;
       }
 
-      if (bsModal) bsModal.hide();
-      else modalEl.remove();
+      closeModal(modalEl, bsModal);
       toast({
-        title: 'Đã ghi nhận thanh toán',
+        title: 'Đã ghi nhận & lưu thanh toán thành công',
         message: 'Đã thu ' + IP.Fmt.currency(amount) + ' cho hóa đơn ' + inv.number + '.',
         type: 'success'
       });
@@ -9664,13 +10100,124 @@ button, input, select, textarea { touch-action: manipulation; }
       const btn = ev.target.closest('[data-cus-id]');
       if (!btn) return;
       const chosen = IP.DB.getCustomer(btn.getAttribute('data-cus-id'));
-      if (bsModal) bsModal.hide();
-      else modalEl.remove();
+      closeModal(modalEl, bsModal);
       if (chosen && typeof o.onSelect === 'function') {
         o.onSelect(chosen);
       }
     });
 
+    if (bsModal) bsModal.show();
+    else modalEl.style.display = 'block';
+  }
+
+  function openNotificationDetailModal(notifId, onUpdate) {
+    const n = IP.DB.getNotification ? IP.DB.getNotification(notifId) : (IP.DB.listNotifications({}).find(function (x) { return x.id === notifId; }) || null);
+    if (!n) {
+      toast({ title: 'Không tìm thấy thông báo', message: 'Thông báo này đã bị xóa hoặc không tồn tại.', type: 'warning' });
+      return;
+    }
+    if (!n.read && IP.DB.markNotificationRead) {
+      IP.DB.markNotificationRead(n.id);
+      if (typeof onUpdate === 'function') onUpdate();
+    }
+
+    const sess = IP.Auth && IP.Auth.getSession ? IP.Auth.getSession() : null;
+    const currentRole = sess ? sess.role : 'accountant';
+    const targetOwnerRole = n.ownerRole || (n.role && n.role !== 'all' ? n.role : 'accountant');
+    const targetHref = n.link || IP.Routes.url(n.targetRouteKey || 'invoice.list', n.targetParams || {}, targetOwnerRole);
+
+    const TYPE_META = {
+      invoice: { label: 'Nghiệp vụ Hóa đơn GTGT', badge: 'bg-primary-subtle text-primary-emphasis', icon: 'bi-file-earmark-text-fill text-primary' },
+      payment: { label: 'Đối chiếu & Thanh toán', badge: 'bg-success-subtle text-success-emphasis', icon: 'bi-cash-coin text-success' },
+      reminder: { label: 'Nhắc hạn & Thu hồi nợ', badge: 'bg-warning-subtle text-warning-emphasis', icon: 'bi-envelope-paper-fill text-warning' },
+      system: { label: 'Quản trị & Hệ thống', badge: 'bg-info-subtle text-info-emphasis', icon: 'bi-gear-fill text-info' }
+    };
+    const tm = TYPE_META[n.type] || TYPE_META.system;
+
+    const modalId = 'ip-notif-detail-modal';
+    let modalEl = document.getElementById(modalId);
+    if (modalEl) modalEl.remove();
+
+    modalEl = document.createElement('div');
+    modalEl.id = modalId;
+    modalEl.className = 'modal fade';
+    modalEl.tabIndex = -1;
+    modalEl.innerHTML =
+      '<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">' +
+        '<div class="modal-content shadow-lg border-0">' +
+          '<div class="modal-header bg-body-tertiary">' +
+            '<div>' +
+              '<div class="d-flex align-items-center gap-2 flex-wrap mb-1">' +
+                '<span class="badge ' + tm.badge + '"><i class="bi ' + tm.icon + ' me-1"></i>' + tm.label + '</span>' +
+                roleBadge(targetOwnerRole) +
+                '<span class="badge bg-secondary-subtle text-body-secondary font-monospace">' + IP.Utils.escapeHtml(n.docCode || n.id) + '</span>' +
+              '</div>' +
+              '<h2 class="modal-title fs-5 fw-bold mb-0">' + IP.Utils.escapeHtml(n.title) + '</h2>' +
+            '</div>' +
+            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>' +
+          '</div>' +
+          '<div class="modal-body p-4">' +
+            '<div class="row g-2 mb-3 p-3 rounded border bg-body-tertiary small">' +
+              '<div class="col-sm-6">' +
+                '<div class="text-muted">Đơn vị / Đối tác liên quan</div>' +
+                '<div class="fw-bold">' + IP.Utils.escapeHtml(n.partnerName || '—') + '</div>' +
+              '</div>' +
+              '<div class="col-sm-6">' +
+                '<div class="text-muted">Giá trị / Quy mô nghiệp vụ</div>' +
+                '<div class="fw-bold ip-num text-primary">' + IP.Utils.escapeHtml(n.amountText || '—') + '</div>' +
+              '</div>' +
+              '<div class="col-sm-6 mt-2">' +
+                '<div class="text-muted">Bộ phận phụ trách</div>' +
+                '<div class="fw-semibold">' + IP.Utils.escapeHtml(n.department || '—') + '</div>' +
+              '</div>' +
+              '<div class="col-sm-6 mt-2">' +
+                '<div class="text-muted">Người thực hiện / Nguồn phát sinh</div>' +
+                '<div class="fw-semibold">' + IP.Utils.escapeHtml(n.actorName || '—') + ' · <span class="text-muted">' + IP.Fmt.dateTime(n.createdAt) + '</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="mb-3">' +
+              '<h3 class="fs-6 fw-bold mb-2"><i class="bi bi-journal-text text-primary me-1"></i>Nội dung chi tiết & Bối cảnh nghiệp vụ</h3>' +
+              '<div class="p-3 rounded border bg-body small" style="line-height:1.65;">' +
+                '<p class="fw-semibold mb-2">' + IP.Utils.escapeHtml(n.message) + '</p>' +
+                '<p class="mb-0 text-body-secondary">' + IP.Utils.escapeHtml(n.detailBody || '') + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div>' +
+              '<h3 class="fs-6 fw-bold mb-2"><i class="bi bi-list-check text-success me-1"></i>Hướng dẫn xử lý dành cho nghiệp vụ (' + IP.Fmt.roleLabel(targetOwnerRole) + ')</h3>' +
+              '<ol class="small mb-0 ps-3" style="line-height:1.7;">' +
+                (n.actionSteps || []).map(function (step) {
+                  return '<li class="mb-1">' + IP.Utils.escapeHtml(step) + '</li>';
+                }).join('') +
+              '</ol>' +
+            '</div>' +
+          '</div>' +
+          '<div class="modal-footer bg-body-tertiary d-flex justify-content-between align-items-center flex-wrap gap-2">' +
+            '<div class="small text-muted"><i class="bi bi-check2-all text-success me-1"></i>Đã đánh dấu là <strong>Đã đọc</strong> trong Trung tâm thông báo.</div>' +
+            '<div class="d-flex gap-2">' +
+              '<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng cửa sổ</button>' +
+              '<button type="button" class="btn btn-primary fw-semibold" id="ip-notif-go-target-btn">' +
+                '<i class="bi bi-box-arrow-in-right me-1"></i>' +
+                (currentRole !== targetOwnerRole
+                  ? ('Chuyển sang ' + IP.Fmt.roleLabel(targetOwnerRole) + ' & Mở màn hình xử lý')
+                  : 'Đi tới màn hình xử lý ngay') +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(modalEl);
+    const bsModal = window.bootstrap && window.bootstrap.Modal ? new window.bootstrap.Modal(modalEl) : null;
+    const goBtn = modalEl.querySelector('#ip-notif-go-target-btn');
+    if (goBtn) {
+      goBtn.addEventListener('click', function () {
+        closeModal(modalEl, bsModal);
+        if (currentRole !== targetOwnerRole && IP.Auth && typeof IP.Auth.switchRole === 'function') {
+          IP.Auth.switchRole(targetOwnerRole, false);
+        }
+        window.IP_CanvasNav(targetHref);
+      });
+    }
     if (bsModal) bsModal.show();
     else modalEl.style.display = 'block';
   }
@@ -9778,8 +10325,10 @@ button, input, select, textarea { touch-action: manipulation; }
     renderPagination: renderPagination,
     downloadCSV: downloadCSV,
     downloadJSON: downloadJSON,
+    closeModal: closeModal,
     openPaymentModal: openPaymentModal,
     openCustomerPicker: openCustomerPicker,
+    openNotificationDetailModal: openNotificationDetailModal,
     renderInvoicePrint: renderInvoicePrint
   };
 })(window);
@@ -10250,23 +10799,25 @@ button, input, select, textarea { touch-action: manipulation; }
   function buildNotificationDropdown(role) {
     const isEn = IP.I18n && IP.I18n.getLang() === 'en';
     const unread = IP.DB.listNotifications({ role: role, unreadOnly: true });
-    const recent = IP.DB.listNotifications({ role: role }).slice(0, 5);
+    const recent = IP.DB.listNotifications({ role: role }).slice(0, 6);
     const countBadge = unread.length > 0
       ? '<span class="ip-notif-dot" id="ip-topbar-notif-count">' + unread.length + '</span>'
       : '<span class="ip-notif-dot d-none" id="ip-topbar-notif-count">0</span>';
 
     const itemsHtml = recent.length
       ? recent.map(function (n) {
-          const href = n.link || IP.Routes.url(n.targetRouteKey || 'notifications', n.targetParams || {}, role);
           return (
             '<li>' +
-              '<a class="dropdown-item py-2 border-bottom text-wrap ' + (!n.read ? 'fw-semibold' : '') + '" href="' + IP.Utils.escapeHtml(href) + '" data-notif-id="' + n.id + '">' +
-                '<div class="d-flex justify-content-between align-items-center mb-1">' +
+              '<a class="dropdown-item py-2 border-bottom text-wrap ' + (!n.read ? 'fw-semibold bg-primary-subtle bg-opacity-10' : '') + '" href="#view-notif-' + n.id + '" data-notif-id="' + n.id + '">' +
+                '<div class="d-flex justify-content-between align-items-center mb-1 gap-1">' +
                   '<span class="small">' + IP.Utils.escapeHtml(n.title) + '</span>' +
-                  (!n.read ? '<span class="badge bg-primary rounded-pill" style="font-size:0.65rem">' + (isEn ? 'New' : 'Mới') + '</span>' : '') +
+                  (!n.read ? '<span class="badge bg-primary rounded-pill flex-shrink-0" style="font-size:0.65rem">' + (isEn ? 'New' : 'Mới') + '</span>' : '') +
                 '</div>' +
                 '<div class="small text-muted">' + IP.Utils.escapeHtml(n.message) + '</div>' +
-                '<div class="small text-muted mt-1" style="font-size:0.72rem">' + IP.Fmt.relative(n.createdAt) + '</div>' +
+                '<div class="d-flex justify-content-between align-items-center mt-1" style="font-size:0.71rem">' +
+                  '<span class="text-primary fw-semibold">' + IP.Utils.escapeHtml(n.docCode || '') + (n.amountText ? (' · ' + IP.Utils.escapeHtml(n.amountText)) : '') + '</span>' +
+                  '<span class="text-muted">' + IP.Fmt.relative(n.createdAt) + '</span>' +
+                '</div>' +
               '</a>' +
             '</li>'
           );
@@ -10278,7 +10829,7 @@ button, input, select, textarea { touch-action: manipulation; }
         '<button type="button" class="ip-icon-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="' + (isEn ? 'System Notifications' : 'Thông báo hệ thống') + '">' +
           '<i class="bi bi-bell"></i>' + countBadge +
         '</button>' +
-        '<ul class="dropdown-menu dropdown-menu-end shadow border p-0" style="width: 340px; max-width: 92vw;">' +
+        '<ul class="dropdown-menu dropdown-menu-end shadow border p-0" style="width: 370px; max-width: 94vw;">' +
           '<li class="px-3 py-2 border-bottom d-flex justify-content-between align-items-center bg-body-tertiary">' +
             '<span class="fw-bold small">' + (isEn ? ('Notifications (' + unread.length + ' unread)') : ('Thông báo (' + unread.length + ' chưa đọc)')) + '</span>' +
             '<a href="notifications.html" class="small text-decoration-none fw-semibold">' + (isEn ? 'View All' : 'Xem tất cả') + '</a>' +
@@ -11006,8 +11557,13 @@ button, input, select, textarea { touch-action: manipulation; }
       }
       const notifLink = ev.target.closest('[data-notif-id]');
       if (notifLink) {
+        ev.preventDefault();
         const nId = notifLink.getAttribute('data-notif-id');
-        IP.DB.markNotificationRead(nId);
+        if (IP.UI && typeof IP.UI.openNotificationDetailModal === 'function') {
+          IP.UI.openNotificationDetailModal(nId);
+        } else {
+          IP.DB.markNotificationRead(nId);
+        }
       }
     });
 
@@ -11201,7 +11757,8 @@ button, input, select, textarea { touch-action: manipulation; }
       const ep = mEl.querySelector('#ip-llm-endpoint-inp').value;
       const tk = mEl.querySelector('#ip-llm-token-inp').value;
       saveSessionLLMConfig(ep, tk);
-      if (bsModal) bsModal.hide();
+      if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+      else if (bsModal) bsModal.hide();
       else mEl.remove();
       if (IP.UI && IP.UI.toast) {
         IP.UI.toast({
@@ -11213,7 +11770,8 @@ button, input, select, textarea { touch-action: manipulation; }
     });
     mEl.querySelector('#ip-llm-clear-btn').addEventListener('click', function () {
       saveSessionLLMConfig('', '');
-      if (bsModal) bsModal.hide();
+      if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+      else if (bsModal) bsModal.hide();
       else mEl.remove();
       if (IP.UI && IP.UI.toast) {
         IP.UI.toast({ title: 'Đã chuyển về chế độ Fallback nội bộ', message: 'Đã xóa thông tin phiên trong sessionStorage.', type: 'info' });
@@ -11985,7 +12543,8 @@ button, input, select, textarea { touch-action: manipulation; }
         const res = await syncFromMockAPI(null);
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-cloud-arrow-down-fill me-1"></i>Lưu 4 Link & Đồng bộ toàn hệ thống';
-        if (bsModal) bsModal.hide();
+        if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+        else if (bsModal) bsModal.hide();
         if (IP.UI && IP.UI.toast) {
           IP.UI.toast({
             title: 'Đã lưu cấu hình 4 Link MockAPI',
@@ -12011,7 +12570,7 @@ button, input, select, textarea { touch-action: manipulation; }
   // -------------------------------------------------------------------------
   // 2. IP.NetworkMonitor — Giám sát Mạng chậm 3G (Trang 8) & Đứt mạng đột ngột (Trang 10)
   // -------------------------------------------------------------------------
-  let _netMode = 'online'; // 'online' | 'slow' | 'offline'
+  let _netMode = 'online'; // 'online' | 'slow' | 'offline' | 'explorer'
   let _reconnectTimer = null;
   let _countdownSec = 8;
 
@@ -12019,14 +12578,20 @@ button, input, select, textarea { touch-action: manipulation; }
     const root = document.getElementById('ip-network-live-banner-root');
     document.querySelectorAll('[data-net-sim]').forEach(function (pill) {
       const m = pill.getAttribute('data-net-sim');
-      pill.classList.remove('is-online', 'is-slow', 'is-offline');
+      pill.classList.remove('is-online', 'is-slow', 'is-offline', 'is-explorer');
       if (m === _netMode) {
-        pill.classList.add(m === 'online' ? 'is-online' : (m === 'slow' ? 'is-slow' : 'is-offline'));
+        const clsMap = {
+          online: 'is-online',
+          slow: 'is-slow',
+          offline: 'is-offline',
+          explorer: 'is-explorer'
+        };
+        pill.classList.add(clsMap[m] || 'is-online');
       }
     });
 
     if (!root) return;
-    if (_netMode === 'online') {
+    if (_netMode === 'online' || _netMode === 'explorer') {
       root.innerHTML = '';
       return;
     }
@@ -12065,7 +12630,7 @@ button, input, select, textarea { touch-action: manipulation; }
   }
 
   function setNetworkMode(mode, navigateToStatePage) {
-    _netMode = ['online', 'slow', 'offline'].includes(mode) ? mode : 'online';
+    _netMode = ['online', 'slow', 'offline', 'explorer'].includes(mode) ? mode : 'online';
     if (_reconnectTimer) {
       clearInterval(_reconnectTimer);
       _reconnectTimer = null;
@@ -12105,6 +12670,10 @@ button, input, select, textarea { touch-action: manipulation; }
       if (navigateToStatePage && typeof window.IP_CanvasNav === 'function') {
         window.IP_CanvasNav('ui-state-error.html');
       }
+    } else if (_netMode === 'explorer') {
+      if (navigateToStatePage && typeof window.IP_CanvasNav === 'function') {
+        window.IP_CanvasNav('ui-state-empty.html');
+      }
     } else {
       if (IP.UI && IP.UI.toast) {
         IP.UI.toast({
@@ -12139,10 +12708,12 @@ button, input, select, textarea { touch-action: manipulation; }
         setNetworkMode('slow', true);
       } else if (targetMode === 'offline') {
         setNetworkMode('offline', true);
+      } else if (targetMode === 'explorer') {
+        setNetworkMode('explorer', true);
       } else {
         setNetworkMode('online', false);
         const curPage = document.body.getAttribute('data-page') || '';
-        if (['ui-state-loading', 'ui-state-error'].includes(curPage)) {
+        if (['ui-state-loading', 'ui-state-error', 'ui-state-empty'].includes(curPage)) {
           const sess = IP.Auth && IP.Auth.getSession ? IP.Auth.getSession() : null;
           window.IP_CanvasNav(sess ? IP.Routes.homeForRole(sess.role) : 'accountant-invoice-list.html');
         }
@@ -13002,7 +13573,7 @@ button, input, select, textarea { touch-action: manipulation; }
     if (document.getElementById('ip-chatbot-root')) return;
     const wrap = document.createElement('div');
     wrap.id = 'ip-chatbot-root';
-    wrap.className = 'ip-chatbot-root ip-no-print';
+    wrap.className = 'ip-chatbot-root is-collapsed ip-no-print';
     wrap.innerHTML =
       '<section id="ip-chatbot-panel" class="ip-chatbot-panel" role="dialog" aria-modal="false" aria-labelledby="ip-chatbot-title" aria-hidden="true" hidden>' +
         '<header class="ip-chatbot-head">' +
@@ -13013,7 +13584,7 @@ button, input, select, textarea { touch-action: manipulation; }
           '</div>' +
           '<button type="button" id="ip-chatbot-api-cfg" class="ip-chatbot-head-btn" aria-label="Cấu hình khóa LLM SessionStorage" title="Kết nối LLM ngoài qua SessionStorage"><i class="bi bi-key-fill"></i></button>' +
           '<button type="button" id="ip-chatbot-clear" class="ip-chatbot-head-btn" aria-label="Xóa bộ nhớ ngữ cảnh & Làm mới" title="Làm mới ngữ cảnh hội thoại"><i class="bi bi-arrow-counterclockwise"></i></button>' +
-          '<button type="button" id="ip-chatbot-close" class="ip-chatbot-head-btn" aria-label="Đóng trợ lý AI" title="Đóng"><i class="bi bi-x-lg"></i></button>' +
+          '<button type="button" id="ip-chatbot-close" class="ip-chatbot-head-btn" aria-label="Thu gọn trợ lý AI" title="Thu gọn vào góc"><i class="bi bi-dash-lg"></i></button>' +
         '</header>' +
         '<div class="ip-chatbot-context px-2 py-1 border-bottom bg-body-tertiary" id="ip-chatbot-context">' +
           '<div class="d-flex justify-content-between align-items-center flex-wrap gap-1 mb-1">' +
@@ -13042,9 +13613,14 @@ button, input, select, textarea { touch-action: manipulation; }
         '</form>' +
         '<footer class="ip-chatbot-foot">Mini-LLM chuyên biệt cho từng nghiệp vụ · Có bộ nhớ ngữ cảnh đa lượt & truy xuất trực tiếp sổ dữ liệu thực.</footer>' +
       '</section>' +
-      '<button type="button" id="ip-chatbot-toggle" class="ip-chatbot-toggle" aria-label="Mở trợ lý Mini-LLM theo Nghiệp vụ" aria-expanded="false" aria-controls="ip-chatbot-panel">' +
-        '<i class="bi bi-stars ip-chatbot-toggle-icon" aria-hidden="true"></i><span id="ip-chatbot-toggle-label">Mini-LLM Nghiệp vụ</span><span class="ip-chatbot-toggle-pulse" aria-hidden="true"></span>' +
-      '</button>';
+      '<div class="ip-chatbot-toggle-wrap">' +
+        '<button type="button" id="ip-chatbot-collapse-btn" class="ip-chatbot-collapse-pill" title="Thu gọn biểu tượng Chatbot vào góc">' +
+          '<i class="bi bi-chevron-right"></i>' +
+        '</button>' +
+        '<button type="button" id="ip-chatbot-toggle" class="ip-chatbot-toggle" title="Mở trợ lý Mini-LLM theo Nghiệp vụ" aria-label="Mở trợ lý Mini-LLM theo Nghiệp vụ" aria-expanded="false" aria-controls="ip-chatbot-panel">' +
+          '<i class="bi bi-stars ip-chatbot-toggle-icon" aria-hidden="true"></i><span id="ip-chatbot-toggle-label">Mini-LLM Nghiệp vụ</span><span class="ip-chatbot-toggle-pulse" aria-hidden="true"></span>' +
+        '</button>' +
+      '</div>';
 
     document.body.appendChild(wrap);
 
@@ -13195,15 +13771,29 @@ button, input, select, textarea { touch-action: manipulation; }
       }, 240);
     }
 
+    const collapseBtn = document.getElementById('ip-chatbot-collapse-btn');
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        wrap.classList.add('is-collapsed');
+        panel.hidden = true;
+        panel.setAttribute('aria-hidden', 'true');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    }
+
     toggle.addEventListener('click', function () {
       const isHidden = panel.hidden;
       panel.hidden = !isHidden;
       panel.setAttribute('aria-hidden', isHidden ? 'false' : 'true');
       toggle.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
       if (isHidden) {
+        wrap.classList.remove('is-collapsed');
         if (!selectedPersonaRole) switchPersonaRole(detectCurrentRole(), true);
         else renderDynamicRolePrompts(selectedPersonaRole);
         input.focus();
+      } else {
+        wrap.classList.add('is-collapsed');
       }
     });
 
@@ -13211,6 +13801,7 @@ button, input, select, textarea { touch-action: manipulation; }
       panel.hidden = true;
       panel.setAttribute('aria-hidden', 'true');
       toggle.setAttribute('aria-expanded', 'false');
+      wrap.classList.add('is-collapsed');
     });
 
     clearBtn.addEventListener('click', function () {
@@ -15405,7 +15996,8 @@ button, input, select, textarea { touch-action: manipulation; }
       const params = IP.Utils.getQueryParams();
       let currentTab = params.tab || 'all'; // 'all' | 'unread' | 'invoice' | 'payment' | 'reminder' | 'system'
       let readFilter = 'all'; // 'all' | 'unread' | 'read'
-      let visibleCount = 10;
+      let roleScope = role === 'admin' ? 'all' : role; // Admin sees all notifications by default; other roles see their role scope or all
+      let visibleCount = 12;
 
       const TYPE_ICONS = {
         invoice: 'bi-file-earmark-text text-primary',
@@ -15414,8 +16006,16 @@ button, input, select, textarea { touch-action: manipulation; }
         system: 'bi-gear text-info'
       };
 
+      const TYPE_LABELS = {
+        invoice: 'Hóa đơn GTGT',
+        payment: 'Thanh toán & Sao kê',
+        reminder: 'Nhắc công nợ',
+        system: 'Hệ thống & RBAC'
+      };
+
       function render() {
-        const all = IP.DB.listNotifications({});
+        const baseFilter = roleScope === 'all' ? {} : { ownerRole: roleScope };
+        const all = IP.DB.listNotifications(baseFilter);
         const counts = {
           all: all.length,
           unread: all.filter(function (n) { return !n.read; }).length,
@@ -15425,10 +16025,10 @@ button, input, select, textarea { touch-action: manipulation; }
           system: all.filter(function (n) { return n.type === 'system'; }).length
         };
 
-        const filtered = IP.DB.listNotifications({
+        const filtered = IP.DB.listNotifications(Object.assign({}, baseFilter, {
           type: currentTab,
           readState: readFilter
-        });
+        }));
         const shown = filtered.slice(0, visibleCount);
         const readCount = all.filter(function (n) { return n.read; }).length;
 
@@ -15443,42 +16043,54 @@ button, input, select, textarea { touch-action: manipulation; }
 
         const listHtml = shown.length
           ? shown.map(function (n) {
-              const targetHref = n.link || IP.Routes.url(n.targetRouteKey || 'invoice.list', n.targetParams || {}, role);
+              const ownerRole = n.ownerRole || (n.role && n.role !== 'all' ? n.role : 'accountant');
               return (
-                '<div class="sys-notif-item ' + (!n.read ? 'unread' : '') + '">' +
-                  '<div class="d-flex align-items-start gap-3">' +
-                    '<div class="sys-notif-icon"><i class="bi ' + (TYPE_ICONS[n.type] || TYPE_ICONS.system) + '"></i></div>' +
-                    '<div>' +
-                      '<div class="d-flex align-items-center gap-2 mb-1">' +
+                '<div class="sys-notif-item ' + (!n.read ? 'unread' : '') + '" style="cursor:pointer;" data-action="view-notif-detail" data-id="' + n.id + '">' +
+                  '<div class="d-flex align-items-start gap-3 flex-grow-1">' +
+                    '<div class="sys-notif-icon mt-1"><i class="bi ' + (TYPE_ICONS[n.type] || TYPE_ICONS.system) + '"></i></div>' +
+                    '<div class="flex-grow-1">' +
+                      '<div class="d-flex align-items-center flex-wrap gap-2 mb-1">' +
                         (!n.read ? '<span class="sys-unread-dot" title="Chưa đọc"></span>' : '') +
                         '<span class="fw-bold">' + IP.Utils.escapeHtml(n.title) + '</span>' +
-                        '<span class="badge bg-secondary-subtle text-body-secondary">' + IP.Utils.escapeHtml(n.type.toUpperCase()) + '</span>' +
+                        IP.UI.roleBadge(ownerRole) +
+                        '<span class="badge bg-secondary-subtle text-body-secondary">' + IP.Utils.escapeHtml(TYPE_LABELS[n.type] || n.type.toUpperCase()) + '</span>' +
+                        '<span class="badge bg-primary-subtle text-primary-emphasis font-monospace">' + IP.Utils.escapeHtml(n.docCode || '') + '</span>' +
                       '</div>' +
-                      '<p class="small text-muted mb-1">' + IP.Utils.escapeHtml(n.message) + '</p>' +
-                      '<div class="small text-muted" style="font-size:0.76rem">' + IP.Fmt.relative(n.createdAt) + ' · ' + IP.Fmt.dateTime(n.createdAt) + '</div>' +
+                      '<p class="small text-body mb-1 fw-medium">' + IP.Utils.escapeHtml(n.message) + '</p>' +
+                      '<div class="small text-muted mb-2" style="line-height:1.5;">' + IP.Utils.escapeHtml(n.detailBody || '') + '</div>' +
+                      '<div class="d-flex flex-wrap align-items-center gap-3 small text-muted" style="font-size:0.76rem">' +
+                        '<span><i class="bi bi-building me-1"></i><strong>Đối tác:</strong> ' + IP.Utils.escapeHtml(n.partnerName || '—') + '</span>' +
+                        '<span><i class="bi bi-cash-stack me-1"></i><strong>Quy mô:</strong> <span class="text-primary fw-semibold">' + IP.Utils.escapeHtml(n.amountText || '—') + '</span></span>' +
+                        '<span><i class="bi bi-person-check me-1"></i>' + IP.Utils.escapeHtml(n.actorName || '—') + '</span>' +
+                        '<span><i class="bi bi-clock me-1"></i>' + IP.Fmt.relative(n.createdAt) + ' (' + IP.Fmt.dateTime(n.createdAt) + ')</span>' +
+                      '</div>' +
                     '</div>' +
                   '</div>' +
-                  '<div class="d-flex align-items-center gap-2 flex-shrink-0">' +
+                  '<div class="d-flex align-items-center gap-2 flex-shrink-0 ms-md-2 mt-2 mt-md-0">' +
                     (!n.read
                       ? '<button type="button" class="btn btn-sm btn-outline-secondary" data-action="mark-one-read" data-id="' + n.id + '">Đánh dấu đã đọc</button>'
                       : '') +
-                    '<a href="' + IP.Utils.escapeHtml(targetHref) + '" class="btn btn-sm btn-primary" data-action="open-notif" data-id="' + n.id + '">Mở <i class="bi bi-arrow-right"></i></a>' +
+                    '<button type="button" class="btn btn-sm btn-outline-primary" data-action="view-notif-detail" data-id="' + n.id + '"><i class="bi bi-eye me-1"></i>Chi tiết</button>' +
+                    '<button type="button" class="btn btn-sm btn-primary" data-action="go-notif-target" data-id="' + n.id + '">Xử lý <i class="bi bi-arrow-right"></i></button>' +
                   '</div>' +
                 '</div>'
               );
             }).join('')
           : IP.UI.renderEmptyState({
-              title: 'Không có thông báo nào trong mục này',
-              description: 'Mọi sự kiện hóa đơn, thanh toán và nhắc hạn mới sẽ xuất hiện tại đây.',
-              actionText: 'Về màn hình làm việc chính',
-              actionAttr: 'go-role-home'
+              title: 'Không có thông báo nào trong bộ lọc này',
+              description: 'Bạn có thể chuyển bộ lọc "Phân hệ nghiệp vụ" sang "Tất cả 4 nghiệp vụ" để xem toàn bộ thông báo.',
+              actionText: 'Xem tất cả thông báo hệ thống',
+              actionAttr: 'reset-notif-filters'
             });
 
         root.innerHTML =
           '<div class="ip-page-header">' +
             '<div>' +
-              '<h1 class="ip-h1">Trung tâm thông báo</h1>' +
-              '<p class="ip-page-subtitle">Theo dõi các sự kiện phát hành hóa đơn, đối chiếu thanh toán, nhắc công nợ và cảnh báo hệ thống.</p>' +
+              '<div class="d-flex align-items-center gap-2 flex-wrap">' +
+                '<h1 class="ip-h1 mb-0">Trung tâm thông báo & Nhật ký sự kiện nghiệp vụ</h1>' +
+                IP.UI.roleBadge(role) +
+              '</div>' +
+              '<p class="ip-page-subtitle">Theo dõi chi tiết các sự kiện phát hành hóa đơn, đối chiếu sao kê, nhắc công nợ, cảnh báo CFO và quản trị hệ thống RBAC.</p>' +
             '</div>' +
             '<div class="ip-page-actions">' +
               '<button type="button" class="btn btn-outline-secondary" data-action="mark-all-read" ' + (counts.unread === 0 ? 'disabled title="Tất cả thông báo đều đã đọc"' : '') + '><i class="bi bi-check2-all"></i> Đánh dấu tất cả đã đọc</button>' +
@@ -15492,8 +16104,16 @@ button, input, select, textarea { touch-action: manipulation; }
                 return '<button type="button" class="btn btn-sm ' + (currentTab === t.id ? 'btn-primary' : 'btn-outline-secondary') + '" data-action="switch-tab" data-tab="' + t.id + '">' + IP.Utils.escapeHtml(t.label) + '</button>';
               }).join('') +
             '</div>' +
-            '<div class="d-flex align-items-center gap-2">' +
-              '<label class="small text-muted" for="notif-read-filter">Trạng thái đọc:</label>' +
+            '<div class="d-flex align-items-center flex-wrap gap-2">' +
+              '<label class="small text-muted" for="notif-role-scope">Phân hệ nghiệp vụ:</label>' +
+              '<select id="notif-role-scope" class="form-select form-select-sm" style="width:auto;">' +
+                '<option value="all" ' + (roleScope === 'all' ? 'selected' : '') + '>Tất cả 4 nghiệp vụ (Toàn hệ thống)</option>' +
+                '<option value="accountant" ' + (roleScope === 'accountant' ? 'selected' : '') + '>Nghiệp vụ Kế toán</option>' +
+                '<option value="sales" ' + (roleScope === 'sales' ? 'selected' : '') + '>Nghiệp vụ Kinh doanh</option>' +
+                '<option value="manager" ' + (roleScope === 'manager' ? 'selected' : '') + '>Nghiệp vụ Quản lý CFO</option>' +
+                '<option value="admin" ' + (roleScope === 'admin' ? 'selected' : '') + '>Nghiệp vụ Quản trị viên</option>' +
+              '</select>' +
+              '<label class="small text-muted ms-1" for="notif-read-filter">Trạng thái đọc:</label>' +
               '<select id="notif-read-filter" class="form-select form-select-sm" style="width:auto;">' +
                 '<option value="all" ' + (readFilter === 'all' ? 'selected' : '') + '>Tất cả</option>' +
                 '<option value="unread" ' + (readFilter === 'unread' ? 'selected' : '') + '>Chỉ chưa đọc</option>' +
@@ -15509,6 +16129,14 @@ button, input, select, textarea { touch-action: manipulation; }
               : '') +
           '</div>';
 
+        const rsEl = root.querySelector('#notif-role-scope');
+        if (rsEl) {
+          rsEl.addEventListener('change', function () {
+            roleScope = rsEl.value;
+            render();
+          });
+        }
+
         const rfEl = root.querySelector('#notif-read-filter');
         if (rfEl) {
           rfEl.addEventListener('change', function () {
@@ -15520,7 +16148,8 @@ button, input, select, textarea { touch-action: manipulation; }
 
       IP.UI.withLoading(root, render);
 
-      root.addEventListener('click', function (ev) {        const btn = ev.target.closest('[data-action]');
+      root.addEventListener('click', function (ev) {
+        const btn = ev.target.closest('[data-action]');
         if (!btn) return;
         const action = btn.getAttribute('data-action');
         const id = btn.getAttribute('data-id');
@@ -15529,11 +16158,33 @@ button, input, select, textarea { touch-action: manipulation; }
           currentTab = btn.getAttribute('data-tab');
           render();
         } else if (action === 'mark-one-read') {
+          ev.stopPropagation();
           IP.DB.markNotificationRead(id);
           IP.UI.toast({ title: 'Đã đánh dấu đã đọc', message: 'Trạng thái thông báo đã được cập nhật.', type: 'info' });
           render();
-        } else if (action === 'open-notif') {
+        } else if (action === 'view-notif-detail') {
+          ev.stopPropagation();
+          if (IP.UI && typeof IP.UI.openNotificationDetailModal === 'function') {
+            IP.UI.openNotificationDetailModal(id, render);
+          }
+        } else if (action === 'go-notif-target') {
+          ev.stopPropagation();
+          const n = IP.DB.getNotification ? IP.DB.getNotification(id) : null;
           IP.DB.markNotificationRead(id);
+          if (n) {
+            const targetOwnerRole = n.ownerRole || (n.role && n.role !== 'all' ? n.role : role);
+            const targetHref = n.link || IP.Routes.url(n.targetRouteKey || 'invoice.list', n.targetParams || {}, targetOwnerRole);
+            const curSess = IP.Auth && IP.Auth.getSession ? IP.Auth.getSession() : null;
+            if ((!curSess || curSess.role !== targetOwnerRole) && IP.Auth && typeof IP.Auth.switchRole === 'function') {
+              IP.Auth.switchRole(targetOwnerRole, false);
+            }
+            window.IP_CanvasNav(targetHref);
+          }
+        } else if (action === 'reset-notif-filters') {
+          roleScope = 'all';
+          currentTab = 'all';
+          readFilter = 'all';
+          render();
         } else if (action === 'mark-all-read') {
           IP.DB.markAllRead();
           IP.UI.toast({ title: 'Đã đọc tất cả', message: 'Mọi thông báo đã được đánh dấu đã đọc.', type: 'success' });
@@ -16974,6 +17625,9 @@ button, input, select, textarea { touch-action: manipulation; }
           IP.UI.openPaymentModal({
             invoiceId: id,
             onSaved: function () {
+              const host = document.getElementById('acc-invoice-drawer-host');
+              if (host) host.innerHTML = '';
+              IP.Utils.setQueryParams({ open: null });
               renderPage();
             }
           });
@@ -17081,8 +17735,18 @@ button, input, select, textarea { touch-action: manipulation; }
             dueDate: IP.Seed.addDays(def.defaultTermDays || 30, today),
             paymentTermDays: def.defaultTermDays || 30,
             poNumber: 'PO-26-' + String(Date.now()).slice(-3),
-            // Bắt đầu với danh mục trống; người dùng tự thêm và nhập từng dòng hàng.
-            items: [],
+            items: [
+              {
+                id: IP.Utils.uid('itm'),
+                description: 'Dịch vụ triển khai & duy trì phần mềm quản trị doanh nghiệp B2B',
+                quantity: 1,
+                unit: 'Gói',
+                unitPrice: 25000000,
+                discountPercent: 0,
+                vatRate: def.defaultVat !== undefined ? def.defaultVat : 10,
+                lineTotal: 27500000
+              }
+            ],
             notes: def.defaultTerms || '',
             internalNote: '',
             paidAmount: 0
@@ -17454,7 +18118,7 @@ button, input, select, textarea { touch-action: manipulation; }
                   '<div class="row g-2 mb-3">' +
                     '<div class="col-6">' +
                       '<label class="form-label" for="qc-tax">Mã số thuế (10–13 số)</label>' +
-                      '<input type="text" id="qc-tax" class="form-control" value="0109988776">' +
+                      '<input type="text" id="qc-tax" class="form-control" value="010' + String(Date.now()).slice(-7) + '">' +
                     '</div>' +
                     '<div class="col-6">' +
                       '<label class="form-label" for="qc-contact">Người liên hệ <span class="text-danger">*</span></label>' +
@@ -17498,7 +18162,8 @@ button, input, select, textarea { touch-action: manipulation; }
             errEl.classList.remove('d-none');
             return;
           }
-          if (bsModal) bsModal.hide();
+          if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+          else if (bsModal) bsModal.hide();
           else mEl.remove();
           draft.customerId = res.data.id;
           isDirty = true;
@@ -21002,8 +21667,11 @@ button, input, select, textarea { touch-action: manipulation; }
             errEl.classList.remove('d-none');
             return;
           }
-          if (bsModal) bsModal.hide();
+          if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+          else if (bsModal) bsModal.hide();
           else mEl.remove();
+          const host = document.getElementById('adm-cus-drawer-host');
+          if (host) host.innerHTML = '';
           IP.UI.toast({
             title: existing ? 'Đã cập nhật khách hàng' : 'Đã thêm khách hàng mới',
             message: res.data.name + ' (' + res.data.code + ')',
@@ -21332,7 +22000,8 @@ button, input, select, textarea { touch-action: manipulation; }
             errEl.classList.remove('d-none');
             return;
           }
-          if (bsModal) bsModal.hide();
+          if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+          else if (bsModal) bsModal.hide();
           else mEl.remove();
           IP.UI.toast({
             title: existing ? 'Đã cập nhật tài khoản' : 'Đã tạo tài khoản mới',
@@ -21861,7 +22530,8 @@ button, input, select, textarea { touch-action: manipulation; }
             errEl.classList.remove('d-none');
             return;
           }
-          if (bsModal) bsModal.hide();
+          if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+          else if (bsModal) bsModal.hide();
           else mEl.remove();
           workingSettings = IP.DB.getSettings();
           IP.UI.toast({ title: 'Đã lưu mẫu nhắc thanh toán', message: res.data.name, type: 'success' });
@@ -21996,6 +22666,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.querySelectorAll('[data-canvas-state]').forEach(function(btn) {
     btn.addEventListener('click', function() {
+      if (btn.hasAttribute('data-net-sim')) return;
       var st = btn.getAttribute('data-canvas-state');
       window.IP_CanvasNav(st);
     });
