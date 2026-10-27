@@ -2857,22 +2857,22 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           <option value="ui-state-empty.html">9. Trung tâm Tra cứu & Bộ lọc Đa chiều (ui-state-empty.html)</option>
           <option value="ui-state-error.html">10. Giám sát Mất kết nối mạng đột ngột (ui-state-error.html)</option>
         </optgroup>
-        <optgroup label="Nghiệp vụ 1 · Kế toán Công nợ (SV1)">
+        <optgroup label="Nghiệp vụ 1 · Kế toán Công nợ">
           <option value="accountant-invoice-list.html">11. Sổ cái Hóa đơn GTGT (accountant-invoice-list.html)</option>
           <option value="accountant-invoice-form.html">12. Phát hành Hóa đơn & Kiểm toán AI-1 (accountant-invoice-form.html)</option>
           <option value="accountant-reconciliation.html">13. Đối chiếu Sao kê Ngân hàng (accountant-reconciliation.html)</option>
         </optgroup>
-        <optgroup label="Nghiệp vụ 2 · Chuyên viên Kinh doanh (SV2)">
+        <optgroup label="Nghiệp vụ 2 · Chuyên viên Kinh doanh">
           <option value="sales-customer-balance.html">14. Theo dõi Công nợ Khách hàng (sales-customer-balance.html)</option>
           <option value="sales-payment-reminders.html">15. Nhắc thanh toán Đa kênh & AI-2 (sales-payment-reminders.html)</option>
           <option value="sales-invoice-detail.html">16. Hồ sơ Chi tiết Hóa đơn B2B (sales-invoice-detail.html)</option>
         </optgroup>
-        <optgroup label="Nghiệp vụ 3 · Quản lý / CFO (SV3)">
+        <optgroup label="Nghiệp vụ 3 · Quản lý / CFO">
           <option value="manager-receivable-dashboard.html">17. Bảng điều khiển CFO & AI-3 (manager-receivable-dashboard.html)</option>
           <option value="manager-overdue-invoices.html">18. Quản trị Rủi ro Nợ quá hạn (manager-overdue-invoices.html)</option>
           <option value="manager-cashflow-forecast.html">19. Dự báo Dòng tiền 3 Kịch bản (manager-cashflow-forecast.html)</option>
         </optgroup>
-        <optgroup label="Nghiệp vụ 4 · Quản trị Hệ thống (SV3)">
+        <optgroup label="Nghiệp vụ 4 · Quản trị Hệ thống">
           <option value="admin-customer-management.html">20. Quản lý Danh mục Doanh nghiệp (admin-customer-management.html)</option>
           <option value="admin-user-management.html">21. Phân quyền Người dùng RBAC (admin-user-management.html)</option>
           <option value="admin-invoice-settings.html">22. Cấu hình Hóa đơn, AI & MockAPI (admin-invoice-settings.html)</option>
@@ -2991,6 +2991,16 @@ body:has(.offcanvas.show) #ip-chatbot-root {
     mainEl.className = '';
     mainEl.innerHTML = '';
 
+    const singleRole = ['accountant', 'sales', 'manager', 'admin'].includes(meta.roles) ? meta.roles : null;
+    if (singleRole && window.IP && window.IP.Auth && typeof window.IP.Auth.getSession === 'function') {
+      const curSess = window.IP.Auth.getSession();
+      if (!curSess || curSess.role !== singleRole) {
+        window.IP.Auth.switchRole(singleRole, false);
+      }
+    } else if (['profile.html', 'notifications.html'].includes(fileName) && window.IP && window.IP.Auth && typeof window.IP.Auth.getSession === 'function' && !window.IP.Auth.getSession()) {
+      window.IP.Auth.switchRole('accountant', false);
+    }
+
     document.body.setAttribute('data-page', meta.pageId);
     document.body.setAttribute('data-roles', meta.roles);
 
@@ -3020,6 +3030,23 @@ body:has(.offcanvas.show) #ip-chatbot-root {
   });
 
   document.addEventListener('DOMContentLoaded', function() {
+    const bodyPageId = document.body.getAttribute('data-page') || 'login';
+    let defaultFileName = 'login.html';
+    Object.keys(FILE_TO_META).forEach(function(k) {
+      if (FILE_TO_META[k].pageId === bodyPageId) defaultFileName = k;
+    });
+    window.__IP_VIRTUAL_PATH = '/' + defaultFileName;
+    const sel = document.getElementById('ip-canvas-screen-select');
+    if (sel) sel.value = defaultFileName;
+
+    const autoRole = document.body.getAttribute('data-auto-role') || (['accountant', 'sales', 'manager', 'admin'].includes(document.body.getAttribute('data-roles')) ? document.body.getAttribute('data-roles') : '');
+    if (autoRole && window.IP && window.IP.Auth && typeof window.IP.Auth.getSession === 'function') {
+      const curSess = window.IP.Auth.getSession();
+      if (!curSess || curSess.role !== autoRole) {
+        window.IP.Auth.switchRole(autoRole, false);
+      }
+    }
+
     if (window.history && typeof window.history.replaceState === 'function') {
       const initHash = (window.location.hash && window.location.hash.startsWith('#/')) ? window.location.hash.slice(2) : '';
       if (initHash && initHash.includes('.html')) {
@@ -3028,7 +3055,7 @@ body:has(.offcanvas.show) #ip-chatbot-root {
         }, 10);
       } else {
         try {
-          window.history.replaceState({ ipRoute: 'login.html', role: null }, '', '#/login.html');
+          window.history.replaceState({ ipRoute: defaultFileName, role: autoRole || null }, '', '#/' + defaultFileName);
         } catch (e) {}
       }
     }
@@ -9592,22 +9619,36 @@ body:has(.offcanvas.show) #ip-chatbot-root {
   }
 
   function closeModal(modalEl, bsModal) {
+    if (!modalEl && !bsModal) {
+      document.querySelectorAll('.modal-backdrop').forEach(function (b) { b.remove(); });
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('padding-right');
+      return;
+    }
     try {
       if (bsModal && typeof bsModal.hide === 'function') {
         bsModal.hide();
+      } else if (modalEl && window.bootstrap && window.bootstrap.Modal) {
+        const inst = window.bootstrap.Modal.getInstance(modalEl);
+        if (inst) inst.hide();
       }
     } catch (e) {}
     try {
       if (bsModal && typeof bsModal.dispose === 'function') {
         bsModal.dispose();
+      } else if (modalEl && window.bootstrap && window.bootstrap.Modal) {
+        const inst = window.bootstrap.Modal.getInstance(modalEl);
+        if (inst) inst.dispose();
       }
     } catch (e) {}
     if (modalEl) {
       modalEl.classList.remove('show');
       modalEl.style.display = 'none';
+      modalEl.setAttribute('aria-hidden', 'true');
       if (modalEl.parentNode) modalEl.remove();
     }
-    setTimeout(function () {
+    function cleanupRemainingBackdrops() {
       const anyOpenModal = document.querySelector('.modal.show');
       if (!anyOpenModal) {
         document.querySelectorAll('.modal-backdrop').forEach(function (b) { b.remove(); });
@@ -9615,8 +9656,48 @@ body:has(.offcanvas.show) #ip-chatbot-root {
         document.body.style.removeProperty('overflow');
         document.body.style.removeProperty('padding-right');
       }
-    }, 30);
+    }
+    cleanupRemainingBackdrops();
+    setTimeout(cleanupRemainingBackdrops, 60);
+    setTimeout(cleanupRemainingBackdrops, 350);
   }
+
+  // Hỗ trợ hỏi xác nhận trước khi Hủy bỏ / Đóng cửa sổ biểu mẫu (Modal hoặc Drawer)
+  document.addEventListener('click', function (ev) {
+    const dismissBtn = ev.target.closest('[data-bs-dismiss="modal"]');
+    if (!dismissBtn) return;
+    const modalEl = dismissBtn.closest('.modal');
+    if (!modalEl) return;
+
+    // Nếu là cửa sổ xác nhận hệ thống hoặc cửa sổ chỉ xem thông tin, đóng dứt khoát ngay
+    const noAskConfirmIds = ['ip-confirm-modal', 'ip-notif-detail-modal', 'acc-print-preview-modal', 'ip-customer-picker-modal', 'adm-temp-pass-modal', 'ip-fx-rate-modal', 'ip-mockapi-cloud-modal', 'ip-llm-config-modal'];
+    if (noAskConfirmIds.includes(modalEl.id) || modalEl.getAttribute('data-no-cancel-confirm') === '1') {
+      ev.preventDefault();
+      ev.stopPropagation();
+      closeModal(modalEl, null);
+      return;
+    }
+
+    // Nếu là Modal có biểu mẫu nhập liệu (Lưu thanh toán, Thêm khách hàng, Cấp tài khoản, Cập nhật hạn, Mẫu nhắc), hỏi xác nhận Hủy
+    if (modalEl.querySelector('form')) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      confirmModal({
+        title: 'Xác nhận hủy thao tác?',
+        message: 'Bạn có chắc chắn muốn hủy bỏ và đóng cửa sổ này không? Dữ liệu đang nhập chưa lưu sẽ bị hủy.',
+        confirmText: 'Chắc chắn hủy & Thoát',
+        cancelText: 'Tiếp tục chỉnh sửa',
+        variant: 'danger',
+        onConfirm: function () {
+          closeModal(modalEl, null);
+        }
+      });
+    } else {
+      ev.preventDefault();
+      ev.stopPropagation();
+      closeModal(modalEl, null);
+    }
+  }, true);
 
   function confirmModal(opts) {
     const o = opts || {};
@@ -9630,11 +9711,12 @@ body:has(.offcanvas.show) #ip-chatbot-root {
     modalEl = document.createElement('div');
     modalEl.id = modalId;
     modalEl.className = 'modal fade';
+    modalEl.style.zIndex = '1075';
     modalEl.tabIndex = -1;
     modalEl.setAttribute('aria-hidden', 'true');
     modalEl.innerHTML =
       '<div class="modal-dialog modal-dialog-centered">' +
-        '<div class="modal-content">' +
+        '<div class="modal-content shadow-lg border-primary">' +
           '<div class="modal-header">' +
             '<h2 class="modal-title fs-5 fw-bold">' + IP.Utils.escapeHtml(o.title || 'Xác nhận thao tác') + '</h2>' +
             '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>' +
@@ -9994,33 +10076,55 @@ body:has(.offcanvas.show) #ip-chatbot-root {
       const reference = modalEl.querySelector('#ip-pay-ref').value;
       const note = modalEl.querySelector('#ip-pay-note').value;
 
-      const res = IP.DB.addPayment({
-        invoiceId: inv.id,
-        amount: amount,
-        method: method,
-        paidAt: paidAt,
-        reference: reference,
-        note: note
-      });
-
-      if (!res.ok) {
+      if (!amount || amount <= 0 || amount > rem) {
         if (submitBtn) submitBtn.disabled = false;
-        errBox.textContent = res.error.message;
+        errBox.textContent = 'Số tiền thanh toán phải lớn hơn 0 và không vượt quá số dư còn phải thu (' + IP.Fmt.currency(rem) + ').';
         errBox.classList.remove('d-none');
-        if (res.error.field === 'amount') amtInput.focus();
-        if (res.error.field === 'paidAt') modalEl.querySelector('#ip-pay-date').focus();
+        amtInput.focus();
         return;
       }
 
-      closeModal(modalEl, bsModal);
-      toast({
-        title: 'Đã ghi nhận & lưu thanh toán thành công',
-        message: 'Đã thu ' + IP.Fmt.currency(amount) + ' cho hóa đơn ' + inv.number + '.',
-        type: 'success'
+      if (submitBtn) submitBtn.disabled = false;
+      confirmModal({
+        title: 'Xác nhận lưu giao dịch thanh toán?',
+        message: 'Bạn có chắc chắn muốn lưu khoản thu ' + IP.Fmt.currency(amount) + ' cho hóa đơn ' + inv.number + ' không?',
+        confirmText: 'Chắc chắn lưu & Thoát',
+        cancelText: 'Kiểm tra lại',
+        variant: 'success',
+        onConfirm: function () {
+          const res = IP.DB.addPayment({
+            invoiceId: inv.id,
+            amount: amount,
+            method: method,
+            paidAt: paidAt,
+            reference: reference,
+            note: note
+          });
+
+          if (!res.ok) {
+            errBox.textContent = res.error.message;
+            errBox.classList.remove('d-none');
+            if (res.error.field === 'amount') amtInput.focus();
+            if (res.error.field === 'paidAt') modalEl.querySelector('#ip-pay-date').focus();
+            return;
+          }
+
+          closeModal(modalEl, bsModal);
+          ['acc-invoice-drawer-host', 'sal-cus-drawer-host', 'mgr-overdue-drawer-host'].forEach(function (hId) {
+            const h = document.getElementById(hId);
+            if (h) h.innerHTML = '';
+          });
+          IP.Utils.setQueryParams({ open: null });
+          toast({
+            title: 'Đã ghi nhận & lưu thanh toán thành công',
+            message: 'Đã thu ' + IP.Fmt.currency(amount) + ' cho hóa đơn ' + inv.number + '.',
+            type: 'success'
+          });
+          if (typeof o.onSaved === 'function') {
+            o.onSaved(res.data);
+          }
+        }
       });
-      if (typeof o.onSaved === 'function') {
-        o.onSaved(res.data);
-      }
     });
 
     if (bsModal) bsModal.show();
@@ -11407,7 +11511,6 @@ body:has(.offcanvas.show) #ip-chatbot-root {
                 '<li class="ip-bc-role"><a href="' + homeUrl + '">' + IP.Utils.escapeHtml(roleLabel) + '</a></li>' +
                 '<li class="ip-bc-sep" aria-hidden="true">/</li>' +
                 '<li class="active" aria-current="page">' + IP.Utils.escapeHtml(IP.I18n ? IP.I18n.t(pageMeta.title) : pageMeta.title) + '</li>' +
-                (pageMeta.owner ? '<li><span class="badge bg-secondary-subtle text-body-secondary ms-1" title="Phụ trách: ' + pageMeta.owner + ' · ' + (pageMeta.taskId || '') + ' · ' + (pageMeta.branch || '') + '">' + pageMeta.owner + (pageMeta.taskId ? ' · ' + pageMeta.taskId : '') + '</span></li>' : '') +
               '</ol>' +
             '</nav>' +
           '</div>' +
@@ -11443,11 +11546,11 @@ body:has(.offcanvas.show) #ip-chatbot-root {
                 '<i class="bi bi-person-badge"></i> <span class="small">' + (isEn ? 'Role Switcher' : 'Chuyển vai trò') + '</span>' +
               '</button>' +
               '<ul class="dropdown-menu dropdown-menu-end shadow-sm small">' +
-                '<li class="dropdown-header text-uppercase" style="font-size:0.68rem;">Chuyển nhanh 4 Role (SV1 → SV3)</li>' +
-                '<li><button type="button" class="dropdown-item" data-shell-action="quick-role" data-role="accountant"><i class="bi bi-receipt me-2 text-primary"></i>SV1 · Kế toán (Nguyễn Thu Hà)</button></li>' +
-                '<li><button type="button" class="dropdown-item" data-shell-action="quick-role" data-role="sales"><i class="bi bi-building-check me-2 text-success"></i>SV2 · Kinh doanh (Trần Minh Quân)</button></li>' +
-                '<li><button type="button" class="dropdown-item" data-shell-action="quick-role" data-role="manager"><i class="bi bi-bar-chart-line me-2 text-warning"></i>SV3 · Quản lý (Lê Hoàng Anh)</button></li>' +
-                '<li><button type="button" class="dropdown-item" data-shell-action="quick-role" data-role="admin"><i class="bi bi-shield-lock me-2 text-danger"></i>SV3 · Quản trị viên (Phạm Gia Bảo)</button></li>' +
+                '<li class="dropdown-header text-uppercase" style="font-size:0.68rem;">Chuyển nhanh 4 Nghiệp vụ</li>' +
+                '<li><button type="button" class="dropdown-item" data-shell-action="quick-role" data-role="accountant"><i class="bi bi-receipt me-2 text-primary"></i>Kế toán (Nguyễn Thu Hà)</button></li>' +
+                '<li><button type="button" class="dropdown-item" data-shell-action="quick-role" data-role="sales"><i class="bi bi-building-check me-2 text-success"></i>Kinh doanh (Trần Minh Quân)</button></li>' +
+                '<li><button type="button" class="dropdown-item" data-shell-action="quick-role" data-role="manager"><i class="bi bi-bar-chart-line me-2 text-warning"></i>Quản lý (Lê Hoàng Anh)</button></li>' +
+                '<li><button type="button" class="dropdown-item" data-shell-action="quick-role" data-role="admin"><i class="bi bi-shield-lock me-2 text-danger"></i>Quản trị viên (Phạm Gia Bảo)</button></li>' +
                 '<li><hr class="dropdown-divider"></li>' +
                 '<li><a class="dropdown-item" href="login.html"><i class="bi bi-box-arrow-in-right me-2"></i>Về trang Đăng nhập (login.html)</a></li>' +
               '</ul>' +
@@ -11605,6 +11708,13 @@ body:has(.offcanvas.show) #ip-chatbot-root {
       const body = document.body;
       const pageId = body.getAttribute('data-page') || '';
       const rolesAttr = body.getAttribute('data-roles') || 'public';
+      const autoRole = body.getAttribute('data-auto-role') || (['accountant', 'sales', 'manager', 'admin'].includes(rolesAttr) ? rolesAttr : '');
+      if (autoRole && IP.Auth && typeof IP.Auth.getSession === 'function') {
+        const curSess = IP.Auth.getSession();
+        if (!curSess || curSess.role !== autoRole) {
+          IP.Auth.switchRole(autoRole, false);
+        }
+      }
 
       const guardRes = IP.Auth.guard(rolesAttr);
       if (!guardRes.allowed) {
@@ -12409,10 +12519,10 @@ body:has(.offcanvas.show) #ip-chatbot-root {
     if (mEl) mEl.remove();
 
     const rolesMeta = [
-      { key: 'accountant', badge: 'Link 1 · Kế toán (SV1)', name: 'Hóa đơn GTGT & Giao dịch Đối chiếu Ngân hàng', file: 'mockapi-data/1-mockapi-ketoan-invoices.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/invoices' },
-      { key: 'sales', badge: 'Link 2 · Kinh doanh (SV2)', name: 'Công nợ Khách hàng & Lịch nhắc Thanh toán AI-2', file: 'mockapi-data/2-mockapi-kinhdoanh-reminders.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/reminders' },
-      { key: 'manager', badge: 'Link 3 · Quản lý CFO (SV3)', name: 'Hồ sơ Quá hạn, Tuổi nợ Aging, DSO & Dự báo AI-3', file: 'mockapi-data/3-mockapi-quanly-cashflow.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/cashflow' },
-      { key: 'admin', badge: 'Link 4 · Quản trị viên (SV3)', name: 'Danh mục Doanh nghiệp B2B, Người dùng RBAC & Cấu hình', file: 'mockapi-data/4-mockapi-quantri-system.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/system' }
+      { key: 'accountant', badge: 'Link 1 · Nghiệp vụ Kế toán', name: 'Hóa đơn GTGT & Giao dịch Đối chiếu Ngân hàng', file: 'mockapi-data/1-mockapi-ketoan-invoices.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/invoices' },
+      { key: 'sales', badge: 'Link 2 · Nghiệp vụ Kinh doanh', name: 'Công nợ Khách hàng & Lịch nhắc Thanh toán AI-2', file: 'mockapi-data/2-mockapi-kinhdoanh-reminders.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/reminders' },
+      { key: 'manager', badge: 'Link 3 · Nghiệp vụ Quản lý CFO', name: 'Hồ sơ Quá hạn, Tuổi nợ Aging, DSO & Dự báo AI-3', file: 'mockapi-data/3-mockapi-quanly-cashflow.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/cashflow' },
+      { key: 'admin', badge: 'Link 4 · Nghiệp vụ Quản trị viên', name: 'Danh mục Doanh nghiệp B2B, Người dùng RBAC & Cấu hình', file: 'mockapi-data/4-mockapi-quantri-system.json', placeholder: 'https://<project-id>.mockapi.io/api/v1/system' }
     ];
 
     mEl = document.createElement('div');
@@ -12772,28 +12882,28 @@ body:has(.offcanvas.show) #ip-chatbot-root {
     accountant: {
       role: 'accountant',
       name: 'Mini-LLM Nghiệp vụ Kế toán',
-      badge: 'Copilot Kế toán & Kiểm toán Thuế (SV1)',
+      badge: 'Copilot Kế toán & Kiểm toán Thuế',
       specialty: 'Chuyên trách kiểm toán hóa đơn GTGT (1C26TAA), rà soát thuế suất 0%/5%/8%/10% theo NĐ 70/2025/NĐ-CP, đối chiếu sao kê ngân hàng và hạch toán thu tiền (TK 131).',
       placeholder: 'Hỏi chuyên sâu Kế toán (VD: Kiểm toán thuế HĐ IP-2026-0001, khớp sao kê VCB chờ xử lý, hoặc kiểm tra HĐ nháp)...'
     },
     sales: {
       role: 'sales',
       name: 'Mini-LLM Nghiệp vụ Kinh doanh',
-      badge: 'Copilot Quản lý Khách hàng & Đôn đốc Nợ (SV2)',
+      badge: 'Copilot Quản lý Khách hàng & Đôn đốc Nợ',
       specialty: 'Chuyên trách phân tích hạn mức tín dụng đối tác B2B, đánh giá lịch sử trả chậm, soạn thảo thư/SMS nhắc nợ cá nhân hóa (AI-2) và xử lý các thông báo gửi lỗi.',
       placeholder: 'Hỏi chuyên sâu Kinh doanh (VD: Thực phẩm Á Châu còn bao nhiêu hạn mức? Soạn thư nhắc nợ cho công ty này)...'
     },
     manager: {
       role: 'manager',
       name: 'Mini-LLM Nghiệp vụ Quản lý CFO',
-      badge: 'Copilot Điều hành Dòng tiền & Rủi ro (SV3)',
+      badge: 'Copilot Điều hành Dòng tiền & Rủi ro',
       specialty: 'Chuyên trách phân tích chỉ số DSO, cơ cấu tuổi nợ Aging (1-30, 31-60, 61-90, >90 ngày), chấm điểm rủi ro tín dụng, giao việc thu hồi nợ và dự báo dòng tiền 3 kịch bản (AI-3).',
       placeholder: 'Hỏi chuyên sâu Quản lý CFO (VD: Tại sao DSO tăng? Phân tích 3 kịch bản dòng tiền hoặc top nợ rủi ro cao)...'
     },
     admin: {
       role: 'admin',
       name: 'Mini-LLM Nghiệp vụ Quản trị Hệ thống',
-      badge: 'Copilot Quản trị RBAC, Danh mục & MockAPI (SV3)',
+      badge: 'Copilot Quản trị RBAC, Danh mục & MockAPI',
       specialty: 'Chuyên trách kiểm soát phân quyền RBAC 4 vai trò, chuẩn hóa danh mục MST doanh nghiệp B2B, cấu hình ký hiệu hóa đơn điện tử và giám sát đồng bộ 4 Link MockAPI Cloud.',
       placeholder: 'Hỏi chuyên sâu Quản trị (VD: Kiểm tra trạng thái 4 link MockAPI, rà soát phân quyền RBAC hoặc chuẩn pháp lý)...'
     }
@@ -13180,13 +13290,13 @@ body:has(.offcanvas.show) #ip-chatbot-root {
 
       let roleSpecificAnalysis = '';
       if (roleKey === 'accountant') {
-        roleSpecificAnalysis = '• [Góc nhìn Kế toán SV1]: Hóa đơn ký hiệu 1C26TAA, tiền hàng trước thuế ' + fmt(inv.subtotal) + ', thuế GTGT ' + fmt(inv.vatTotal) + '. Đã ghi nhận ' + pays.length + ' bút toán thu tiền xác nhận (' + fmt(inv.paidAmount) + '). Cần đối chiếu sao kê ngân hàng cho phần còn lại ' + fmt(rem) + '.';
+        roleSpecificAnalysis = '• [Góc nhìn Kế toán]: Hóa đơn ký hiệu 1C26TAA, tiền hàng trước thuế ' + fmt(inv.subtotal) + ', thuế GTGT ' + fmt(inv.vatTotal) + '. Đã ghi nhận ' + pays.length + ' bút toán thu tiền xác nhận (' + fmt(inv.paidAmount) + '). Cần đối chiếu sao kê ngân hàng cho phần còn lại ' + fmt(rem) + '.';
       } else if (roleKey === 'sales') {
-        roleSpecificAnalysis = '• [Góc nhìn Kinh doanh SV2]: Liên hệ phụ trách phía đối tác là ' + (cus ? (cus.contactName + ' (' + cus.phone + ')') : 'Kế toán trưởng') + '. ' + (ov > 0 ? ('Khoản này đã trễ ' + ov + ' ngày, khuyến nghị phát hành bản nhắc giọng Trang trọng qua Email.') : 'Khoản nợ đang trong hạn, có thể gửi lời nhắc lịch sự trước hạn 3 ngày.');
+        roleSpecificAnalysis = '• [Góc nhìn Kinh doanh]: Liên hệ phụ trách phía đối tác là ' + (cus ? (cus.contactName + ' (' + cus.phone + ')') : 'Kế toán trưởng') + '. ' + (ov > 0 ? ('Khoản này đã trễ ' + ov + ' ngày, khuyến nghị phát hành bản nhắc giọng Trang trọng qua Email.') : 'Khoản nợ đang trong hạn, có thể gửi lời nhắc lịch sự trước hạn 3 ngày.');
       } else if (roleKey === 'manager') {
-        roleSpecificAnalysis = '• [Góc nhìn Quản lý CFO SV3]: Điểm rủi ro tín dụng đạt ' + risk.score + '/100 (' + risk.label + '). Khoản phải thu ' + fmt(rem) + ' này chiếm ' + Math.round((rem / Math.max(1, ag.totalReceivable)) * 100) + '% tổng dư nợ mở toàn công ty.';
+        roleSpecificAnalysis = '• [Góc nhìn Quản lý CFO]: Điểm rủi ro tín dụng đạt ' + risk.score + '/100 (' + risk.label + '). Khoản phải thu ' + fmt(rem) + ' này chiếm ' + Math.round((rem / Math.max(1, ag.totalReceivable)) * 100) + '% tổng dư nợ mở toàn công ty.';
       } else {
-        roleSpecificAnalysis = '• [Góc nhìn Quản trị SV3]: Mã định danh bản ghi `' + inv.id + '`, thuộc doanh nghiệp MST `' + (cus ? cus.taxCode : '0101245678') + '`, sẵn sàng đồng bộ lên Link 1 MockAPI.';
+        roleSpecificAnalysis = '• [Góc nhìn Quản trị]: Mã định danh bản ghi `' + inv.id + '`, thuộc doanh nghiệp MST `' + (cus ? cus.taxCode : '0101245678') + '`, sẵn sàng đồng bộ lên Link 1 MockAPI.';
       }
 
       const lines = [
@@ -13489,7 +13599,7 @@ body:has(.offcanvas.show) #ip-chatbot-root {
         'KIỂM TOÁN HỆ THỐNG, PHÁP LÝ THUẾ & PHÂN QUYỀN RBAC — ' + persona.name.toUpperCase(),
         '• Chuẩn Hóa đơn điện tử: Ký hiệu mẫu số `1/001 · 1C26TAA` tuân thủ Nghị định 123/2020/NĐ-CP, Thông tư 78/2021/TT-BTC và Nghị định 70/2025/NĐ-CP.',
         '• Thuế suất GTGT hỗ trợ: 0%, 5%, 8% (giảm thuế GTGT theo Nghị định 174/2025/NĐ-CP) và 10%.',
-        '• Ma trận RBAC (' + users.length + ' tài khoản): Tách biệt độc lập 4 phân hệ Kế toán (SV1), Kinh doanh (SV2), Quản lý CFO (SV3) và Quản trị viên (SV3). Có khóa bảo vệ chống vô hiệu hóa Admin cuối cùng.'
+        '• Ma trận RBAC (' + users.length + ' tài khoản): Tách biệt độc lập 4 phân hệ Kế toán, Kinh doanh, Quản lý CFO và Quản trị viên. Có khóa bảo vệ chống vô hiệu hóa Admin cuối cùng.'
       ];
       return {
         rolePersona: persona.name,
@@ -14616,7 +14726,7 @@ body:has(.offcanvas.show) #ip-chatbot-root {
               '<h1 class="text-white fs-2 fw-bold mb-3">Hóa đơn đúng hạn. Dòng tiền chủ động.</h1>' +
               '<p class="opacity-75 mb-4">Chào mừng bạn đến với InvoicePilot. Trang Đăng nhập được đặt làm màn hình đầu tiên khi truy cập hệ thống (thay cho cửa sổ Pop-up), giúp bạn chọn nhanh 1 trong 4 tài khoản nghiệp vụ hoặc nhập thông tin xác thực.</p>' +
               '<ul class="auth-benefit-list">' +
-                '<li><i class="bi bi-check2-circle"></i><span><strong>4 vai trò chuyên biệt:</strong> Kế toán (SV1), Kinh doanh (SV2), Quản lý (SV3) và Quản trị viên (SV3)</span></li>' +
+                '<li><i class="bi bi-check2-circle"></i><span><strong>4 vai trò chuyên biệt:</strong> Kế toán, Kinh doanh, Quản lý và Quản trị viên</span></li>' +
                 '<li><i class="bi bi-check2-circle"></i><span><strong>Quản trị tập trung:</strong> Chỉ Quản trị viên (<code>admin@hoabinhdigital.vn</code>) mới có quyền tạo, sửa hoặc xóa tài khoản các nghiệp vụ khác</span></li>' +
                 '<li><i class="bi bi-check2-circle"></i><span><strong>Landing Page từng nghiệp vụ:</strong> Tự động giới thiệu quy trình khi vào trang đầu tiên hoặc tùy chọn bỏ qua ngay bên cạnh</span></li>' +
                 '<li><i class="bi bi-check2-circle"></i><span><strong>Trạng thái UI & Mini-LLM:</strong> Hỗ trợ kiểm thử Loading / Empty / Error khi deploy Vercel/Netlify và tích hợp Mini-LLM hỏi đáp thông minh</span></li>' +
@@ -15003,7 +15113,7 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           id: 'accountant',
           tabLabel: isEn ? '02 · Accountant' : '02 · Nghiệp vụ Kế toán',
           icon: 'bi-receipt',
-          badge: isEn ? 'Slide 02/05 · Role 1: Accounts Receivable Accountant (SV1)' : 'Slide 02/05 · Nghiệp vụ 1: Kế toán Công nợ (Accountant)',
+          badge: isEn ? 'Slide 02/05 · Role 1: Accounts Receivable Accountant' : 'Slide 02/05 · Nghiệp vụ 1: Kế toán Công nợ (Accountant)',
           title: isEn ? 'E-Invoice Issuance, AI-1 Anomaly Check & Bank Reconciliation' : 'Phát hành Hóa đơn GTGT, Kiểm tra AI-1 & Đối chiếu Sao kê Ngân hàng',
           subtitle: isEn
             ? 'Designed for Chief & AR Accountants to issue sequential VAT invoices, detect credit limit or tax anomalies via AI-1 before sending, and match Vietcombank wire transfers to open invoices.'
@@ -15033,7 +15143,7 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           id: 'sales',
           tabLabel: isEn ? '03 · B2B Sales' : '03 · Nghiệp vụ Kinh doanh',
           icon: 'bi-building-check',
-          badge: isEn ? 'Slide 03/05 · Role 2: B2B Sales & Credit Specialist (SV2)' : 'Slide 03/05 · Nghiệp vụ 2: Kinh doanh B2B & Đôn đốc Công nợ (Sales)',
+          badge: isEn ? 'Slide 03/05 · Role 2: B2B Sales & Credit Specialist' : 'Slide 03/05 · Nghiệp vụ 2: Kinh doanh B2B & Đôn đốc Công nợ (Sales)',
           title: isEn ? 'Customer Credit Balances, Aging Bars & AI-2 Payment Reminders' : 'Quản lý Hạn mức Khách hàng, Thanh Tuổi nợ & Nhắc hạn bằng AI-2',
           subtitle: isEn
             ? 'Empowers B2B Sales teams to monitor customer credit utilization, inspect segmented aging bars (0–30, 31–60, 61–90, 90+ days), and compose polite Email/SMS payment reminders with AI-2.'
@@ -15063,7 +15173,7 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           id: 'manager',
           tabLabel: isEn ? '04 · CFO / Manager' : '04 · Nghiệp vụ Quản lý',
           icon: 'bi-bar-chart-line',
-          badge: isEn ? 'Slide 04/05 · Role 3: CFO & Executive Management (SV3)' : 'Slide 04/05 · Nghiệp vụ 3: Quản lý & Giám đốc Tài chính (Manager / CFO)',
+          badge: isEn ? 'Slide 04/05 · Role 3: CFO & Executive Management' : 'Slide 04/05 · Nghiệp vụ 3: Quản lý & Giám đốc Tài chính (Manager / CFO)',
           title: isEn ? 'Executive AR Dashboard, Rule-Based Risk & 3-Scenario Cashflow Forecast' : 'Bảng điều khiển Công nợ, Chấm điểm Rủi ro & Dự báo Dòng tiền AI-3',
           subtitle: isEn
             ? 'Provides CFOs and Managers with live aging charts, Days Sales Outstanding (DSO), transparent overdue risk scoring, Sales owner assignment, and interactive 30/60/90-day cashflow scenarios.'
@@ -15093,7 +15203,7 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           id: 'admin',
           tabLabel: isEn ? '05 · System Admin' : '05 · Nghiệp vụ Quản trị',
           icon: 'bi-shield-lock',
-          badge: isEn ? 'Slide 05/05 · Role 4: System Administrator (SV3 — Exclusive Account Authority)' : 'Slide 05/05 · Nghiệp vụ 4: Quản trị viên Hệ thống (Admin — Đặc quyền Cấp tài khoản)',
+          badge: isEn ? 'Slide 05/05 · Role 4: System Administrator (Exclusive Account Authority)' : 'Slide 05/05 · Nghiệp vụ 4: Quản trị viên Hệ thống (Admin — Đặc quyền Cấp tài khoản)',
           title: isEn ? 'Exclusive User Account CRUD, Customer Master Data & Tax Configuration' : 'Đặc quyền Quản trị Tài khoản, Danh mục Khách hàng & Cấu hình Hệ thống',
           subtitle: isEn
             ? 'Only the System Administrator has authority to create, modify roles/passwords, suspend, or delete accounts for other roles; manage B2B customer records; and configure invoice numbering & AI switches.'
@@ -15850,19 +15960,36 @@ body:has(.offcanvas.show) #ip-chatbot-root {
             ev.preventDefault();
             const errEl = root.querySelector('#prf-info-err');
             errEl.classList.add('d-none');
-            const res = IP.DB.updateUser(user.id, {
-              name: root.querySelector('#prf-name').value,
-              phone: root.querySelector('#prf-phone').value,
-              title: root.querySelector('#prf-title').value
-            });
-            if (!res.ok) {
-              errEl.textContent = res.error.message;
+            const nameVal = root.querySelector('#prf-name').value.trim();
+            const phoneVal = root.querySelector('#prf-phone').value.trim();
+            const titleVal = root.querySelector('#prf-title').value.trim();
+            if (!nameVal) {
+              errEl.textContent = 'Vui lòng nhập Họ và tên.';
               errEl.classList.remove('d-none');
               return;
             }
-            isDirty = false;
-            IP.UI.toast({ title: 'Đã lưu hồ sơ cá nhân', message: 'Họ tên đã được đồng bộ trên thanh công cụ.', type: 'success' });
-            render();
+            IP.UI.confirmModal({
+              title: 'Xác nhận lưu thông tin hồ sơ cá nhân?',
+              message: 'Bạn có chắc chắn muốn lưu cập nhật hồ sơ cá nhân cho "' + nameVal + '" không?',
+              confirmText: 'Chắc chắn lưu',
+              cancelText: 'Kiểm tra lại',
+              variant: 'primary',
+              onConfirm: function () {
+                const res = IP.DB.updateUser(user.id, {
+                  name: nameVal,
+                  phone: phoneVal,
+                  title: titleVal
+                });
+                if (!res.ok) {
+                  errEl.textContent = res.error.message;
+                  errEl.classList.remove('d-none');
+                  return;
+                }
+                isDirty = false;
+                IP.UI.toast({ title: 'Đã lưu hồ sơ cá nhân', message: 'Họ tên đã được đồng bộ trên thanh công cụ.', type: 'success' });
+                render();
+              }
+            });
           });
         }
 
@@ -15880,14 +16007,23 @@ body:has(.offcanvas.show) #ip-chatbot-root {
               errEl.classList.remove('d-none');
               return;
             }
-            const res = IP.DB.changeOwnPassword(user.id, curP, newP);
-            if (!res.ok) {
-              errEl.textContent = res.error.message;
-              errEl.classList.remove('d-none');
-              return;
-            }
-            secForm.reset();
-            IP.UI.toast({ title: 'Đã cập nhật mật khẩu', message: 'Mật khẩu mới đã được lưu trong trình duyệt này.', type: 'success' });
+            IP.UI.confirmModal({
+              title: 'Xác nhận lưu mật khẩu mới?',
+              message: 'Bạn có chắc chắn muốn cập nhật mật khẩu đăng nhập mới không?',
+              confirmText: 'Chắc chắn lưu',
+              cancelText: 'Hủy bỏ',
+              variant: 'primary',
+              onConfirm: function () {
+                const res = IP.DB.changeOwnPassword(user.id, curP, newP);
+                if (!res.ok) {
+                  errEl.textContent = res.error.message;
+                  errEl.classList.remove('d-none');
+                  return;
+                }
+                secForm.reset();
+                IP.UI.toast({ title: 'Đã cập nhật mật khẩu', message: 'Mật khẩu mới đã được lưu trong trình duyệt này.', type: 'success' });
+              }
+            });
           });
         }
 
@@ -18067,29 +18203,53 @@ body:has(.offcanvas.show) #ip-chatbot-root {
         const errBox = root.querySelector('#inv-form-form-err') || root.querySelector('#inv-form-err-summary');
         if (errBox) errBox.classList.add('d-none');
 
-        const payload = Object.assign({}, draft, { sendNow: sendNow });
-        const res = isEdit
-          ? IP.DB.updateInvoice(draft.id, payload)
-          : IP.DB.createInvoice(payload);
-
-        if (!res.ok) {
+        const validItems = (draft.items || []).filter(function (it) {
+          return String(it.description || '').trim() && Number(it.quantity) > 0;
+        });
+        if (!draft.customerId || !validItems.length) {
+          const msg = !draft.customerId
+            ? 'Vui lòng chọn khách hàng trước khi lưu hóa đơn.'
+            : 'Vui lòng nhập ít nhất 1 dòng hàng hóa / dịch vụ hợp lệ.';
           if (errBox) {
-            errBox.textContent = res.error.message;
+            errBox.textContent = msg;
             errBox.classList.remove('d-none');
           }
-          IP.UI.toast({ title: 'Chưa thể lưu hóa đơn', message: res.error.message, type: 'danger' });
+          IP.UI.toast({ title: 'Chưa thể lưu hóa đơn', message: msg, type: 'danger' });
           return;
         }
 
-        isDirty = false;
-        IP.UI.toast({
-          title: sendNow ? 'Đã lưu & phát hành hóa đơn' : 'Đã lưu hóa đơn nháp',
-          message: 'Hóa đơn ' + res.data.number + ' đã được lưu thành công.',
-          type: 'success'
+        IP.UI.confirmModal({
+          title: sendNow ? 'Xác nhận lưu & phát hành hóa đơn?' : 'Xác nhận lưu hóa đơn nháp?',
+          message: sendNow
+            ? 'Bạn có chắc chắn muốn lưu và phát hành ngay hóa đơn ' + draft.number + ' không?'
+            : 'Bạn có chắc chắn muốn lưu bản nháp hóa đơn ' + draft.number + ' không?',
+          confirmText: 'Chắc chắn lưu & Thoát',
+          cancelText: 'Kiểm tra lại',
+          variant: 'primary',
+          onConfirm: function () {
+            const payload = Object.assign({}, draft, { sendNow: sendNow });
+            const res = isEdit
+              ? IP.DB.updateInvoice(draft.id, payload)
+              : IP.DB.createInvoice(payload);
+
+            if (!res.ok) {
+              if (errBox) {
+                errBox.textContent = res.error.message;
+                errBox.classList.remove('d-none');
+              }
+              IP.UI.toast({ title: 'Chưa thể lưu hóa đơn', message: res.error.message, type: 'danger' });
+              return;
+            }
+
+            isDirty = false;
+            IP.UI.toast({
+              title: sendNow ? 'Đã lưu & phát hành hóa đơn' : 'Đã lưu hóa đơn nháp',
+              message: 'Hóa đơn ' + res.data.number + ' đã được lưu thành công.',
+              type: 'success'
+            });
+            window.IP_CanvasNav('accountant-invoice-list.html');
+          }
         });
-        setTimeout(function () {
-          window.IP_CanvasNav('accountant-invoice-list.html?open=' + res.data.id);
-        }, 350);
       }
 
       function openQuickCreateCustomerModal() {
@@ -18148,27 +18308,44 @@ body:has(.offcanvas.show) #ip-chatbot-root {
         const bsModal = window.bootstrap && window.bootstrap.Modal ? new window.bootstrap.Modal(mEl) : null;
         mEl.querySelector('#acc-quick-cus-form').addEventListener('submit', function (ev) {
           ev.preventDefault();
-          const res = IP.DB.createCustomer({
-            name: mEl.querySelector('#qc-name').value,
-            taxCode: mEl.querySelector('#qc-tax').value,
-            contactName: mEl.querySelector('#qc-contact').value,
-            email: mEl.querySelector('#qc-email').value,
-            creditLimit: Number(mEl.querySelector('#qc-limit').value || 150000000),
-            paymentTermDays: 30
-          });
-          if (!res.ok) {
-            const errEl = mEl.querySelector('#qc-err');
-            errEl.textContent = res.error.message;
+          const nameVal = mEl.querySelector('#qc-name').value.trim();
+          const contactVal = mEl.querySelector('#qc-contact').value.trim();
+          const emailVal = mEl.querySelector('#qc-email').value.trim();
+          const errEl = mEl.querySelector('#qc-err');
+          if (!nameVal || !contactVal || !emailVal) {
+            errEl.textContent = 'Vui lòng nhập đầy đủ Tên doanh nghiệp, Người liên hệ và Email nhận hóa đơn.';
             errEl.classList.remove('d-none');
             return;
           }
-          if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
-          else if (bsModal) bsModal.hide();
-          else mEl.remove();
-          draft.customerId = res.data.id;
-          isDirty = true;
-          render();
-          IP.UI.toast({ title: 'Đã thêm khách hàng', message: 'Đã chọn ' + res.data.name + '.', type: 'success' });
+          IP.UI.confirmModal({
+            title: 'Xác nhận lưu khách hàng mới?',
+            message: 'Bạn có chắc chắn muốn lưu khách hàng "' + nameVal + '" và chọn cho hóa đơn này không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = IP.DB.createCustomer({
+                name: nameVal,
+                taxCode: mEl.querySelector('#qc-tax').value,
+                contactName: contactVal,
+                email: emailVal,
+                creditLimit: Number(mEl.querySelector('#qc-limit').value || 150000000),
+                paymentTermDays: 30
+              });
+              if (!res.ok) {
+                errEl.textContent = res.error.message;
+                errEl.classList.remove('d-none');
+                return;
+              }
+              if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+              else if (bsModal) bsModal.hide();
+              else mEl.remove();
+              draft.customerId = res.data.id;
+              isDirty = true;
+              render();
+              IP.UI.toast({ title: 'Đã thêm khách hàng', message: 'Đã chọn ' + res.data.name + '.', type: 'success' });
+            }
+          });
         });
         if (bsModal) bsModal.show();
       }
@@ -18272,20 +18449,17 @@ body:has(.offcanvas.show) #ip-chatbot-root {
         } else if (action === 'save-send') {
           handleSave(true);
         } else if (action === 'cancel-form') {
-          if (isDirty) {
-            IP.UI.confirmModal({
-              title: 'Rời khỏi biểu mẫu chưa lưu?',
-              message: 'Các thay đổi bạn vừa nhập trên biểu mẫu hóa đơn chưa được lưu. Bạn có chắc muốn rời trang?',
-              confirmText: 'Rời trang',
-              variant: 'danger',
-              onConfirm: function () {
-                isDirty = false;
-                window.IP_CanvasNav('accountant-invoice-list.html');
-              }
-            });
-          } else {
-            window.IP_CanvasNav('accountant-invoice-list.html');
-          }
+          IP.UI.confirmModal({
+            title: 'Xác nhận hủy thao tác?',
+            message: 'Bạn có chắc chắn muốn hủy bỏ biểu mẫu hiện tại và quay lại danh sách hóa đơn không?',
+            confirmText: 'Chắc chắn hủy & Thoát',
+            cancelText: 'Tiếp tục chỉnh sửa',
+            variant: 'danger',
+            onConfirm: function () {
+              isDirty = false;
+              window.IP_CanvasNav('accountant-invoice-list.html');
+            }
+          });
         }
       });
     }
@@ -18588,27 +18762,44 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           const errBox = root.querySelector('#recon-err-box');
           if (errBox) errBox.classList.add('d-none');
 
-          const res = IP.DB.reconcilePayment(
-            id,
-            invSel ? invSel.value : selectedInvoiceId,
-            allocEl ? Number(allocEl.value) : undefined,
-            noteEl ? noteEl.value : ''
-          );
-          if (!res.ok) {
+          const targetInvId = invSel ? invSel.value : selectedInvoiceId;
+          const allocAmt = allocEl ? Number(allocEl.value) : undefined;
+          const noteVal = noteEl ? noteEl.value : '';
+
+          if (!targetInvId) {
             if (errBox) {
-              errBox.textContent = res.error.message;
+              errBox.textContent = 'Vui lòng chọn hóa đơn cần khớp đối chiếu.';
               errBox.classList.remove('d-none');
             }
-            if (res.error.field === 'note' && noteEl) noteEl.focus();
             return;
           }
-          IP.UI.toast({
-            title: 'Đã xác nhận đối chiếu',
-            message: 'Giao dịch đã được khớp với hóa đơn ' + res.data.invoice.number + '.',
-            type: 'success'
+
+          IP.UI.confirmModal({
+            title: 'Xác nhận lưu & khớp đối chiếu thanh toán?',
+            message: 'Bạn có chắc chắn muốn xác nhận khớp giao dịch ngân hàng này vào hóa đơn đã chọn không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'success',
+            onConfirm: function () {
+              const res = IP.DB.reconcilePayment(id, targetInvId, allocAmt, noteVal);
+              if (!res.ok) {
+                if (errBox) {
+                  errBox.textContent = res.error.message;
+                  errBox.classList.remove('d-none');
+                }
+                if (res.error.field === 'note' && noteEl) noteEl.focus();
+                return;
+              }
+              IP.UI.toast({
+                title: 'Đã xác nhận đối chiếu',
+                message: 'Giao dịch đã được khớp với hóa đơn ' + res.data.invoice.number + '.',
+                type: 'success'
+              });
+              selectedPayId = '';
+              selectedInvoiceId = '';
+              render();
+            }
           });
-          selectedPayId = '';
-          render();
         } else if (action === 'mark-discrepancy') {
           const noteEl = root.querySelector('#recon-note');
           const noteVal = noteEl ? noteEl.value.trim() : '';
@@ -18621,12 +18812,23 @@ body:has(.offcanvas.show) #ip-chatbot-root {
             if (noteEl) noteEl.focus();
             return;
           }
-          const res = IP.DB.markPaymentDiscrepancy(id, noteVal);
-          if (res.ok) {
-            IP.UI.toast({ title: 'Đã chuyển sang tab Sai lệch', message: 'Giao dịch đã được ghi nhận sai lệch cần xử lý.', type: 'warning' });
-            currentTab = 'discrepancy';
-            render();
-          }
+          IP.UI.confirmModal({
+            title: 'Xác nhận lưu ghi nhận sai lệch?',
+            message: 'Bạn có chắc chắn muốn lưu ghi chú sai lệch và chuyển giao dịch này sang danh mục Sai lệch không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'warning',
+            onConfirm: function () {
+              const res = IP.DB.markPaymentDiscrepancy(id, noteVal);
+              if (res.ok) {
+                IP.UI.toast({ title: 'Đã chuyển sang tab Sai lệch', message: 'Giao dịch đã được ghi nhận sai lệch cần xử lý.', type: 'warning' });
+                selectedPayId = '';
+                selectedInvoiceId = '';
+                currentTab = 'discrepancy';
+                render();
+              }
+            }
+          });
         } else if (action === 'reject-tx') {
           IP.UI.confirmModal({
             title: 'Từ chối giao dịch ngân hàng này?',
@@ -19631,9 +19833,21 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           composerOpen = true;
           render();
         } else if (action === 'close-composer') {
-          composerOpen = false;
-          IP.Utils.setQueryParams({ customerId: null, invoiceId: null, open: null });
-          render();
+          IP.UI.confirmModal({
+            title: 'Xác nhận hủy soạn nhắc thanh toán?',
+            message: 'Bạn có chắc chắn muốn hủy bỏ và đóng cửa sổ soạn thông báo nhắc thanh toán không?',
+            confirmText: 'Chắc chắn hủy & Thoát',
+            cancelText: 'Tiếp tục soạn',
+            variant: 'danger',
+            onConfirm: function () {
+              composerOpen = false;
+              editingReminderId = null;
+              const host = document.getElementById('sal-composer-host');
+              if (host) host.innerHTML = '';
+              IP.Utils.setQueryParams({ customerId: null, invoiceId: null, open: null });
+              render();
+            }
+          });
         } else if (action === 'edit-reminder') {
           const rem = IP.DB.getReminder(id);
           if (!rem) return;
@@ -19650,34 +19864,58 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           const host = document.getElementById('sal-composer-host');
           syncComposerInputs(host);
           const mode = btn.getAttribute('data-mode');
-          const errBox = host.querySelector('#comp-err-box');
+          const errBox = host ? host.querySelector('#comp-err-box') : null;
           if (errBox) errBox.classList.add('d-none');
 
-          let res;
-          if (editingReminderId) {
-            res = IP.DB.updateReminder(editingReminderId, Object.assign({}, composer, { status: mode }));
-            if (res.ok && mode === 'sent') {
-              res = IP.DB.sendReminder(editingReminderId);
-            }
-          } else {
-            res = IP.DB.createReminder(Object.assign({}, composer, { mode: mode }));
-          }
-
-          if (!res.ok) {
+          if (!composer.invoiceIds || !composer.invoiceIds.length || !String(composer.subject || '').trim() || !String(composer.body || '').trim()) {
+            const msg = (!composer.invoiceIds || !composer.invoiceIds.length)
+              ? 'Vui lòng chọn ít nhất 1 hóa đơn cần nhắc thanh toán.'
+              : 'Vui lòng nhập đầy đủ Tiêu đề và Nội dung thông báo nhắc thanh toán.';
             if (errBox) {
-              errBox.textContent = res.error.message;
+              errBox.textContent = msg;
               errBox.classList.remove('d-none');
             }
+            IP.UI.toast({ title: 'Thiếu thông tin bắt buộc', message: msg, type: 'warning' });
             return;
           }
 
-          composerOpen = false;
-          IP.UI.toast({
-            title: mode === 'sent' ? 'Đã gửi thông báo nhắc thanh toán' : (mode === 'scheduled' ? 'Đã lên lịch gửi nhắc' : 'Đã lưu bản nháp'),
-            message: res.data.subject,
-            type: 'success'
+          IP.UI.confirmModal({
+            title: mode === 'sent' ? 'Xác nhận lưu & gửi thông báo nhắc ngay?' : (mode === 'scheduled' ? 'Xác nhận lưu & lên lịch gửi nhắc?' : 'Xác nhận lưu bản nháp nhắc thanh toán?'),
+            message: 'Bạn có chắc chắn muốn ' + (mode === 'sent' ? 'gửi ngay thông báo nhắc thanh toán này' : (mode === 'scheduled' ? 'lên lịch gửi thông báo nhắc này' : 'lưu bản nháp thông báo nhắc này')) + ' và thoát khỏi cửa sổ soạn thảo không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              let res;
+              if (editingReminderId) {
+                res = IP.DB.updateReminder(editingReminderId, Object.assign({}, composer, { status: mode }));
+                if (res.ok && mode === 'sent') {
+                  res = IP.DB.sendReminder(editingReminderId);
+                }
+              } else {
+                res = IP.DB.createReminder(Object.assign({}, composer, { mode: mode }));
+              }
+
+              if (!res.ok) {
+                if (errBox) {
+                  errBox.textContent = res.error.message;
+                  errBox.classList.remove('d-none');
+                }
+                return;
+              }
+
+              composerOpen = false;
+              editingReminderId = null;
+              if (host) host.innerHTML = '';
+              IP.Utils.setQueryParams({ customerId: null, invoiceId: null, open: null });
+              IP.UI.toast({
+                title: mode === 'sent' ? 'Đã gửi thông báo nhắc thanh toán' : (mode === 'scheduled' ? 'Đã lên lịch gửi nhắc' : 'Đã lưu bản nháp'),
+                message: res.data.subject,
+                type: 'success'
+              });
+              render();
+            }
           });
-          render();
         } else if (action === 'retry-send' || action === 'send-now-row') {
           IP.UI.confirmModal({
             title: action === 'retry-send' ? 'Gửi lại thông báo nhắc này?' : 'Xác nhận gửi thông báo nhắc thanh toán ngay?',
@@ -19972,16 +20210,26 @@ body:has(.offcanvas.show) #ip-chatbot-root {
             errEl.classList.remove('d-none');
             return;
           }
-          const res = IP.DB.updateInvoice(inv.id, { dueDate: newDue, dueChangeReason: reason });
-          if (!res.ok) {
-            errEl.textContent = res.error.message;
-            errEl.classList.remove('d-none');
-            return;
-          }
-          if (bsModal) bsModal.hide();
-          else mEl.remove();
-          IP.UI.toast({ title: 'Đã cập nhật hạn thanh toán', message: 'Hạn mới: ' + IP.Fmt.date(newDue), type: 'success' });
-          renderDetail();
+          IP.UI.confirmModal({
+            title: 'Xác nhận lưu hạn thanh toán mới?',
+            message: 'Bạn có chắc chắn muốn cập nhật hạn thanh toán mới (' + IP.Fmt.date(newDue) + ') cho hóa đơn ' + inv.number + ' không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = IP.DB.updateInvoice(inv.id, { dueDate: newDue, dueChangeReason: reason });
+              if (!res.ok) {
+                errEl.textContent = res.error.message;
+                errEl.classList.remove('d-none');
+                return;
+              }
+              if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+              else if (bsModal) bsModal.hide();
+              else mEl.remove();
+              IP.UI.toast({ title: 'Đã cập nhật hạn thanh toán', message: 'Hạn mới: ' + IP.Fmt.date(newDue), type: 'success' });
+              renderDetail();
+            }
+          });
         });
         if (bsModal) bsModal.show();
       }
@@ -20012,11 +20260,21 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           openUpdateDueDateModal();
         } else if (action === 'save-internal-note') {
           const noteEl = root.querySelector('#sal-internal-note');
-          const res = IP.DB.updateInvoice(currentId, { internalNote: noteEl ? noteEl.value : '' });
-          if (res.ok) {
-            IP.UI.toast({ title: 'Đã lưu ghi chú nội bộ', message: 'Ghi chú đã được cập nhật vào hồ sơ hóa đơn.', type: 'success' });
-            renderDetail();
-          }
+          const noteVal = noteEl ? noteEl.value : '';
+          IP.UI.confirmModal({
+            title: 'Xác nhận lưu ghi chú nội bộ?',
+            message: 'Bạn có chắc chắn muốn lưu ghi chú nội bộ này vào hồ sơ hóa đơn không?',
+            confirmText: 'Chắc chắn lưu',
+            cancelText: 'Hủy bỏ',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = IP.DB.updateInvoice(currentId, { internalNote: noteVal });
+              if (res.ok) {
+                IP.UI.toast({ title: 'Đã lưu ghi chú nội bộ', message: 'Ghi chú đã được cập nhật vào hồ sơ hóa đơn.', type: 'success' });
+                renderDetail();
+              }
+            }
+          });
         } else if (action === 'archive-inv') {
           IP.UI.confirmModal({
             title: 'Lưu trữ hóa đơn này?',
@@ -20809,57 +21067,108 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           ev.preventDefault();
           openOverdueDrawer(id);
         } else if (action === 'close-drawer') {
-          const host = document.getElementById('mgr-overdue-drawer-host');
-          if (host) host.innerHTML = '';
-          IP.Utils.setQueryParams({ open: null });
+          IP.UI.confirmModal({
+            title: 'Xác nhận đóng cửa sổ xử lý quá hạn?',
+            message: 'Bạn có chắc chắn muốn đóng cửa sổ xử lý hóa đơn quá hạn này không?',
+            confirmText: 'Chắc chắn đóng',
+            cancelText: 'Ở lại',
+            variant: 'danger',
+            onConfirm: function () {
+              const host = document.getElementById('mgr-overdue-drawer-host');
+              if (host) host.innerHTML = '';
+              IP.Utils.setQueryParams({ open: null });
+            }
+          });
         } else if (action === 'save-assign') {
           const ownerEl = document.getElementById('drw-owner');
           const reasonEl = document.getElementById('drw-assign-reason');
           const errEl = document.getElementById('drw-assign-err');
           if (errEl) errEl.classList.add('d-none');
 
-          const res = IP.DB.assignFollowUp(id, ownerEl.value, reasonEl.value);
-          if (!res.ok) {
-            if (errEl) {
-              errEl.textContent = res.error.message;
-              errEl.classList.remove('d-none');
+          const ownerVal = ownerEl ? ownerEl.value : '';
+          const reasonVal = reasonEl ? reasonEl.value : '';
+
+          IP.UI.confirmModal({
+            title: 'Xác nhận lưu phân công thu hồi công nợ?',
+            message: 'Bạn có chắc chắn muốn lưu phân công nhân sự phụ trách và đóng cửa sổ này không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = IP.DB.assignFollowUp(id, ownerVal, reasonVal);
+              if (!res.ok) {
+                if (errEl) {
+                  errEl.textContent = res.error.message;
+                  errEl.classList.remove('d-none');
+                }
+                return;
+              }
+              const host = document.getElementById('mgr-overdue-drawer-host');
+              if (host) host.innerHTML = '';
+              IP.Utils.setQueryParams({ open: null });
+              IP.UI.toast({ title: 'Đã giao phụ trách', message: 'Thông báo phân công đã được gửi tới nhân sự Kinh doanh.', type: 'success' });
+              render();
             }
-            return;
-          }
-          IP.UI.toast({ title: 'Đã giao phụ trách', message: 'Thông báo phân công đã được gửi tới nhân sự Kinh doanh.', type: 'success' });
-          render();
-          openOverdueDrawer(id);
+          });
         } else if (action === 'add-fu-note') {
           const inp = document.getElementById('drw-new-note');
-          const res = IP.DB.addFollowUpNote(id, inp ? inp.value : '');
-          if (!res.ok) {
-            IP.UI.toast({ title: 'Thiếu nội dung', message: res.error.message, type: 'warning' });
+          const noteVal = inp ? inp.value.trim() : '';
+          if (!noteVal) {
+            IP.UI.toast({ title: 'Thiếu nội dung', message: 'Vui lòng nhập nội dung ghi chú xử lý trước khi lưu.', type: 'warning' });
             return;
           }
-          IP.UI.toast({ title: 'Đã lưu ghi chú xử lý', message: 'Ghi chú đã được thêm vào hồ sơ quá hạn.', type: 'success' });
-          render();
-          openOverdueDrawer(id);
+          IP.UI.confirmModal({
+            title: 'Xác nhận lưu ghi chú xử lý?',
+            message: 'Bạn có chắc chắn muốn lưu ghi chú xử lý quá hạn này và đóng cửa sổ không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = IP.DB.addFollowUpNote(id, noteVal);
+              if (!res.ok) {
+                IP.UI.toast({ title: 'Thiếu nội dung', message: res.error.message, type: 'warning' });
+                return;
+              }
+              const host = document.getElementById('mgr-overdue-drawer-host');
+              if (host) host.innerHTML = '';
+              IP.Utils.setQueryParams({ open: null });
+              IP.UI.toast({ title: 'Đã lưu ghi chú xử lý', message: 'Ghi chú đã được thêm vào hồ sơ quá hạn.', type: 'success' });
+              render();
+            }
+          });
         } else if (action === 'close-followup') {
           IP.UI.confirmModal({
             title: 'Đóng theo dõi hóa đơn quá hạn này?',
             message: 'Vui lòng nhập lý do đóng theo dõi (ví dụ: Đã có biên bản giãn nợ). Bạn có thể mở lại bất cứ lúc nào.',
             requireReason: true,
-            confirmText: 'Đóng theo dõi',
+            confirmText: 'Đóng theo dõi & Thoát',
             variant: 'danger',
             onConfirm: function (reason) {
               const res = IP.DB.closeFollowUp(id, reason);
               if (res.ok) {
+                const host = document.getElementById('mgr-overdue-drawer-host');
+                if (host) host.innerHTML = '';
+                IP.Utils.setQueryParams({ open: null });
                 IP.UI.toast({ title: 'Đã đóng theo dõi', message: 'Trạng thái theo dõi đã chuyển sang Đã đóng.', type: 'info' });
                 render();
-                openOverdueDrawer(id);
               }
             }
           });
         } else if (action === 'reopen-followup') {
-          IP.DB.reopenFollowUp(id);
-          IP.UI.toast({ title: 'Đã mở lại theo dõi', message: 'Hóa đơn đã quay lại trạng thái Đang theo dõi.', type: 'success' });
-          render();
-          openOverdueDrawer(id);
+          IP.UI.confirmModal({
+            title: 'Xác nhận mở lại theo dõi?',
+            message: 'Bạn có chắc chắn muốn mở lại theo dõi cho hóa đơn quá hạn này không?',
+            confirmText: 'Mở lại & Thoát',
+            variant: 'success',
+            onConfirm: function () {
+              IP.DB.reopenFollowUp(id);
+              const host = document.getElementById('mgr-overdue-drawer-host');
+              if (host) host.innerHTML = '';
+              IP.Utils.setQueryParams({ open: null });
+              IP.UI.toast({ title: 'Đã mở lại theo dõi', message: 'Hóa đơn đã quay lại trạng thái Đang theo dõi.', type: 'success' });
+              render();
+            }
+          });
         } else if (action === 'handoff-reminder') {
           const cusId = btn.getAttribute('data-cus');
           const invId = btn.getAttribute('data-inv');
@@ -21647,37 +21956,53 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           const errEl = mEl.querySelector('#adm-cus-err');
           errEl.classList.add('d-none');
           const payload = {
-            name: mEl.querySelector('#cf-name').value,
-            code: mEl.querySelector('#cf-code').value,
-            taxCode: mEl.querySelector('#cf-tax').value,
+            name: mEl.querySelector('#cf-name').value.trim(),
+            code: mEl.querySelector('#cf-code').value.trim(),
+            taxCode: mEl.querySelector('#cf-tax').value.trim(),
             industry: mEl.querySelector('#cf-ind').value,
             ownerId: mEl.querySelector('#cf-owner').value,
-            contactName: mEl.querySelector('#cf-contact').value,
-            email: mEl.querySelector('#cf-email').value,
-            phone: mEl.querySelector('#cf-phone').value,
+            contactName: mEl.querySelector('#cf-contact').value.trim(),
+            email: mEl.querySelector('#cf-email').value.trim(),
+            phone: mEl.querySelector('#cf-phone').value.trim(),
             paymentTermDays: Number(mEl.querySelector('#cf-term').value),
             creditLimit: Number(mEl.querySelector('#cf-limit').value),
-            address: mEl.querySelector('#cf-address').value,
-            notes: mEl.querySelector('#cf-notes').value
+            address: mEl.querySelector('#cf-address').value.trim(),
+            notes: mEl.querySelector('#cf-notes').value.trim()
           };
 
-          const res = existing ? IP.DB.updateCustomer(existing.id, payload) : IP.DB.createCustomer(payload);
-          if (!res.ok) {
-            errEl.textContent = res.error.message;
+          if (!payload.name || !payload.contactName || !payload.email) {
+            errEl.textContent = 'Vui lòng nhập đầy đủ Tên doanh nghiệp, Người liên hệ và Email liên hệ.';
             errEl.classList.remove('d-none');
             return;
           }
-          if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
-          else if (bsModal) bsModal.hide();
-          else mEl.remove();
-          const host = document.getElementById('adm-cus-drawer-host');
-          if (host) host.innerHTML = '';
-          IP.UI.toast({
-            title: existing ? 'Đã cập nhật khách hàng' : 'Đã thêm khách hàng mới',
-            message: res.data.name + ' (' + res.data.code + ')',
-            type: 'success'
+
+          IP.UI.confirmModal({
+            title: existing ? 'Xác nhận lưu cập nhật khách hàng?' : 'Xác nhận lưu khách hàng mới?',
+            message: 'Bạn có chắc chắn muốn lưu hồ sơ khách hàng "' + payload.name + '" và đóng cửa sổ này không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = existing ? IP.DB.updateCustomer(existing.id, payload) : IP.DB.createCustomer(payload);
+              if (!res.ok) {
+                errEl.textContent = res.error.message;
+                errEl.classList.remove('d-none');
+                return;
+              }
+              if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+              else if (bsModal) bsModal.hide();
+              else mEl.remove();
+              const host = document.getElementById('adm-cus-drawer-host');
+              if (host) host.innerHTML = '';
+              IP.Utils.setQueryParams({ open: null });
+              IP.UI.toast({
+                title: existing ? 'Đã cập nhật khách hàng' : 'Đã thêm khách hàng mới',
+                message: res.data.name + ' (' + res.data.code + ')',
+                type: 'success'
+              });
+              render();
+            }
           });
-          render();
         });
         if (bsModal) bsModal.show();
       }
@@ -21986,29 +22311,43 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           const errEl = mEl.querySelector('#adm-usr-err');
           errEl.classList.add('d-none');
           const payload = {
-            name: mEl.querySelector('#uf-name').value,
-            email: mEl.querySelector('#uf-email').value,
+            name: mEl.querySelector('#uf-name').value.trim(),
+            email: mEl.querySelector('#uf-email').value.trim(),
             password: mEl.querySelector('#uf-password').value,
             role: mEl.querySelector('#uf-role').value,
-            phone: mEl.querySelector('#uf-phone').value,
-            title: mEl.querySelector('#uf-title').value,
+            phone: mEl.querySelector('#uf-phone').value.trim(),
+            title: mEl.querySelector('#uf-title').value.trim(),
             status: 'active'
           };
-          const res = existing ? IP.DB.updateUser(existing.id, payload) : IP.DB.createUser(payload);
-          if (!res.ok) {
-            errEl.textContent = res.error.message;
+          if (!payload.name || !payload.email) {
+            errEl.textContent = 'Vui lòng nhập đầy đủ Họ và tên cùng Email đăng nhập.';
             errEl.classList.remove('d-none');
             return;
           }
-          if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
-          else if (bsModal) bsModal.hide();
-          else mEl.remove();
-          IP.UI.toast({
-            title: existing ? 'Đã cập nhật tài khoản' : 'Đã tạo tài khoản mới',
-            message: res.data.name + ' (' + IP.Fmt.roleLabel(res.data.role) + ' · ' + res.data.email + ')',
-            type: 'success'
+          IP.UI.confirmModal({
+            title: existing ? 'Xác nhận lưu thông tin nhân sự?' : 'Xác nhận cấp tài khoản mới?',
+            message: 'Bạn có chắc chắn muốn lưu tài khoản "' + payload.name + '" (' + payload.email + ') và đóng cửa sổ không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = existing ? IP.DB.updateUser(existing.id, payload) : IP.DB.createUser(payload);
+              if (!res.ok) {
+                errEl.textContent = res.error.message;
+                errEl.classList.remove('d-none');
+                return;
+              }
+              if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+              else if (bsModal) bsModal.hide();
+              else mEl.remove();
+              IP.UI.toast({
+                title: existing ? 'Đã cập nhật tài khoản' : 'Đã tạo tài khoản mới',
+                message: res.data.name + ' (' + IP.Fmt.roleLabel(res.data.role) + ' · ' + res.data.email + ')',
+                type: 'success'
+              });
+              render();
+            }
           });
-          render();
         });
         if (bsModal) bsModal.show();
       }
@@ -22517,25 +22856,39 @@ body:has(.offcanvas.show) #ip-chatbot-root {
           const errEl = mEl.querySelector('#tpl-err');
           errEl.classList.add('d-none');
           const payload = {
-            name: mEl.querySelector('#tf-name').value,
+            name: mEl.querySelector('#tf-name').value.trim(),
             channel: mEl.querySelector('#tf-channel').value,
             tone: mEl.querySelector('#tf-tone').value,
-            subject: mEl.querySelector('#tf-subject').value,
-            body: mEl.querySelector('#tf-body').value,
+            subject: mEl.querySelector('#tf-subject').value.trim(),
+            body: mEl.querySelector('#tf-body').value.trim(),
             isDefault: mEl.querySelector('#tf-default').checked
           };
-          const res = existing ? IP.DB.updateReminderTemplate(existing.id, payload) : IP.DB.createReminderTemplate(payload);
-          if (!res.ok) {
-            errEl.textContent = res.error.message;
+          if (!payload.name || !payload.subject || !payload.body) {
+            errEl.textContent = 'Vui lòng nhập đầy đủ Tên mẫu, Tiêu đề và Nội dung mẫu nhắc.';
             errEl.classList.remove('d-none');
             return;
           }
-          if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
-          else if (bsModal) bsModal.hide();
-          else mEl.remove();
-          workingSettings = IP.DB.getSettings();
-          IP.UI.toast({ title: 'Đã lưu mẫu nhắc thanh toán', message: res.data.name, type: 'success' });
-          render();
+          IP.UI.confirmModal({
+            title: existing ? 'Xác nhận lưu cập nhật mẫu nhắc?' : 'Xác nhận lưu mẫu nhắc mới?',
+            message: 'Bạn có chắc chắn muốn lưu mẫu nhắc "' + payload.name + '" và đóng cửa sổ này không?',
+            confirmText: 'Chắc chắn lưu & Thoát',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = existing ? IP.DB.updateReminderTemplate(existing.id, payload) : IP.DB.createReminderTemplate(payload);
+              if (!res.ok) {
+                errEl.textContent = res.error.message;
+                errEl.classList.remove('d-none');
+                return;
+              }
+              if (IP.UI && IP.UI.closeModal) IP.UI.closeModal(mEl, bsModal);
+              else if (bsModal) bsModal.hide();
+              else mEl.remove();
+              workingSettings = IP.DB.getSettings();
+              IP.UI.toast({ title: 'Đã lưu mẫu nhắc thanh toán', message: res.data.name, type: 'success' });
+              render();
+            }
+          });
         });
         if (bsModal) bsModal.show();
       }
@@ -22570,24 +22923,42 @@ body:has(.offcanvas.show) #ip-chatbot-root {
         } else if (action === 'save-settings') {
           const errBox = root.querySelector('#st-err-box');
           if (errBox) errBox.classList.add('d-none');
-          const res = IP.DB.saveSettings(workingSettings);
-          if (!res.ok) {
-            if (errBox) {
-              errBox.textContent = res.error.message;
-              errBox.classList.remove('d-none');
+          IP.UI.confirmModal({
+            title: 'Xác nhận lưu cấu hình hệ thống?',
+            message: 'Bạn có chắc chắn muốn lưu các thiết lập cấu hình hóa đơn & hệ thống hiện tại không?',
+            confirmText: 'Chắc chắn lưu',
+            cancelText: 'Kiểm tra lại',
+            variant: 'primary',
+            onConfirm: function () {
+              const res = IP.DB.saveSettings(workingSettings);
+              if (!res.ok) {
+                if (errBox) {
+                  errBox.textContent = res.error.message;
+                  errBox.classList.remove('d-none');
+                }
+                IP.UI.toast({ title: 'Lỗi cấu hình', message: res.error.message, type: 'danger' });
+                return;
+              }
+              workingSettings = IP.DB.getSettings();
+              isDirty = false;
+              IP.UI.toast({ title: 'Đã lưu cấu hình hệ thống', message: 'Các thiết lập mới đã có hiệu lực ngay lập tức.', type: 'success' });
+              render();
             }
-            IP.UI.toast({ title: 'Lỗi cấu hình', message: res.error.message, type: 'danger' });
-            return;
-          }
-          workingSettings = IP.DB.getSettings();
-          isDirty = false;
-          IP.UI.toast({ title: 'Đã lưu cấu hình hệ thống', message: 'Các thiết lập mới đã có hiệu lực ngay lập tức.', type: 'success' });
-          render();
+          });
         } else if (action === 'discard-changes') {
-          workingSettings = IP.DB.getSettings();
-          isDirty = false;
-          IP.UI.toast({ title: 'Đã hoàn tác thay đổi', message: 'Khôi phục về giá trị đã lưu gần nhất.', type: 'info' });
-          render();
+          IP.UI.confirmModal({
+            title: 'Xác nhận hủy các thay đổi chưa lưu?',
+            message: 'Bạn có chắc chắn muốn hủy bỏ các chỉnh sửa hiện tại và khôi phục về cấu hình đã lưu gần nhất không?',
+            confirmText: 'Chắc chắn hủy thay đổi',
+            cancelText: 'Giữ lại',
+            variant: 'danger',
+            onConfirm: function () {
+              workingSettings = IP.DB.getSettings();
+              isDirty = false;
+              IP.UI.toast({ title: 'Đã hoàn tác thay đổi', message: 'Khôi phục về giá trị đã lưu gần nhất.', type: 'info' });
+              render();
+            }
+          });
         } else if (action === 'add-template') {
           openTemplateModal(null);
         } else if (action === 'edit-template') {
